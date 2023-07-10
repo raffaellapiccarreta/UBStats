@@ -26,4 +26,6 @@ have the `devtools` package available in your local installation of `R`):
 devtools::install_github("raffaellapiccarreta/UBStats")
 ```
 
+After installing it, to use the package run `library(UBStats)`.
+
 To see a description of the package, execute the command `?UBStats`.
