@@ -1013,7 +1013,7 @@ TEST.prop<-function(x, success=NULL,p0=0.5,
 #' AOV_F <- MktDATA$AOV[MktDATA$Gender == "F"]
 #' AOV_M <- MktDATA$AOV[MktDATA$Gender == "M"]
 #' TEST.diffmean(x = AOV_M, y = AOV_F, type = "independent", mdiff0 = 30,
-#'   alternative = "two.sided", var.test = T)
+#'   alternative = "two.sided", var.test = TRUE)
 #' 
 #' # Same as above but using x, by: x split based on the by's (2) levels
 #' MktDATA$Gender.R <- factor(MktDATA$Gender, levels = c("M", "F"))

@@ -16,8 +16,7 @@ NeedsCompilation: no
 Repository: CRAN
 LazyData: true
 Imports:
-    graphics,
-    tools
+    graphics
 Suggests:
     knitr,
     testthat
