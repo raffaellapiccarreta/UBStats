@@ -52,6 +52,6 @@ This dataset contains the variables from a customer satisfaction study of
 a Spanish credit institution on 250 customers. The data is identical to
 the dataset provided by the \href{https://github.com/gastonstat/plspm/}{plspm} package
 but with the last column  (\code{gender}) removed. If you are looking for the original
-dataset use the \link{satisfaction_gender} dataset.
+dataset use the \link{MktDATA} dataset.
 }
 \keyword{datasets}
