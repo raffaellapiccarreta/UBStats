@@ -3,15 +3,12 @@
 \docType{data}
 \name{MktDATA}
 \alias{MktDATA}
-\title{Data: satisfaction}
+\title{Data: MktDATA}
 \format{
 An object of class \code{data.frame} with 2224 rows and 26 columns.
 }
 \source{
-The \href{https://github.com/gastonstat/plspm/}{plspm} package (version  0.4.9).
-Original source according to \pkg{plspm}:
-"Laboratory of Information Analysis and Modeling (LIAM).
-Facultat d'Informatica de Barcelona, Universitat Politecnica de Catalunya".
+The data set has been adapted from \href{https://www.kaggle.com/code/dmitryuarov/customers-clustering-eda}{https://www.kaggle.com/code/dmitryuarov/customers-clustering-eda}.
 }
 \usage{
 MktDATA

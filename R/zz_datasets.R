@@ -1,4 +1,4 @@
-#' Data: satisfaction
+#' Data: MktDATA
 #'
 #' This dataset contains the variables from a customer satisfaction study of 
 #' a Spanish credit institution on 250 customers. The data is identical to
@@ -41,10 +41,5 @@
 #'                    and the sense of loyalty.}
 #' }
 #' 
-#' 
-#' 
-#' @source The \href{https://github.com/gastonstat/plspm/}{plspm} package (version  0.4.9). 
-#' Original source according to \pkg{plspm}:
-#' "Laboratory of Information Analysis and Modeling (LIAM). 
-#' Facultat d'Informatica de Barcelona, Universitat Politecnica de Catalunya".
+#' @source The data set has been adapted from \href{https://www.kaggle.com/code/dmitryuarov/customers-clustering-eda}{https://www.kaggle.com/code/dmitryuarov/customers-clustering-eda}.
 "MktDATA"
