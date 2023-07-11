@@ -345,14 +345,15 @@ build.Xlist<-function(x,breaks,interval,adj.breaks,consistency=F,
   } # closes interval
 }
 
-# Function to arrange multiple plots in a 
-# graphical window
+# Function to arrange multiple plots in a graphical window
+
+#' @importFrom grDevices n2mfrow
 find.layout<-function(n.plots,nrows=NULL,ncols=NULL,square=T,
                       err.list=NULL,warn.list=NULL){
   dim.grid<-NULL
   if(is.list(err.list)==F){err.list<-list()}
   if(is.null(nrows) & is.null(ncols)){
-    if(square==F){dim.grid<-n2mfrow(n.plots)}
+    if(square==F){dim.grid<-grDevices::n2mfrow(n.plots)}
     if(square==T){
       r.grid<-ceiling(sqrt(n.plots))
       c.grid<-ceiling(n.plots/r.grid)
@@ -371,16 +372,17 @@ find.layout<-function(n.plots,nrows=NULL,ncols=NULL,square=T,
   out<-list(dim.grid=dim.grid,err.list=err.list,warn.list=warn.list)
 }
 
-
-
 ## Functions to obtain different plots ------
 # the single functions to obtain specific plots
+
+#' @importFrom grDevices gray.colors
+#' @importFrom grDevices rainbow
 plt.x.pie<-function(tab,bw=T,color=NULL,name.x,freq){
-  if(bw==T){use.color <- gray.colors(length(tab))} 
-  if(bw==F & is.null(color)){use.color <- rainbow(length(tab))} 
+  if(bw==T){use.color <- grDevices::gray.colors(length(tab))} 
+  if(bw==F & is.null(color)){use.color <- grDevices::rainbow(length(tab))} 
   if(!(is.null(color))){use.color<-color
   if(length(use.color)<length(tab)){
-    use.color <- rainbow(length(tab))}}
+    use.color <- grDevices::rainbow(length(tab))}}
   mai.p<-par("mai")
   par(mai=c(0,0,0.1,0))
   pie(tab,col=use.color,clockwise=T)
@@ -774,15 +776,17 @@ plt.x.boxplot<-function(xlist,bw=T,color=NULL,name.x,freq,adj.breaks){
   mtext(side = 2, name.x, line = 2.3,las=0)
 }  
 
+#' @importFrom grDevices gray.colors
+#' @importFrom grDevices rainbow
 plt.xy.crossbars<-function(tab,bw=T,color=NULL,name.x,name.y,freq,legend,
                            beside=F,use.tit=NULL,switch.xy=F,
                            use.par=NULL){
-  if(bw==T){use.color <- gray.colors(nrow(tab))} 
-  if(bw==F & is.null(color)){use.color <- rainbow((nrow(tab)))} 
+  if(bw==T){use.color <- grDevices::gray.colors(nrow(tab))} 
+  if(bw==F & is.null(color)){use.color <- grDevices::rainbow((nrow(tab)))} 
   if(!(is.null(color))){
     use.color<-color
     if(length(use.color)<nrow(tab)){
-      use.color <- rainbow(nrow(tab))}
+      use.color <- grDevices::rainbow(nrow(tab))}
   }
   names(use.color)<-rownames(tab)
   if(beside==T){
@@ -1133,16 +1137,16 @@ plt.xy.boxplot<-function(xlist,ylist,bw=T,color=NULL,name.x,name.y,
   }
 }
 
-
+#' @importFrom grDevices rainbow
 plt.xby.hist<-function(xlist,bylist,name.x,name.by,bw=T,color=NULL,
                        dim.grid=NULL,square=T,legend=T){
   if(legend==F){lgd<-NULL} else if(legend==T){lgd<-"topright"
   } else {lgd<-legend}
   
   n.plots<-length(levels(bylist$V.f)) 
-  if(is.null(color)){use.color <- rainbow(n.plots)} 
+  if(is.null(color)){use.color <- grDevices::rainbow(n.plots)} 
   if(!(is.null(color))){use.color<-color
-  if(length(use.color)<n.plots){use.color <- rainbow(n.plots)}
+  if(length(use.color)<n.plots){use.color <- grDevices::rainbow(n.plots)}
   }
   names(use.color)<-levels(bylist$V.f)
   
@@ -1195,7 +1199,7 @@ plt.xby.hist<-function(xlist,bylist,name.x,name.by,bw=T,color=NULL,
   mtext(paste0(name.x," | ",name.by), line=0, side=3, outer=TRUE,font=2)
 }
 
-
+#' @importFrom grDevices rainbow
 plt.xby.dens<-function(xlist,bylist,name.x,name.by,bw=T,color=NULL,
                        dim.grid=NULL,square=T,overlay=F,
                        legend=T){
@@ -1203,10 +1207,10 @@ plt.xby.dens<-function(xlist,bylist,name.x,name.by,bw=T,color=NULL,
   } else {lgd<-legend}
   
   n.plots<-length(levels(bylist$V.f)) 
-  if(is.null(color)){use.color <- rainbow(n.plots)} 
+  if(is.null(color)){use.color <- grDevices::rainbow(n.plots)} 
   if(!(is.null(color))){
     use.color<-color
-    if(length(use.color)<n.plots){use.color <- rainbow(n.plots)}
+    if(length(use.color)<n.plots){use.color <- grDevices::rainbow(n.plots)}
   }
   names(use.color)<-levels(bylist$V.f)
   

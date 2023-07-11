@@ -1880,6 +1880,9 @@ summary.plot.x<-function(x,by1,by2,stats="mean",plot.type="bars",conf.level=0.95
   myout<-out
 }
 
+#' @importFrom grDevices colorRampPalette
+#' @importFrom grDevices gray.colors
+#' @importFrom grDevices rainbow
 build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,name.1=NULL,name.2=NULL,
                             stats,plot.type,bw=F,color=NULL,legend=T,conf.level=0.95){
   Warn.list<-as.list("\nWarning:") # list to collect warn msg
@@ -1951,11 +1954,11 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
     tit.stats<-paste0(name.x," | ",names(list.by)[1]," by ",names(list.by)[2])
     use.by2<-unique(out[[names(list.by)[2]]])
 
-    if(bw==T){use.color <- gray.colors(length(use.by2))}
-    if(bw==F & is.null(color)){use.color <- rainbow(length(use.by2))}
+    if(bw==T){use.color <- grDevices::gray.colors(length(use.by2))}
+    if(bw==F & is.null(color)){use.color <- grDevices::rainbow(length(use.by2))}
     if(!(is.null(color))){use.color<-color
     if(length(use.color)<length(use.by2)){
-      use.color <- rainbow(length(use.by2))}}
+      use.color <- grDevices::rainbow(length(use.by2))}}
     names(use.color)[1:length(use.by2)]<-use.by2
 
     if(is.numeric(out[[names(list.by)[1]]])){x.c<-x.n<-out[[names(list.by)[1]]] }
@@ -2122,9 +2125,9 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
     par(las=mylas)
     tit.stats<-paste0(list.tit," of ",name.x," | ",names(list.by))
 
-    colramp.pct <- colorRampPalette(c("red", "darkorange","gold",
+    colramp.pct <- grDevices::colorRampPalette(c("red", "darkorange","gold",
                                            "green","darkgreen"))
-                                           if(bw==T){use.color <- gray.colors(length(pctiles))}
+                                           if(bw==T){use.color <- grDevices::gray.colors(length(pctiles))}
     if(bw==F & is.null(color)){use.color <- colramp.pct(length(pctiles))}
     if(!(is.null(color))){use.color<-color
     if(length(use.color)<length(pctiles)){

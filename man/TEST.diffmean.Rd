@@ -35,7 +35,7 @@ Allowed values are \code{"independent"} or \code{"paired"}.}
 \item{mdiff0}{Numeric value that specifies the null hypothesis to test for
 (default is 0).}
 
-\item{sigma.x, }{sigma.y Optional numeric values representing the population
+\item{sigma.x, sigma.y}{Optional numeric values representing the population
 standard deviations for the two population. If \code{NULL} they estimate
 the populations standard deviations using the data.}
 
