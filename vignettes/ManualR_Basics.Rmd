@@ -1,0 +1,1838 @@
+---
+title: "Basic stats with R: functions and examples"
+author: "R. Piccarreta"
+date: '`r format(Sys.time(), "%B %Y")`'
+output:
+  bookdown::pdf_document2: 
+    fig_caption: yes
+    highlight: tango
+    number_sections: yes
+    toc: true
+    toc_depth: 5
+    extra_dependencies: "subfig"
+    # keep_tex: yes
+    includes:
+      in_header: Preamble.tex
+    latex_engine: xelatex
+  bookdown::html_document2: 
+    toc: yes
+    toc_depth: 4
+  toc: yes
+header-includes:
+- \usepackage{mathptmx}
+- \usepackage{tcolorbox}
+- \usepackage{fancyhdr}
+- \pagestyle{fancy}
+- \usepackage{subfig}
+- \usepackage{paralist}
+- \let\itemize\compactitem
+- \fancyfoot[LO,LE]{Copyright {\textcopyright} $\,$ R. Piccarreta, 2023. Circulation
+  and quoting forbidden}
+- \fancyfoot[RE,RO]{\thepage}
+- \fancyfoot[CO,CE]{$\:$}
+- \usepackage{titlesec}
+#- \usepackage{sectsty}
+#- \sectionfont{\color{red}}
+#- \subsectionfont{\color{green}}
+#- \subsubsectionfont{\color{blue}}
+#- \subsubsectionfont{\color{red}}
+# - \setlength{\oddsidemargin}{11pt} #% the default is 31pt so decrease by 20pt
+- \setlength{\textwidth}{500pt} # % the default is 390pt so increase by 40pt
+- \titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+- \titlespacing\subsection{0pt}{10pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+- \titlespacing\subsubsection{0pt}{8pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+vignette: >
+  %\VignetteIndexEntry{Basic stats with R: functions and examples}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = T, eval=T,warning = T,comment='>',
+                      background=("yellow"),fig.align = "center",collapse=F,
+                      result = "asis",fig.height = 4, fig.width = 4,out.width = 20)
+```
+
+\newpage
+```{r,echo=F}
+my.p.err <- function(m){
+write.table(format(m, justify="left"),
+            row.names=F, col.names=F, quote=F)
+}
+```
+
+```{r,echo=F}
+library(UBStats)
+# Import files
+data(MktDATA.Orig)
+```
+
+# Basic syntax
+**qui deve esserci una parte introduttiva, in cui si presenta R, e TIPI DI VARS, INCLUSa presentazione pacchetto**
+
+# The data
+In the following we will refer to data concerning the results of a survey on a set of customers of a company operating in the retail food sector. The company sells products from 3 major categories (referred as A, B, C) The customers can order and acquire products in the company physical stores, or through the company’s website (in this case, they can order on the website and pick up the order in one store). Information is collected on customers' activity in the last two years (observation period), as well as some information retrieved through questionnaires or fidelity cards. During such period different marketing strategies were adopted to improve customers' fidelization, and 5 marketing campaigns were launched; a last campaign was launched at the end of the observation period. The dataframe `MktDATA.Orig` (available in package `UBStats`) includes data on the following variables (levels of the variables listed in alphabetical order):
+
+$\bullet \:$ **`CustId`** (num): customer's identification label  
+$\bullet \:$ **`Gender`** (chr): customer's gender (`F`, `M`)  
+$\bullet \:$ **`Age`** (num): customer's age (in years)   
+$\bullet \:$ **`Education`** (chr): customer's level of education (`College`, `Graduate`, `HighSchool`,`Post-Grad`)    
+$\bullet \:$ **`Marital_Status`** (chr): customer's marital status (`Divorced`, `Married`, `Single`, `Together`, `Widow`)  
+$\bullet \:$ **`Children`** (num): number of children in the household  
+$\bullet \:$ **`Kids`** (num): number of kids aged less than 12 in the 
+household  
+$\bullet \:$ **`Income`** (chr): customer's income (measured in classes)  
+$\bullet \:$ **`Baseline`** (num): index (from 0 to 1) assigned by the marketing dept indicating how promising the customer was judged at the beginning of the observation period  
+$\bullet \:$ **`LikeMost`** (chr): Most frequently bought category in the last two years (`P.A`, `P.B`, `P.C`)   
+$\bullet \:$ **`TotVal`** (num): amount spent in the last 2 years  
+$\bullet \:$ **`NPickUp_Purch`** (num): number of purchases made through company's website and picked up in physical store  
+$\bullet \:$ **`NWeb_Purch`** (num): number of purchases made through company's website and delivered at home  
+$\bullet \:$ **`NStore_Purch`** (num): number of purchases made in a physical store  
+$\bullet \:$ **`NDeals`** (num): number of products purchases with discount  
+$\bullet \:$ **`CustClass`** (chr): customer's classification (assigned by the marketing dept) based on past profitability (`Bronze`, `Gold`, `Platinum`, `Silver`)    
+$\bullet \:$ **`PastCampaigns`** (num): number of offers accepted by the customer in the last 2 years' marketing campaigns  
+$\bullet \:$ **`LastCampaign`** (num): binary variable (0/1) indicating whether (1) or not (0) the customer accepted the offer in the campaign launched at the end of the observation period.    
+$\bullet \:$ **`WouldSuggest`** (chr): variable signalling whether (`Yes`) or not (`No`) the customer declared they would suggest the company's products to friends and family  
+
+To visualize the structure of the dataframe (not printed):
+```{r, eval=F}
+str(MktDATA.Orig)
+```
+
+In order to analyze customers' behaviours and characteristics, some variables were created or modified, as follows.
+
+First of all, some character variables were transformed into factors in order to suitably reorganize their values:
+```{r}
+NewData<-MktDATA.Orig # create a copy of the dataframe
+
+# Build factors to reorganize the variable's levels:
+NewData$Marital_Status<-factor(MktDATA.Orig$Marital_Status,
+                         levels=c("Single","Together","Married","Divorced","Widow"))
+
+# reorder ordinal variables' levels:
+NewData$Education<-factor(NewData$Education,
+                            levels=c("HighSchool","College","Graduate","Post-Grad"))
+
+NewData$CustClass<-factor(NewData$CustClass,
+                            levels=c("Bronze","Silver","Gold","Platinum"))
+```
+
+The same was done for the variable `Income`; this variable was measured in classes, but R does not recognize the numerical ordering of its levels:
+```{r}
+table(NewData$Income)
+```
+We therefore can create a factor (even if this is not strictly necessary when the functions in package `UBStats` are used); we also create a new classification by collapsing some classes:
+```{r}
+NewData$Income.F<-factor(NewData$Income,
+                         levels=c("[2000,20000)","[20000,30000)","[30000,40000)",
+                                  "[40000,50000)","[50000,60000)","[60000,70000)",
+                                  "[70000,80000)","[80000,100000)","[100000,120000]"))
+NewData$Income.S<-factor(NewData$Income,
+                         levels=c("[2000,20000)","[20000,30000)","[30000,40000)",
+                                  "[40000,50000)","[50000,60000)","[60000,70000)",
+                                  "[70000,80000)","[80000,100000)","[100000,120000]"),
+                         labels=c("[2000,40000)","[2000,40000)","[2000,40000)",
+                                  "[40000,60000)","[40000,60000)","[60000,80000)",
+                                  "[60000,80000)","[80000,120000]","[80000,120000]"))
+```
+We also create some additional numerical variables: the total number of purchases in the last two years, `TotPurch`, the average value of purchases, `AOV`, and the share of products bought using promotions, `DealShare`:
+```{r}
+NewData$TotPurch<-NewData$NPickUp_Purch+NewData$NWeb_Purch+
+  NewData$NStore_Purch
+NewData$AOV<-NewData$TotVal/NewData$TotPurch
+NewData$DealShare<-NewData$NDeals/NewData$TotPurch
+```
+Finally, we create two indicators signalling respectively whether the the share of products purchases with discount is higher than or equal to 0.5, `Deals.ge50`, and whether the customer responded at least of one of the 5 campaigns launched *during* the observation period, `RespCampaign`: 
+```{r}
+NewData$Deals.ge50<-NewData$DealShare>=0.5
+NewData$RespCampaign<-NewData$PastCampaigns>0
+```
+The obtained dataframe is available in package `UBStats` (`MktDATA`).
+
+```{r,echo=F}
+data(MktDATA)
+```
+
+<!-- \textcolor{red}{**red**} -->
+
+<!-- \textcolor{red}{\textbf{PDF Document}} -->
+
+\newpage 
+# Descriptive statistics: distributions
+In this section we illustrate how to organize and describe the empirical distribution of one or more variables using **tables** and **plots**.
+Even if a number of functions are available in R at this aim, here we refer to a set of functions defined in  **package o functions** developed for the course. Such functions share a similar syntax, and allow dealing with some cases not covered by the basic R functions (e.g. variables measured in classes).
+
+## Introduction to the functions
+To analyze univariate and bivariate distributions using tables and plots, we will use the following functions:
+
+$\bullet \:$ `distr.table.x(x`,\textcolor{red}{\textit{<other args>}} , `breaks`,  `interval=FALSE`, `data)`  
+$\bullet \:$ `distr.plot.x(x`, \textcolor{red}{\textit{<other args>}}, `breaks`,  `interval=FALSE`,  `data)`  
+$\bullet \:$ `distr.table.xy(x`, `y`, \textcolor{red}{\textit{<other args>}}, `breaks.x`, `breaks.y`, `interval.x=FALSE`, `interval.y=FALSE`,  `data)`  
+$\bullet \:$ `distr.plot.xy(x`, `y`, \textcolor{red}{\textit{<other args>}}, `breaks.x`, `breaks.y`,`interval.x=FALSE`, `interval.y=FALSE`, `data)` 
+
+The functions **share** the following arguments:\footnote{
+The functions are characterized by some arguments that we will typically leave to their default values:
+
+For the functions \textbf{\texttt{distr.table.x}} and \textbf{\texttt{distr.table.xy}} used to build frequency tables, the arguments \textcolor{red}{\textbf{\texttt{f.digits}}},  \textcolor{red}{\textbf{\texttt{p.digits}}} \textcolor{red}{\textbf{\texttt{d.digits}}} allow 
+specifying the number of decimals used to round proportions, percentages, or densities (default values are \texttt{f.digits=2}, \texttt{p.digits=0}, \texttt{d.digits=5}). The argument 
+\textcolor{red}{\textbf{\texttt{total}}} 
+allows indicating whether the sum of the requested frequencies should be added to the tables (\texttt{total=TRUE}, default) or not.  
+
+For the functions \textbf{\texttt{distr.plot.x}} and \textbf{\texttt{distr.plot.xy}} used to build plots, the argument \textcolor{red}{\textbf{\texttt{bw}}} can be used to indicate whether a plot should be coloured in scale of greys (\texttt{bw=TRUE}) or not (\texttt{bw=FALSE}, default); in the latter case, a standard palette is used unless alternative colors are specified in argument \textcolor{red}{\textbf{\texttt{color}}} (e.g.~\texttt{color="red"} or \texttt{color=c("red","orange","yellow","green","darkgreen")}).
+
+In addition, for {\textit{all the functions}} the argument \textcolor{red}{\textbf{\texttt{adj.breaks}}} allows controlling how numbers are displayed in tables or plots. By default (\texttt{adj.breaks=TRUE}), results are displayed avoiding the scientific notation (e.g.~1e+05 or 2e-05) typically used by R to represent very large or very small numbers. 
+}
+
+$\bullet \:$ **`x`**: identifies the variable whose distribution has to be analysed. `x` can be the name of a vector or a factor in the workspace  *or* the name of one of the columns in the dataframe specified in `data`. The same holds for **`y`** when two variables are studied jointly.  
+$\bullet \:$ **`breaks`**: can be used to classify the values taken by a  **numeric** input variable into **intervals**. If  `breaks` is an **integer**, the `x` range will be divided into intervals of equal width. If `breaks` is a **vector** of *increasing* values, it defines the endpoints of the desired classes. Intervals are closed on the left and open on the right (except for the last interval, which is closed on the right too). Note that to cover the *entire range* of values, the minimum and the maximum values taken by the variable must be included between the first and the last break. However, it is possible to specify a set of `breaks` covering only a *portion* of `x` range. When two variables are analyzed jointly, **`breaks.x`** and **`breaks.y`** can be used to classify **`x`** and/or **`y`** into intervals.  
+$\bullet \:$ **`interval`**: logical value indicating whether data on a numerical variable are collected in classes (thus, the input variable has been **measured in classes**). If `interval=TRUE` is specified, the functions try to identify the endpoints of the intervals; if the detected intervals are consistent, tables and plots (specifically, histograms) are properly obtained.  Otherwise (e.g. overlapping intervals, or intervals with upper endpoint higher than the lower one), the variable is analysed as it is -- if possible -- even if results are not necessarily consistent. When two variables are analyzed jointly, **`interval.x`** and **`interval.y`** can be used to indicate whether `x` or `y` are measured in classes.
+
+## Univariate analysis
+Frequency **tables** list the values taken by the variable together with their **frequency** in data, namely **counts** (absolute frequencies), **proportions** (relative frequencies) or **percentages** (relative frequencies multiplied by 100). For variables classified into intervals it is possible to consider also the **densities**. For numerical (and ordinal) variables, it is also possible to consider the **cumulative frequencies**. Different **plots** can be used to represent frequency tables, depending on the type of data analysed and on the number of values taken by the variable of interest.
+
+### Frequency tables
+The function `distr.table.x(x`, `freq=` `c("counts","proportions")`, `breaks`, `interval=FALSE`, `data)` returns the frequency table of a vector or a factor\footnote{The following arguments are typically left to their default values: \textbf{\texttt{total = TRUE}} (totals added to tables), \textbf{\texttt{adj.breaks=TRUE}} (numbers displayed avoiding scientific notation)),  \textbf{\texttt{f.digits=2, p.digits=0, d.digits=5}} (number of decimals used to round proportions, percentages, and densities)}. In the function:
+
+$\bullet \:$ **`x`**: name of the vector (or factor) to be analysed *or* name of one column in the  dataframe specified in `data`.  
+$\bullet \:$ **`freq`**:  frequencies to be displayed (more options are possible). Allowed options are `counts`, `percentages`, `proportions`, `densities` (only for variables classified into intervals), and `cumulative` (possibly abbreviated, e.g. `prop`). If no frequency is specified `counts` and `proportions` are displayed by default; if only `cumulative` is requested, `counts` and `proportions` will also be displayed, with their respective cumulative frequencies.  
+$\bullet \:$ **`breaks`**: allows classifying a *numerical* variable `x` into *intervals*. It can be an **integer** specifying the number of intervals of equal width used to classify `x`, or a **vector** of *increasing* numeric values defining the endpoints of intervals (closed on the left and open on the right; the last interval is closed on the right too). To cover the entire range of values the maximum and the minimum values should be included between the first and the last break. It is possible to specify a set of `breaks` covering only a portion of `x` range.  
+$\bullet \:$ **`interval`**: logical value indicating whether `x` is a variable measured in intervals (`interval=TRUE`). If the detected intervals are not consistent (e.g. overlapping intervals, or intervals with upper endpoint higher than the lower one), the variable is tabulated as it is, even if results are not necessarily consistent.  
+
+The call of the function `distr.table.x()` with the default options returns a table listing the values taken by the variable arranged in *standard order* (logical, alphabetical or numerical order for vectors, order of levels for factors), and their absolute and relative frequencies. For example, below is the table obtained for the factor `Education` in dataframe `MktDATA`.
+
+```{r,eval=F}
+# table for a factor / same syntax for qualitative variable
+distr.table.x(Education,data=MktDATA)
+# same as:
+# distr.table.x(MktDATA$Education)
+```
+
+```{r,echo=F}
+distr.table.x(Education,data=MktDATA)
+```
+
+The cumulative frequencies can be obtained for all the types of frequencies specified in `freq`. For the discrete variable `Children`, different types of frequencies are obtained and cumulated (note that the argument `f.digits` is used to increase the number of decimals):
+```{r}
+# note that the names of the requested frequencies can be abbreviated
+distr.table.x(Children,data=MktDATA,freq=c("count","prop","cum"),f.digits=4)
+```
+
+#### Numerical variables classified into intervals
+The (possibly numerous) values observed on a numerical variable can be classified into intervals by specifying **breaks** indicating the endpoints of the desired intervals.
+
+Below are examples for the numerical continuous variable `AOV`, classified respectively into intervals with the same width and into intervals with different widths.
+```{r}
+# 5 intervals with the same width
+distr.table.x(AOV,breaks=6,freq=c("Count","Perc","Cum"),p.digits = 2,data=MktDATA)
+```
+```{r}
+# intervals with different width / also densities required
+distr.table.x(AOV,breaks=c(0,20,30,50,100,180),
+              freq=c("Count","Perc","Cum","Densities"),p.digits = 2,data=MktDATA)
+```
+As mentioned above, the table can also be built limiting attention to intervals not covering the entire range of values: 
+```{r,eval=F}
+distr.table.x(AOV,breaks=c(0,20,40,80,100,150),
+              freq=c("Count","Perc","Cum","Dens"),p.digits = 2,data=MktDATA)
+```
+```{r,echo=F}
+distr.table.x(AOV,breaks=c(0,20,40,80,100,150),
+              freq=c("Count","Perc","Cum","Dens"),p.digits = 2,data=MktDATA,markd=T)
+```
+In this case the function prints a warning. [Note: in the following this warning message will  not be displayed to save space]
+
+#### Numerical data measured in classes
+The values taken by a numerical data collected in classes are ordered categories which nonetheless are not recognized as numerical by R. To properly arrange the intervals, one could build a proper factor, as seen before. Nonetheless, this can also be directly accomodated by specifying that `x` is measured in intervals setting `interval=TRUE`: 
+```{r,eval=F}
+distr.table.x(Income.S,interval=TRUE,freq=c("Prop","Perc","Cum","Dens"),data=MktDATA)
+```
+```{r,echo=F}
+distr.table.x(Income.S,interval=TRUE,freq=c("Prop","Perc","Cum","Dens"),
+              data=MktDATA,markd=T)
+```
+Observe the message signalling that consistent endpoints were detected [Note: in the following this message will be not be displayed to save space]
+
+### Plots of univariate distributions
+The function `distr.plot.x(x`, `freq="counts"`, `plot.type`,
+`ord.freq="none"`, `breaks`, `interval=FALSE`, `data)` allows plotting frequency tables. Below is a description of the function's arguments\footnote{The following arguments are typically left to their default values: \textbf{\texttt{bw = FALSE}} (plots are coloured using a standard palette rather than in scale of greys), \textbf{\texttt{color=NULL}} (use a standard palette, unless specific colors are requested, e.g. \texttt{color="red"} or \texttt{color=c("red","orange","yellow","green","darkgreen")}); \textbf{\texttt{adj.breaks=TRUE}} (numbers displayed in plots avoiding scientific notation).} (note that the arguments in common with function `distr.table.x` will be only briefly commented):
+
+$\bullet \:$ `x`: name of the vector (or factor) to be analysed *or* name of one column in the  dataframe specified in `data`.  
+$\bullet \:$ `freq`: **one** type of frequencies to use in the plot. Allowed options are `counts` (default), `percentages`, `proportions`, and `densities` (for histograms and density plots). The options' names can be abbreviated (e.g. `prop`).  
+$\bullet \:$ `plot.type`: **one** of the following plots `"pie"`, `"bars"`, `"spike"`,  `"histogram"`, `"density"`, `"boxplot"`, and `"cumulative"`.  
+$\bullet \:$ `ord.freq`: for `"pie"` and `"bars"` plots, it is possible to specify whether the levels of `x` should be displayed in a standard order (`ord.freq="none"`) or by increasing or decreasing order of the levels' frequencies (`ord.freq="increasing"` and `ord.freq="decreasing"` respectively).  
+$\bullet \:$ `breaks`: (see the previous section for a detailed explanation) allows classifying a numerical variables into intervals.  
+$\bullet \:$ `interval`: (see the previous section for a detailed explanation) logical value indicating whether `x` is a variable measured in classes (`interval=TRUE`).  
+
+#### Pie, bar, and spike charts.
+Pie, bar and spike charts can be built for **any** variable, irrespective of its type and of the number of values it takes, and can display counts (default option) as well as proportions and percentages, as indicated in the argument `freq`.
+
+In the figure below a **pie** chart in black/white is reported for a character variable (on the left), the same plot (on the right) is obtained colouring the slices and ordering the variable's levels based on their frequency (increasing). 
+
+```{r, fig.subcap=c('a', 'b'), out.width='.4\\linewidth', fig.asp=1, fig.ncol = 2,eval=F,echo=F}
+distr.plot.x(x=LikeMost,plot.type="pie",bw=TRUE,data=MktDATA)
+distr.plot.x(x=LikeMost,plot.type="pie",ord.freq="dec",data=MktDATA)
+```
+```{r, fig.subcap=c('a', 'b'), out.width='.49\\linewidth', fig.height=2.6, fig.ncol = 2}
+distr.plot.x(x=LikeMost,plot.type="pie",bw=TRUE,data=MktDATA)
+distr.plot.x(x=LikeMost,plot.type="pie",ord.freq="dec",data=MktDATA)
+```
+Below, two **bars** plots are obtained for the factor `Education`. The plot on the left reports the counts (default) of the levels of factor  displayed in standard order; the plot on the right reports the percentages of the levels, arranged in a decreasing order.
+```{r, fig.subcap=c('a', 'b'), out.width='.49\\linewidth',  fig.ncol = 2,fig.height=2.5}
+distr.plot.x(x=Education,plot.type="bars",data=MktDATA)
+distr.plot.x(x=Education,plot.type="bars",freq="percentage",ord.freq="dec",data=MktDATA)
+```
+
+A **spike** plot can also be used to graphically represent distributions of variables. Below a bar and a spike plot are built for the numerical discrete variable `NPickUp_Purch`.
+```{r, fig.subcap=c('a', 'b'), out.width='.49\\linewidth', fig.height=2.5, fig.ncol = 2}
+distr.plot.x(x=NPickUp_Purch,plot.type="bars",freq="prop",data=MktDATA)
+distr.plot.x(x=NPickUp_Purch,plot.type="spike",freq="prop",data=MktDATA)
+```
+
+#### Histograms.
+Histograms display the distribution of numerical data classified into intervals. When the input is **numeric** and `breaks` are not provided, the histogram is built using a routine in R. Otherwise, the indicated `breaks` are used -- possibly covering only a portion of the range -- only if they are consistent (i.e. increasing). Histograms can also be built for variables **measured in classes** -- provided that the argument `interval` is set to `TRUE` --  only if the detected endpoints of the classes are consistent. When the classes have the same width, the histogram can report different types of frequencies (counts, percentages, proportions), as well as densities. Instead, when classes have different widths, densities are reported irrespective of the type of frequency indicated in  `freq`.
+
+The two plots below report histograms for the numerical continuous variable `AOV` built without specifying `breaks` (top-left), using 10 classes with the same width (top-right), and specifying intervals (bottom-left). In the last plot (bottom-right) the histogram for the variable `Income`, measured in classes, is displayed.
+
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=2.5, fig.ncol = 3,eval=F}
+# Histogram - no breaks selected
+distr.plot.x(x=AOV,plot.type="histogram",data=MktDATA)
+# Histogram - 10 intervals with the same width
+distr.plot.x(x=AOV,plot.type="histogram",breaks=10,data=MktDATA)
+# Histogram - with breaks
+distr.plot.x(AOV,plot.type="histogram",breaks=c(0,20,40,60,80,100,180),data=MktDATA)
+distr.plot.x(Income,plot.type="histogram",interval=TRUE,data=MktDATA)
+```
+
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=2.5, fig.ncol = 3,echo=F}
+# Histogram - no breaks selected
+distr.plot.x(x=AOV,plot.type="histogram",data=MktDATA)
+# Histogram - 10 intervals with the same width
+distr.plot.x(x=AOV,plot.type="histogram",breaks=10,data=MktDATA)
+# Histogram - with breaks
+distr.plot.x(AOV,plot.type="histogram",breaks=c(0,20,40,60,80,100,180),
+             data=MktDATA)
+# Histogram - variable measured in classes
+distr.plot.x(Income,plot.type="histogram",interval=TRUE,data=MktDATA,
+                          msg.control=list(err=F,warn=F,msg=T))
+```
+
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=3, fig.ncol = 3,eval=F,echo=F}
+# rimossa
+# Histogram - no breaks selected
+distr.plot.x(x=TotVal,plot.type="histogram",data=MktDATA)
+# Histogram - 10 intervals with the same width
+distr.plot.x(x=TotVal,plot.type="histogram",breaks=10,data=MktDATA)
+# Histogram - with breaks
+distr.plot.x(TotVal,plot.type="histogram",
+             breaks=c(0,25,50,100,200,500,1000,2000,2500),
+             data=MktDATA)
+```
+
+Observe that in the plots only some labels are reported on the horizontal axis. To visualize all the labels it is possible to *zoom* the plot (button **Zoom** in the **Plots** window of the bottom-right multiscope panel) or to enlarge manually the **Plots** window.  
+Observe further that even if `freq` is left its default value (`counts`), when -- due to decimals and rounding -- the widths of the interval differ even at a lower extent, densities are reported in the plots, since intervals have different lengths.  
+Note that if **one variable measured in classes has inconsistent endpoints its histogram will not be obtained**.
+```{r,eval=F,warning=F,error=FALSE,message=F,echo=F}
+# RIMOSSO
+# build a variable with inconsistent endpoints
+X.INC<-c(rep("0;10",30),rep("10;20",25),rep("25;8",25),
+         rep("15;31",15),rep("20;45",16),rep("30;40",18))
+
+distr.plot.x(x=X.INC,plot.type="histogram",interval=TRUE,bw=F)
+```
+
+```{r,echo=F,eval=F}
+# RIMOSSO
+myerr<-c("Errors found in the definition of options:",
+"   Intervals endpoints detected for 'x' are inconsistent"," ")
+my.p.err(myerr)
+my.dataerr<-data.frame(Obs=c("0;10","10;20","15;31","20;45",
+                             "25;8","30;40"),
+                       Low=c(0,10,15,20,25,30),
+                       Up=c(10,20,31,45,8,40),
+                       WrongEnds=c(rep("OK",4),"Low>Up","OK"),
+                       Overlap=c("OK","OK","Overlay",
+                                 "Overlay","Overlay","OK"))
+print(my.dataerr)
+myerr<-c(" ","The procedure is interrupted")
+my.p.err(myerr)
+```
+
+:::: {.noexambox data-latex=""}
+#### Density Plots (not examinable).
+Even if not explicitly treated in the course, we describe how to obtain density plots for numerical data. These plots are built by properly smoothing a histogram based on a very fine classification into intervals. Thus, for this type of plot, the possibly specified `breaks` are **ignored**, and are used only to define the range of the considered values. For variables measured in classes, the plot is an approximation, based on data simulated by assuming uniform distribution of values within the classes. In this case, densities are reported on the vertical axis irrespective of the value specified for `freq`.
+```{r, eval=F}
+# A variable measured in classes
+distr.plot.x(Income,plot.type="density",interval=TRUE,data=MktDATA)
+# A numerical variable, with breaks specified / ignored
+# but used to limit the range of considered values
+distr.plot.x(x=AOV,plot.type="density",
+             breaks=c(0,20,40,60,80,100,150),data=MktDATA)
+```
+
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=2.5, fig.ncol = 2,echo=F}
+# A variable measured in classes
+distr.plot.x(Income,plot.type="density",interval=TRUE,
+             data=MktDATA,markd=T,
+             msg.control=list(err=F,warn=F,msg=F))
+# A numerical variable, with breaks specified / ignored
+distr.plot.x(x=AOV,plot.type="density",
+             breaks=c(0,20,40,60,80,100,150),
+             data=MktDATA)
+```
+::::
+
+\newpage
+
+#### Boxplots.
+<!-- Boxplots can be obtained **only** for numerical variables, not classified into intervals. Therefore, an error message is returned when  `breaks` are specified and/or when variables measured in classes (`interval=T`) are considered. Note that in this case the value assigned to `freq` is totally irrelevant. -->
+
+```{r,eval=F,echo=F}
+# Boxplot (only numerical variables)
+distr.plot.x(x=TotVal,plot.type="boxplot",data=MktDATA)
+# Error because breaks are not allowed with boxplots
+distr.plot.x(TotVal,plot.type="boxplot",
+             breaks=c(0,25,50,100,200,500,1000,2000,2500),data=MktDATA)
+```
+```{r,echo=F,eval=F}
+mywarn<-c("Errors found in the definition of parameters:",
+"   Boxplot cannot be built for a variable classified in intervals",
+"The procedure is interrupted")
+my.p.err(mywarn)
+```
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=3, fig.ncol = 2,echo=F,eval=F}
+distr.plot.x(x=TotVal,plot.type="boxplot",data=MktDATA)
+```
+Boxplots can be obtained **only** for numerical variables:
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=2.5, fig.ncol = 2}
+distr.plot.x(x=TotVal,plot.type="boxplot",data=MktDATA)
+```
+
+Note that an an error message is returned when `x` is a character vector or factor, and also when `breaks` are specified or when variables measured in classes (`interval=TRUE`) are considered. 
+
+
+
+#### Plots of cumulative distributions.
+Cumulative distributions can be obtained, and therefore graphically displayed, both for ordinal and for numerical data. Therefore, the function `distr.plot.x()` builds cumulative plots irrespective of the type of variable (logical, character or numerical vector, factor). The function builds a  **stair steps** plot, unless `x` is a numerical variable classified in intervals using `breaks` or a variable  measured in classes (this should be specified by setting `interval=TRUE`).  
+Steps corresponding to the observed values have heights proportional to the values' frequencies (note that if `freq=densities` the function will return an error, because only frequencies can be cumulated).
+
+Below plots of cumulative counts and percentages respectively are reported for the factor `Education` and for the discrete numerical variable `Children`. 
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=2.5, fig.ncol = 2}
+distr.plot.x(x=Education,plot.type="cum",data=MktDATA)
+distr.plot.x(x=Children,plot.type="cum",freq="percent",data=MktDATA)
+```
+Note the difference between the plots depending on whether the input is a character variable/factor (whose levels have no numerical meaning) or a numeric variable.
+
+For numeric variables taking many values, the cumulative plot can be built based on all the observed values. If *breaks* are specified, an **ogive** is displayed, connecting the frequencies cumulated at the classes' endpoints. For variables **measured in classes** (when `interval=TRUE` is specified), only the ogive can be obtained, because no information is available on the single values observed within each class. Note that if `interval=TRUE` is not specified, the function will treat the variable as a character/factor and will return a stair steps plot.
+
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=2.5, fig.ncol = 2,eval=F}
+# A continuous variable with no specified breaks 
+distr.plot.x(Age,plot.type="cum",data=MktDATA)
+# A continuous variable with specified breaks 
+distr.plot.x(Age,plot.type="cum",freq="perc",breaks=c(20,30,40,50,60,80),data=MktDATA)
+# A variable measured in classes (interval=T)
+distr.plot.x(Income,plot.type="cum",interval=TRUE,data=MktDATA)
+# A variable measured in classes / no interval indicated
+distr.plot.x(Income,plot.type="cum",data=MktDATA)
+```
+
+
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=2.5, fig.ncol = 2,echo=F}
+# A continuous variable with no breaks requested
+distr.plot.x(Age,plot.type="cum",data=MktDATA)
+# A continuous variable with breaks requested
+distr.plot.x(Age,plot.type="cum",freq="perc",
+             breaks=c(20,30,40,50,60,80),data=MktDATA)
+# A variable measured in classes (interval=T)
+distr.plot.x(Income,plot.type="cum",interval=TRUE,data=MktDATA,
+                          msg.control=list(err=F,warn=F,msg=T))
+# A variable measured in classes / no interval indicated
+distr.plot.x(Income,plot.type="cum",data=MktDATA)
+```
+
+## Bivariate analysis
+This section illustrates functions and commands to describe and graphically display the joint and conditional distributions of two variables.
+
+### Joint and conditional distributions
+The function `distr.table.xy(x,y`, `freq=` `c("counts")`, `freq.type=c("joint")`, `total = T`, `breaks.x`, `breaks.y`, `adj.breaks=TRUE`, `interval.x=F`, `interval.y=F`, `f.digits=2`, `p.digits=0`, `data)` allows displaying tables of  joint or conditional distributions. The function has the following arguments, some in common with the functions introduced for the analysis of a single variable\footnote{The following arguments are typically left to their default values: \textbf{\texttt{total = TRUE}} (totals added to tables), \textbf{\texttt{adj.breaks=TRUE}} (numbers displayed avoiding scientific notation)),  \textbf{\texttt{f.digits=2, p.digits=0}} (number of decimals used to round proportions and percentages)}:
+  
+$\bullet \:$ **`x`**,**`y`**: names of the vectors (or factors) to be analysed **or** names of the columns in the dataframe specified in `data`; it is possible to use a mixed specification (e.g, one vector and one column in `data`). Note that in the table `x` is displayed on the *rows* and `y` on the *columns*.  
+$\bullet \:$ **`freq`**: frequencies to be displayed (more options are possible). Allowed options are `counts` (default), `percentages`, `proportions` (possibly abbreviated, e.g. `prop`).  
+$\bullet \:$ **`freq.type`**: type of frequencies to be displayed (more options are possible). Allowed options are `joint` (default) for joint frequencies, `x|y` (or `column`) for the distributions of `x` conditioned to `y`, and `y|x` (or `row`) for the distributions of `y` conditioned to `x`.  
+$\bullet \:$ **`breaks.x`**: allows classifying a *numerical* variables into *intervals*. Specifying a single **integer** request building intervals of equal width, whereas a **vector** of *increasing* numeric values defines the endpoints of intervals (closed on the left and open on the right; the last interval is closed on the right too). To cover the entire range of values the maximum and the minimum values should be included between the first and the last break. It is possible to specify a set of `breaks` covering only a portion of `x` range. Similarly, **`breaks.y`** can be used to classify `y` into intervals.  
+$\bullet \:$ **`interval.x`**: logical value indicating whether `x` is a variable measured in classes; same holds for **`interval.y`**  
+
+Some examples are reported below.
+```{r,collapse=F}
+# Character vectors, factors, and discrete numeric vectors
+distr.table.xy(LikeMost,Children,data=MktDATA) # default: joint counts
+```
+```{r,collapse=F,eval=F}
+# Conditional distribution (proportions) of x|y
+distr.table.xy(LikeMost,Education,freq="Prop",freq.type="x|y",data=MktDATA)
+# same as:
+# distr.table.xy(LikeMost,Education,freq="Prop",freq.type="col",data=MktDATA)
+```
+```{r,collapse=F,echo=F}
+# Conditional distribution (proportions) of x|y
+distr.table.xy(LikeMost,Education,freq="Prop",freq.type="x|y",data=MktDATA)
+```
+
+```{r}
+# Conditional distribution (%) of y|x (columns-conditionals)
+distr.table.xy(CustClass,Children,freq="Percentages",freq.type="row",data=MktDATA)
+```
+```{r,collapse=F,eval=F}
+# A numerical variable classified into intervals and a factor
+distr.table.xy(CustClass,TotPurch,breaks.y=c(0,5,10,15,20,35),
+               freq=c("Prop"),freq.type="y|x",data=MktDATA)
+```
+```{r,collapse=F,echo=F}
+# A numerical variable classified into intervals and a factor
+distr.table.xy(CustClass,TotPurch,breaks.y=c(0,5,10,15,20,35),
+               freq=c("Prop"),freq.type="y|x",data=MktDATA,
+               msg.control=list(err=F,warn=F,msg=T))
+```
+```{r,collapse=F,eval=F}
+# Two numerical  variables classified into intervals
+distr.table.xy(Income.S,TotPurch,interval.x=TRUE,breaks.y=c(0,5,10,15,20,35),
+               freq=c("Counts"),freq.type="row",data=MktDATA)
+```
+```{r,collapse=F,echo=F}
+# Two numerical classified variables
+distr.table.xy(Income.S,TotPurch,interval.x=TRUE,
+               breaks.y=c(0,5,10,15,20,35),
+               freq=c("Counts"),freq.type="row",data=MktDATA,
+               msg.control=list(err=F,warn=F,msg=T))
+```
+```{r,collapse=F,eval=F,echo=F}
+# RIMOSSA
+# Two numerical variables classified into intervals of equal width
+distr.table.xy(TotVal,TotPurch,breaks.x=4,breaks.y=5,
+               freq=c("prop","perc"),freq.type="joint",data=MktDATA)
+```
+
+### Plots of joint and conditional distributions
+The function 
+`distr.plot.xy(x, y`, `freq="counts"`, `freq.type="joint"`, 
+`plot.type`, `bar.type="stacked"`,  `breaks.x`, `breaks.y`,
+`interval.x=FALSE`, `interval.y=FALSE`,  `fitline=FALSE`, `legend=TRUE`, `data)` allows plotting bivariate distributions. Following the standard conventions used in plots the values of the variable `x` is always displayed on the horizontal axis. Below is a description of the function's arguments\footnote{The following arguments are typically left to their default values: \textbf{\texttt{bw = FALSE}} (plots are coloured using a standard palette rather than in scale of greys), \textbf{\texttt{color=NULL}} (use a standard palette, unless specific colors are requested, e.g. \texttt{color="red"} or \texttt{color=c("red","orange","yellow","green","darkgreen")}); \textbf{\texttt{adj.breaks=TRUE}} (numbers displayed in plots avoiding scientific notation).}:
+  
+$\bullet \:$ **`x`**,**`y`**: names of the vectors (or factors) to be analysed **or** names of the columns in the dataframe specified in `data`; it is possible to use a mixed specification (e.g, one vector and one column in `data`). Note that in the table `x` is displayed on the *rows* and `y` on the *columns*.  
+$\bullet \:$ **`freq`**: frequencies to be displayed (only **one** option is possible). Allowed options are `counts` (default), `percentages`, `proportions` (possibly abbreviated, e.g. `prop`).  
+$\bullet \:$ **`freq.type`**: type of frequencies to be displayed (only **one** option is possible). Allowed types are `joint` (default) for joint frequencies and `x|y` and `y|x` for conditional frequencies.  
+$\bullet \:$ **`plot.type`**: **one** of the following plots: `"bars"`, `"scatter"`, `"boxplot"`.  
+$\bullet \:$ **`bar.type`**: indicating whether in a bar plot, stacked (`bar.type="stacked"`, default) or side-by-side (`bar.type="beside"`) bars should be displayed.  
+$\bullet \:$ **`breaks.x`**, **`breaks.y`**: (see the previous section for a detailed explanation) allow classifying `x` and/or `y` into intervals.  
+$\bullet \:$ **`interval.x`**, **`interval.y`**: logical values indicating whether `x` and/or `y` are variables measured in intervals  
+$\bullet \:$ **`fitline`**: a logical value indicating whether the line of best fit (also called trendline or regression line) should  be added to a **scatterplot** (`fitline=TRUE`) or not (`fitline=FALSE`, default).  
+$\bullet \:$ **`legend`**: a logical value indicating whether a legend should be displayed in the plot  (`legend=TRUE`, default) or not (`legend=FALSE`).  
+
+#### Bivariate bar plots.
+These plots  allow to grahically display a cross-table. In the plots below, the cross-tab of the variables `CustClass` (a factor) and `Children` (discrete numeric) are reported using respectively stacked bars representing counts and side-by-side bars representing percentages.
+
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=2.8, fig.ncol = 2}
+distr.plot.xy(CustClass,Children,freq="Counts",freq.type="joint",
+              plot.type="bars",data=MktDATA)
+distr.plot.xy(CustClass,Children,freq="Percentages",freq.type="joint",
+              plot.type="bars",bar.type="beside",data=MktDATA)
+```
+Observe that, following the convention typically used in plots, the display of the variables and of their values differs from the one used in the cross-table (see before). Indeed, in the table  `x`'s values were placed on the rows and `y`'s values on the columns. In addition, the `y`'s  values were arranged on columns in an increasing order, whereas in the plot the categories are displayed from bottom to top. 
+
+When conditional distributions are requested, only proportions or percentages can be displayed. Note that since `x` is  displayed on the horizontal axis, when the distributions of `x|y` are requested, the bars conditioned to the values of `y` are displayed horizontally.
+
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=2.8, fig.ncol = 2,fig.nrow=2,eval=F}
+distr.plot.xy(Children,CustClass,freq="Percentages",freq.type="y|x",
+              plot.type="bars",data=MktDATA)
+distr.plot.xy(PastCampaigns,CustClass,freq="Proportions",freq.type="x|y",
+              plot.type="bars",bar.type="beside",data=MktDATA)
+distr.plot.xy(TotPurch,Income,
+              freq="Percentages",freq.type="x|y",plot.type="bars",
+              breaks.x=c(0,5,10,15,20,35),interval.y=TRUE,data=MktDATA)
+distr.plot.xy(Children,AOV,
+              freq="Percentages",freq.type="y|x",plot.type="bars",
+              breaks.y=c(0,20,40,60,80,100,180),data=MktDATA)
+```
+
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=2.8, fig.ncol = 2,fig.nrow=2,echo=F}
+distr.plot.xy(Children,CustClass,freq="Percentages",freq.type="y|x",
+              plot.type="bars",data=MktDATA)
+
+distr.plot.xy(PastCampaigns,CustClass,freq="Proportions",freq.type="x|y",
+              plot.type="bars",bar.type="beside",data=MktDATA)
+
+distr.plot.xy(TotPurch,Income,
+              freq="Percentages",freq.type="x|y",plot.type="bars",
+              breaks.x=c(0,5,10,15,20,35),interval.y=TRUE,
+              data=MktDATA,
+              msg.control=list(err=F,warn=F,msg=T))
+
+distr.plot.xy(Children,AOV,
+              freq="Percentages",freq.type="y|x",plot.type="bars",
+              breaks.y=c(0,20,40,60,80,100,180),data=MktDATA,
+              msg.control=list(err=F,warn=F,msg=T))
+```
+
+**Note:** bar plots can be built also when one or both the variables are numeric. Nonetheless, the function `distr.plot.xy` returns an error when at least one of the numeric variables takes **more than 20 values**. There are instead no restrictions on the number of values/levels taken by character variables or factors. 
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=3, fig.ncol = 2,eval=F,echo=F}
+#RIMOSSA
+distr.plot.xy(TotPurch,Income,
+              freq="Percentages",freq.type="x|y",plot.type="bars",
+              breaks.x=c(0,5,10,15,20,35),interval.y=TRUE,
+              data=MktDATA)
+
+distr.plot.xy(Children,AOV,
+              freq="Percentages",freq.type="y|x",plot.type="bars",
+              breaks.y=25,data=MktDATA)
+```
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=3, fig.ncol = 2,echo=F,eval=F}
+distr.plot.xy(TotPurch,Income,
+              freq="Percentages",freq.type="x|y",plot.type="bars",
+              breaks.x=c(0,5,10,15,20,35),interval.y=TRUE,
+              data=MktDATA,
+              msg.control=list(err=F,warn=F,msg=T))
+
+distr.plot.xy(Children,AOV,
+              freq="Percentages",freq.type="y|x",plot.type="bars",
+              breaks.y=c(0,20,40,60,80,100,180),data=MktDATA,
+              msg.control=list(err=F,warn=F,msg=T))
+```
+
+<!-- Note that the plot on the right is obtained even if the number of classes for the variable `AOV` is higher than 20. -->
+
+#### Side-by-side boxplots.
+Side-by-side boxplots are generally used to summarize and compare the distribution of a numeric variable (typically but not necessarily continuous) **conditioned** to the levels of variable typically taking a limited number of values.  
+In these plots the `x` variable is placed on the horizontal axis and the `y` variable on the vertical one. In addition, if one of the variables is categorical or is a factor, the boxplots are built conditioned to that variable **irrespective** of the chosen `freq.type`. For example, below are the plots obtained for the numeric variable `AOV` and for the character variable `Education`: the boxplots are obtained conditioned to the categorical variable even when the distributions of `Education` conditioned to `AOV` are requested. The difference between the two plots lies in the arrangement (vertical or horizontal) of the plots, depending on whether `Education` is the `x`- or the `y`-variable. 
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=2.5, fig.ncol = 2}
+distr.plot.xy(x=Education,y=AOV,plot.type="boxplot",freq.type="x|y",data=MktDATA)
+
+distr.plot.xy(x=AOV,y=Education,plot.type="boxplot",freq.type="y|x",data=MktDATA)
+```
+When none of the variables is numeric the function returns an error. Note that, as seen before, boxplots cannot be built for numeric variables classified into intervals.
+
+:::: {.noexambox data-latex=""}
+Side-by-side boxplots can also be obtained in the case when **both the variables are numeric**. In this case, the type of frequency indicated in `freq.type` is relevant, because it is not possible to deduce from the variables' characteristics what is the desired/correct conditioning variable (if `freq.type` is not specified the function `distr.plot.xy` builds the boxplots conditioned to the `x`-variable; in any case, it is advisable to clarify which conditional distribution one is interested in, by setting the proper `freq.type`).
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=2.5, fig.ncol = 2}
+# plots conditioned to the x variable because no freq.type is specified
+distr.plot.xy(x=Children,y=TotPurch,plot.type="boxplot",data=MktDATA)
+# same as:
+# distr.plot.xy(x=Children,y=TotPurch,plot.type="boxplot",
+#              freq.type='y|x',data=MktDATA)
+
+# plots conditioned to the y variable
+distr.plot.xy(x=TotPurch,y=Children,plot.type="boxplot",freq.type='x|y',data=MktDATA)
+```
+::::
+
+#### Scatterplots.
+Scatterplots are typically used to display the joint distribution of two numeric variables, even if (see below) they can be built also for variables of different types.
+Below is the scatterplot for two pairs of numeric variables; in the plot on the right a **fitline** (also called trendline) is added to the plot. Note that in the plots a dot is reported corresponding to each observed combination of values, and the arguments `freq` and `freq.type` are not considered in this case.
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=3, fig.ncol = 2}
+distr.plot.xy(Children,TotPurch,plot.type="scatter",data=MktDATA)
+distr.plot.xy(Baseline,TotVal,plot.type="scatter",fitline=T,data=MktDATA)
+```
+
+:::: {.noexambox data-latex=""}
+\textcolor{red}{\textbf{Scatterplots for non-numeric data}}. 
+Scatterplots are built also when one or both the variables are **not** numeric (even if a fitline cannot clearly be added to the plot). In the first case, a standard scatterplot is built; in the second case -- i.e. when both the variables are categorical or factors -- a **bubble** plot is built, with the size of the dots proportional to the joint frequencies of the observed pairs of values.
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=2.5, fig.ncol = 2,eval=F}
+# one variable only is numerical
+distr.plot.xy(Marital_Status,TotPurch,plot.type="scatter",data=MktDATA)
+
+# none of the variables is numerical
+distr.plot.xy(Education,TotPurch,breaks.y=c(0,5,10,15,20,35),
+              plot.type="scatter",data=MktDATA)
+
+# two characters/factors
+distr.plot.xy(Education,LikeMost,
+               plot.type="scatter",data=MktDATA)
+
+# classified variables (not properly numerical)
+distr.plot.xy(Income.S,TotPurch,interval.x=T,breaks.y=c(0,5,10,15,20,35),
+              plot.type="scatter",data=MktDATA)
+```
+```{r, fig.subcap=c('a', 'b','c','d'), out.width='.49\\linewidth', fig.height=2.5, fig.ncol = 2,echo=F}
+# one variable only is numerical
+distr.plot.xy(Marital_Status,TotPurch,plot.type="scatter",data=MktDATA)
+
+# none of the variables is numerical
+distr.plot.xy(Education,TotPurch,breaks.y=c(0,5,10,15,20,35),
+              plot.type="scatter",data=MktDATA,
+              msg.control=list(err=F,warn=F,msg=T))
+
+# two characters/factors
+distr.plot.xy(Education,LikeMost,
+               plot.type="scatter",data=MktDATA)
+
+# classified variables (not properly numerical)
+distr.plot.xy(Income.S,TotPurch,interval.x=T,breaks.y=c(0,5,10,15,20,35),
+              plot.type="scatter",data=MktDATA,
+              msg.control=list(err=F,warn=F,msg=T))
+```
+::::
+
+\newpage
+# Descriptive statistics: Summaries
+In this section we first describe how to summarize data on one single variable using central or non central tendency measures and measures of dispersion. Next we  focus on measures to assess the extent of linear association between two variables.
+
+## Summaries of a single variable
+Basic summaries can be obtained with simple standard functions in Rstudio. For example, the functions `mean`, `sd`, `var`, `quantiles` allow calculating respectively the mean, the standard deviation, the variance, and the quantiles of a single variable, as shown below. Note that in the case of missing values, these functions return a missing value (`NA`), unless the option `na.rm=T` is used to calculate the required statistics by excluding missing values.
+```{r}
+mean(MktDATA$AOV) # returns NA since some cases have missing values
+mean(MktDATA$AOV,na.rm=T)
+sd(MktDATA$AOV,na.rm=T)
+var(MktDATA$AOV,na.rm=T)
+# by default quantile() returns the five numbers summary
+quantile(MktDATA$AOV,na.rm=T)
+# other quantiles can be obtained using argument probs:
+quantile(MktDATA$AOV,probs=c(0.05,0.1,0.25,0.5,0.75,0.9,0.99),na.rm=T)
+```
+
+The function `distr.summary.x(x`, `by1, by2`, `stats="summary"`, `digits=2`, `f.digits=4`, `data)` allows to obtain in a very simple manner  a collection of a variable's summaries, possibly *conditioned* to the levels of one or two variables; it automatically excludes missing values from computations.
+The function has the following arguments:
+
+$\bullet \:$ **`x`**: name of the vector to be analysed **or**  name of one column in the dataframe specified in `data`;  
+$\bullet \:$ **`by1`**, **`by2`**: *optional* vectors or factors (typically taking few values/levels) used to build conditional summaries, that can be defined same way as **`x`**.  
+$\bullet \:$ **`stats`**: *one or more* summaries. A number of options are available. The following options return a set of statistics: `"summary"` (returns min, q1 , median, mean, q3, max, sd, var) , `"central"` (returns central tendency measures), `"dispersion"` (returns measures of dispersion), `"fivenumbers"` (returns the five number summary), `"quartiles"`, `"quintiles"`, `"deciles"`, `"percentiles"`. It is also possible to list specific statistics one by one:  `"q1"`, `"q2"`, `"q3"`, `"mean"`, `"median"`, `"mode"` (returns the mode, the number of modes and the proportion of cases with modal value), `"min"`, `"max"`, `"sd"`, `"var"`, `"cv"` (coefficient of variation), `"range"`, `"IQrange"`, or `"p1"`, `"p2"`, ..., `"p100"` (specific percentiles)  
+$\bullet \:$ **`digits`**, **`f.digits`**: number of decimals used to round  statistics (default=2 decimals) and  frequencies (default= 4 decimals).
+
+Below are some examples of statistics calculated for the numeric variable **`AOV`**.
+
+**Default summaries**:
+```{r,eval=F}
+distr.summary.x(x=AOV,data=MktDATA)
+```
+```{r,echo=F}
+distr.summary.x(x=AOV,data=MktDATA,markd=T)
+```
+
+**More collections of summaries**
+```{r,eval=F}
+distr.summary.x(x=AOV,stats=c("central","dispersion","fivenumbers"),data=MktDATA)
+```
+```{r,echo=F}
+distr.summary.x(x=AOV,stats=c("central","dispersion","fivenumbers"),
+                data=MktDATA,markd=T)
+```
+
+**Selected statistics**:
+```{r,eval=F}
+distr.summary.x(x=AOV,stats=c("mode","mean","sd","cv","fivenumbers"),data=MktDATA)
+```
+```{r,echo=F}
+distr.summary.x(x=AOV,
+                stats=c("mode","mean","sd","cv","fivenumbers"),
+                data=MktDATA,markd=T)
+```
+
+
+### Conditional summaries of a single variable
+The function  `distr.summary.x()` can also be used to obtain summaries conditioned to the levels of one variable or to the combination of levels of two variables, specified using the arguments **`by1`** and **`by2`**. Below some examples are reported.
+
+**Specific statistics (percentiles) conditioned to one variable**: 
+```{r,eval=F}
+# a numeric variable: some percentiles
+distr.summary.x(x=TotVal,by1=Gender,stats=c("p5","p10","p25","p50","p75","p90","p95"),
+                digits=1,data=MktDATA)
+```
+```{r,echo=F}
+# a numeric variable: some percentiles
+distr.summary.x(x=TotVal,by1=Gender,data=MktDATA,
+                stats=c("p5","p10","p25","p50","p75","p90","p95"),
+                digits=1,markd=T)
+```
+
+**Summaries (five numbers) conditioned to one variable**: 
+```{r,eval=F}
+distr.summary.x(x=AOV,by1=Gender,stats="fivenumbers",data=MktDATA)
+```
+```{r,echo=F}
+# a numeric variable: fivenumbers by one or more variables
+distr.summary.x(x=AOV,by1=Gender,
+                stats="fivenumbers",data=MktDATA,markd=T)
+```
+
+**Summaries (five numbers) conditioned to two variables**: 
+```{r,eval=F}
+distr.summary.x(x=AOV,by1=Gender,by2=Kids,stats="fivenumbers",data=MktDATA)
+```
+```{r,echo=F}
+distr.summary.x(x=AOV,by1=Gender,by2=Kids,stats="fivenumbers",
+                data=MktDATA,markd=T)
+```
+
+## Linear association: covariance and correlation
+To calculate the covariance and the correlation between two variables it is possible to refer to **basic functions in R**, namely `cov()` and `cor()`, using the following arguments:
+
+$\bullet \:$ **`x`** and **`y`**: two input **numeric** vectors; note that in this case it is not possible to refer to the columns-names of a dataframe;  
+$\bullet \:$ **`use`**: specifies how to deal with missing values. The default value is `use="everything"`, that returns a missing value if one of the data is a missing value. When only two variables are considered, as in the present case, cases with missing values can be removed by the computations specifying  `use="complete.obs"` (possibly abbreviated, e.g. `use="complete"`) [Other options are possible, but relate to the case when the functions are applied to multiple variables].  
+
+Below is an example for two variables having missing values: 
+```{r}
+cov(MktDATA$Baseline,MktDATA$TotVal)
+cov(MktDATA$Baseline,MktDATA$TotVal,use="complete")
+cor(MktDATA$Baseline,MktDATA$TotVal,use="complete")
+```
+Note that the functions return an error if one or both the input vectors are not numeric:
+```{r,error=T}
+cov(MktDATA$Income,MktDATA$TotVal)
+```
+
+\newpage
+# Working with random numbers in R
+We provide a brief illustration of the R functions to calculate  probabilities and percentiles for random variables distributed according to some basic probability/density distributions, namely the normal (or Gaussian) distribution, the Student’s t distribution, the chi-square distribution, and the Fisher’s F distribution.  
+
+The **probabilities** associated with a r.v. can be calculated using functions named `p`*d.name*(`q`, \textcolor{red}{\textit{<args>}}),
+where *d.name* is the name of the distribution (`norm`, `t`, `chisq`, `f`), and \textcolor{red}{\textit{<args>}} are arguments specifying the distribution's parameters.
+<!-- (thus, `mean` and `sd` for the normal distribution, `df` for the Student's t and the chi-square distribution, and `df1` and `df2` for the F distribution).   -->
+<!-- In these functions, `q` is the (numeric) **value** corresponding to which the probability has to be calculated. `lower.tail` is a logical value indicating whether the probability to observe a value lower than or equal to `q`  (`lower.tail=T`, default) or the probability to observe a value higher than `q` (`lower.tail=F`) is required. Thus, the functions return  P(X <= `q`) if `lower.tail=T`, and  P(X > `q`) if `lower.tail=F`. -->
+<!-- It is generally convenient to leave the argument `lower.tail` to its default value (`T`) and to derive the probabilities recalling that P(X<=`q`) = 1$-$P(X>`q`). Therefore, in the following we will present these functions disregarding `lower.tail`, and will only focus on commands to obtain the probability **cumulated at** `q` (or, in other words the area under the curve left of `q`).   -->
+The argument `q` is the (numeric) **value** corresponding to which the probability has to be calculated. With the illustrated syntax, the functions return P(X<=`q`), that is the probability **cumulated at** `q` (or, in other words, the area under the curve left of `q`).
+
+Using a similar logic, the **quantiles** of a r.v. can be calculated using functions named `q`*d.name*(`p`, \textcolor{red}{\textit{<args>}}),
+<!-- , `lower.tail=T`), -->
+where *d.name* is the name of the distribution (`norm`, `t`, `chisq`, `f`), and \textcolor{red}{\textit{<args>}} are arguments specifying the distribution's parameters.
+<!-- In these functions, `p` is an input **probability**, indicating the order of the required percentile. `lower.tail` is a logical value indicating whether the `p`-th percentile (`lower.tail=T`, default) or the (1-`p`)-th percentile is required. Thus the functions return the `p`-th percentile when  `lower.tail=T`, and the     -->
+<!-- (1-`p`)-th percentile when `lower.tail=F`. -->
+<!-- Since clearly the (1-`p`)-th percentile can be obtained by setting the input probability to `1-p`, with `lower.tail=T`, it is generally convenient to leave the argument `lower.tail` to its default value (`T`) and to derive the percentiles specifying `p` conveniently. Therefore, in the following we will present these functions disregarding `lower.tail`, and will only focus on commands to obtain the `p`-th percentile, that is the value corresponding to which the **cumulated probability** is `p` (thus, the area under the curve left of the value is `p`).   -->
+The argument `p` is a probability **probability**, indicating the order of the required percentile; the functions return the `p`-th percentile, that is the value corresponding to which the **cumulated probability** is `p` (thus, the area under the curve left of the value is `p`).
+
+As a further notice, consider that the mentioned functions  depend on additional arguments that will not be considered here (in order to keep the syntax as simple as possible).
+
+## Normal r.v.
+The **probabilities** associated with a normal random variable can be calculated using the function `pnorm(q`, `mean`, `sd)`, where:
+<!-- (with `lower.tail=T`;  -->
+<!--(attention is limited only to the arguments of interest), where:--> 
+
+$\bullet \:$ **`q`** is the (numeric) **value** corresponding to which the probability P(X<= `q`) has to be calculated  
+$\bullet \:$ **`mean`**, **`sd`**: specify the mean and the standard deviation of the distribution; if not specified the standard normal distribution is used, with `mean=0` and `sd=1`.
+
+Below are some examples:
+```{r,collapse=T}
+# probability that a normal r.v. with mean 3 and sd 2 is <=4:
+pnorm(4,mean=3,sd=2) # same as pnorm(q=4,mean=3,sd=2) or pnorm(4,3,2) 
+# probability that a normal r.v. with mean 3 and sd 2 is >1:
+1-pnorm(1,mean=3,sd=2) # same as 1-pnorm(q=1,mean=3,sd=2) or 1-pnorm(1,3,2)
+
+# simplified call for standard normal (mean=0,sd=1):
+pnorm(1.96) # 
+1-pnorm(1.96) # P(Z>1.96)
+```
+Using this function it is clearly possible also to calculate probabilities related to the sample mean under the assumption of normal distribution or when the number of cases is high enough to assume normal distribution, by properly selecting the values specified in  `mean` and `sd`.
+
+The **quantiles** of a normal random variable can be calculated using the function `qnorm(p`, `mean`, `sd)`, where: 
+<!-- (with `lower.tail=T`;  -->
+<!--(attention is limited only to the arguments of interest), where:--> 
+
+$\bullet \:$ **`p`** is an input **probability**, indicating the order of the required percentile  
+$\bullet \:$ **`mean`**, **`sd`**: specify the mean and the standard deviation of the distribution; if not specified the standard normal distribution is used, with `mean=0` and `sd=1`.
+
+Below are some examples:
+```{r,collapse=T}
+# 90-th percentile of a normal r.v. with mean 3 and sd 2:
+qnorm(0.9,mean=3,sd=2) # same as qnorm(p=0.9,mean=3,sd=2) or qnorm(0.9,3,2)
+
+# 10-th percentile of normal r.v. with mean 3 and sd 2:
+qnorm(0.1,mean=3,sd=2) # same as  qnorm(p=0.1,mean=3,sd=2) or qnorm(0.1,3,2)
+
+# simplified call for standard normal (mean=0,sd=1):
+qnorm(0.975) # percentile 0.975
+qnorm(1-0.975) # percentile 0.025
+-qnorm(0.975) # this holds because std normal is symmetric around 0
+```
+
+## Student's t r.v.
+The **probabilities** associated with a Student's t distribution can be calculated using the function `pt(q`, `df)`, where:
+<!-- (with `lower.tail=T`;  -->
+<!--(attention is limited only to the arguments of interest), where:--> 
+
+$\bullet \:$ **`q`** is the (numeric) **value** corresponding to which the probability P(X<=`q`) has to be calculated  
+$\bullet \:$ **`df`**: degrees of freedom of the distribution. 
+
+Below are some examples:
+```{r,collapse=T}
+# probability that a student's t with 15 df is <=3:
+  pt(3,df=15) # same as pt(q=3,df=15) or pt(3,15) 
+
+# probability that a student's t with 15 df is >3:
+1-pt(3,df=15) # same as 1-pt(q=3,df=15) or 1-pt(3,15)
+```
+
+The **quantiles** of a Student's t distribution  can be calculated using the function `qt(p`, `df)`, where:
+<!-- (with `lower.tail=T`;  -->
+<!--(attention is limited only to the arguments of interest), where:--> 
+
+$\bullet \:$ **`p`** is an input **probability**, indicating the order of the required percentile  
+$\bullet \:$ **`df`**: degrees of freedom of the distribution. 
+
+Below are some examples:
+```{r,collapse=T}
+# 90-th percentile of a student's t with 15 df:
+  qt(0.9,df=15) # same as qt(p=0.9,df=15) or qt(0.9,15) 
+
+# 10-th percentile of a student's t with 15 df:
+qt(0.1,df=15) # same as qt(p=0.1,df=15) or qt(0.1,15) 
+
+# or, since the student's t distribution is symmetric around 0:
+-qt(0.9,15)
+```
+
+## Chi-square and F r.v.
+
+The **probabilities** associated with the chi-square and the F distributions can be calculated using respectively the functions `pchisq(q`, `df)` and `pf(q`, `df1`, `df2)`. 
+<!-- (note that `lower.tail=T`;  -->
+<!--(attention is limited only to the arguments of interest). --> 
+The functions differ from those described before only with respect to their characterizing parameters:
+```{r,collapse=T}
+# probability that a chi-square r.v. with 5 df is <=3:
+pchisq(q=3,df=5) 
+# probability that a chi-square r.v. with 5 df is >3:
+1-pchisq(3,5) # unnamed form
+
+# probability that an F r.v. with 1 and 5 df is <=3:
+pf(q=3,df1=1,df2=5) 
+# probability that an F r.v. with 1 and 5 df is >3:
+1-pf(3,1,5) # unnamed form
+```
+The **quantiles** of the two distributions can be calculated using the functions `qchisq(p`, `df)` and `qf(p`, `df1`, `df2)`.
+<!-- (note that `lower.tail=T`;  -->
+<!--(attention is limited only to the arguments of interest). --> 
+The functions differ from those described before only with respect to their characterizing parameters:
+```{r,collapse=T}
+# 90-th percentile of  chi-square r.v. with 5 df:
+qchisq(p=0.9,df=5) # same as qchisq(0.9,5) 
+
+# 10-th percentile of  chi-square r.v. with 5 df:
+qchisq(0.1,5) # same as qchisq(p=0.1,df=5)
+
+# 95-th percentile of an F r.v. with 1 and 5 df:
+qf(p=0.95,df1=1,df2=5) # same as qf(0.95,1,5) 
+
+# 5-th percentile of an F r.v. with 1 and 5 df:
+qf(0.05,1,5) # same as qf(p=0.05,df1=1,df2=5)
+```
+
+\newpage
+# Inference
+Confidence intervals and tests for a number of parameters can be easily obtained based on sample statistics and on the percentiles of the proper distribution.
+
+For example, the 95% confidence interval for the mean of a population normally distributed with variance known and equal to 25 based on a sample of size 135 whose mean is 12.44 can be calculated as:
+```{r}
+n <- 135
+xbar <- 12.44
+sigma2 <- 25
+ME <- qnorm(0.975)*sqrt(sigma2/n) # margin of error
+ci_mean <- c((xbar-ME),(xbar+ME))
+ci_mean
+```
+Of course the same exact result can be obtained based on the population standard deviation:
+```{r}
+n <- 135
+xbar <- 12.44
+sigma <- 5
+ME <- qnorm(0.975)*sigma/sqrt(n) # margin of error
+ci_mean <- c((xbar-ME),(xbar+ME))
+ci_mean
+```
+
+Similarly, if the variance is unknown, the confidence interval can be obtained based on the sample variance, say 30, and on the percentile of the normal distribution (central limit theorem) or of the Student's t distribution (under the assumption of normality):
+```{r}
+xbar <- 12.44
+s2 <- 30
+n <- 135
+ME.Norm <- qnorm(0.975)*sqrt(s2/n) # margin of error
+ci_mean.Norm <- c((xbar-ME.Norm),(xbar+ME.Norm))
+ME.T <- qt(0.975,df=(n-1))*sqrt(s2/n) # margin of error
+ci_mean.T <- c((xbar-ME.T),(xbar+ME.T))
+ci_mean.Norm
+ci_mean.T
+```
+
+The same approach can be used to determine every possible interval based on aggregated data, as well as rejection regions or p-values for tests.  
+When inference is based on a set of data, R clearly provides functions at this aim. Here nonetheless, we refer to the functions defined in  **package o functions** developed for the course in order to focus on a reduced number of functions, developed using the same logic and sharing a similar syntax, and allowing to deal with specific cases not covered by the basic R functions (e.g. inference on the mean in the case of known variance).
+
+\newpage
+## Inference on the mean
+The functions `CI.mean(x`, `sigma=NULL`, `conf.level=0.95`, `digits=2`, `data)`  and `TEST.mean(x`, `sigma=NULL`, `mu0=0`, `alternative="two.sided"`, `digits=2`, `data)` allow obtaining confidence intervals for the mean of a population and to test hypotheses on it. In both the functions:
+
+$\bullet \:$ **`x`**: name of a **numeric** vector of data **or** name of one column in the dataframe specified in `data`.  
+$\bullet \:$ **`sigma`**: **optional** argument allowing to specify the population standard deviation, when **known**  
+$\bullet \:$ **`digits`**: number of decimals used to round statistics (default=2 decimals)
+
+In addition, the two functions have specific parameters.
+
+In the function `CI.mean`, used to build **confidence intervals**, the argument **`conf.level`** can be used to specify the confidence level (default is 0.95).  
+
+In the function `TEST.mean`, used to test **hypotheses** on the mean, the argument **`mu0`** specifies the null hypothesis  (default is 0), and the argument  **`alternative`** specifies the direction of the alternative hypothesis, which can be  `"two.sided"` (population mean differs from `mu0`, default), or `"less"` (population mean is lower than `mu0`), or `"greater"` (population mean is higher than `mu0`).
+
+### Confidence intervals for the mean
+The function `CI.mean` reports the number of cases used to build the interval, **`n`**, the sample mean, **`xbar`**, the population standard deviation, **`sigma`**, when available or the sample standard deviation, **`sd`**, if **`sigma`** is unknown, the standard error of the sample mean, **`SE`**, and the limits of the confidence interval, **`Lower`** and **`Upper`**. 
+
+Below are some examples to build intervals under different assumptions on the variance.
+
+<!-- \textcolor{red}{\textbf{Known variance}} -->
+
+#### Known variance
+$\:$  
+
+```{r,eval=F}
+# CI for the mean with KNOWN variance with default options
+CI.mean(AOV,sigma=30,data=MktDATA) 
+```
+
+```{r,echo=F}
+# CI for the mean with KNOWN variance and default confidence level
+CI.mean(AOV,sigma=30,data=MktDATA,markd=T) 
+```
+
+```{r,eval=F}
+# CI for the mean with KNOWN variance, with confidence level 0.9 and 3 digits
+CI.mean(AOV,sigma=30,conf.level = 0.9, digits = 3,data=MktDATA) 
+```
+
+```{r,echo=F}
+CI.mean(AOV,sigma=30,conf.level = 0.9, digits = 3,data=MktDATA,markd=T) 
+```
+
+<!-- \textcolor{red}{\textbf{Unknown variance}} -->
+
+#### Unknown variance
+In this case two intervals are built, based respectively on the normal approximation and on the Student's t distribution.
+
+
+```{r,eval=F}
+# CI for the mean with UNKNOWN variance, confidence level 0.99 
+CI.mean(AOV,conf.level = 0.99, data=MktDATA) 
+```
+```{r,echo=F}
+# CI for the mean with unknown variance 
+CI.mean(AOV,conf.level = 0.99, data=MktDATA,markd=T) 
+```
+
+### Test of hypotheses on the mean
+The function `TEST.mean` reports the information used to test the null hypothesis versus the specified alternative (number of cases, **`n`**, sample mean, **`xbar`**, population standard deviation, **`sigma`** when available or the sample standard deviation, **`sd`**, if **`sigma`** is unknown, and the standard error of the sample mean, **`SE`**), the value of the *test statistic*  (**`Stat`**) and its **`p-value`**\footnote{Note that the output displayed here is slightly different from the output displayed when you run the functions in RStudio, because it is not possible to properly print some mathematical symbols; for example $>=$ and $<=$ are used instead of $\ge$ and $\le$ and $!=$ is used instead of $\ne$.}.
+
+<!-- \textcolor{red}{\textbf{Known variance}} -->
+
+#### Known variance
+$\:$  
+
+
+```{r,eval=F}
+# bilateral test
+TEST.mean(NStore_Purch,sigma=9,mu0=5,alternative="two.sided",data=MktDATA)
+```
+```{r,echo=F}
+# bilateral test
+TEST.mean(NStore_Purch,sigma=9,mu0=5,alternative="two.sided",data=MktDATA,markd=T)
+```
+```{r,eval=F}
+# unilateral test
+TEST.mean(NStore_Purch,sigma=9,mu0=5,alternative="greater",data=MktDATA)
+```
+```{r,echo=F}
+# unilateral test
+TEST.mean(NStore_Purch,sigma=9,mu0=5,alternative="greater",data=MktDATA,
+          markd=T)
+```
+
+<!-- \textcolor{red}{\textbf{Unknown variance}} -->
+
+#### Unknown variance.
+In this case the hyptheses are tested based respectively on the normal approximation and on the Student's t distribution.
+
+```{r,eval=F}
+# unilateral test
+TEST.mean(TotVal,mu0=600,alternative="less",data=MktDATA)
+```
+```{r,echo=F}
+# unilateral test
+TEST.mean(TotVal,mu0=600,alternative="less",data=MktDATA,markd=T)
+```
+
+## Inference on the proportion
+The functions `CI.prop(x`, `success=NULL`, `conf.level=0.95`, `digits=2`, `data)` and `TEST.prop(x`, `success=NULL`, `p0=0.5`, `alternative="two.sided"`, `digits=2`, `data)` allow obtaining confidence intervals for the proportion of (cases coded as) successes in a population and to test hypotheses on it. In both the functions:
+
+$\bullet \:$ **`x`**: name of a vector or factor with data **or** name of one column in the dataframe specified in `data`.  
+$\bullet \:$ **`success`**: if `x` is a factor, a character vector, or a numeric non-binary vector, `success` **must** be used to indicate the category/value corresponding to success. The argument can be omitted if `x` is a binary numeric vector (takes values 0 or 1 only; in this case `success` is assumed to be 1) or a logical vector (in these cases `success` is assumed to be `TRUE`).  
+$\bullet \:$ **`digits`**: number of decimals used to round statistics (default=2 decimals)
+
+In addition, the two functions have specific parameters.  
+In the function `CI.prop`, used to build **confidence intervals**, the argument **`conf.level`** can be used to specify the confidence level (default is 0.95).  
+
+In the function `TEST.prop`, used to test **hypotheses** on the proportion, the argument **`p0`** specifies the null hypothesis  (default is 0.5), and the argument  **`alternative`** specifies the direction of the alternative hypothesis, which can be  `"two.sided"` (population proportion differs from `p0`, default), or `"less"` (population proportion is lower than `p0`), or `"greater"` (population proportion is higher than `p0`).
+
+
+### Confidence intervals for the proportion
+The function `CI.prop` reports the number of cases used to build the interval, **`n`**, the sample proportion, **`pbar`**, the sample standard deviation, **`sd`**, if **`sigma`** is unknown, the standard error of the sample proportion, **`SE`**, and the limits of the confidence interval, **`Lower`** and **`Upper`**. 
+
+In the examples below, we build confidence intervals in the case when the input vector is **not binary or logical**, and the value coded as `success` **must** be indicated.
+```{r,eval=F}
+# Character: a specific value
+CI.prop(WouldSuggest,success="Yes",data=MktDATA)
+```
+```{r,echo=F}
+CI.prop(WouldSuggest,success="Yes",data=MktDATA,markd=T)
+```
+```{r,eval=F}
+# Factor: a specific level
+CI.prop(Education,success="Post-Grad",conf.level=0.9,digits=4,data=MktDATA)
+```
+```{r,echo=F}
+CI.prop(Education,success="Post-Grad",conf.level=0.9,digits=4,data=MktDATA,markd=T)
+```
+```{r,eval=F}
+# Numeric vector: a specific value
+CI.prop(Children,success=2,conf.level=0.99,data=MktDATA)
+```
+```{r,echo=F}
+# Numeric vector
+CI.prop(Children,success=2,conf.level=0.99,data=MktDATA,markd=T)
+```
+
+Instead below we consider the **binary** variable `LastCampaign`, signalling whether respondents joined (1) or not (0) the last marketing campaign), and the **logical** variable `Deals.ge50`, indicating whether or not (`TRUE`/`FALSE`) the share of products purchases with discount is higher than or equal to 0.5. In both cases -– provided that the success event is 1 in
+the first case and `TRUE` in the second –- the argument `success` can be omitted.
+```{r,eval=F}
+# CI for the proportion based on a binary variable (taking values 0/1)
+CI.prop(LastCampaign,conf.level=0.9,digits=3,data=MktDATA)
+# same as
+# CI.prop(LastCampaign,success=1,conf.level=0.9,digits=3,data=MktDATA)
+```
+```{r,echo=F}
+CI.prop(LastCampaign,conf.level=0.9,digits=3,data=MktDATA,markd=T) 
+```
+```{r,eval=F}
+# CI for the proportion based on a logical variable (taking values TRUE/FALSE)
+CI.prop(Deals.ge50,conf.level=0.99,digits=3,data=MktDATA)
+# same as
+# CI.prop(Deals.ge50,success=T,conf.level=0.99,digits=3,data=MktDATA)
+```
+```{r,echo=F}
+CI.prop(Deals.ge50,conf.level=0.99,digits=3,data=MktDATA,markd=T)
+```
+
+Finally, we consider the case when it is of interest to build a confidence interval for the proportion of cases (in the population) satisfying a certain condition:
+```{r,eval=F}
+# Build a (logical) vector indicating whether a condition is satisfied
+HighPurch<-MktDATA$TotPurch>20
+CI.prop(HighPurch,conf.level=0.99,digits=3,data=MktDATA)
+```
+```{r,echo=F}
+# Build a (logical) vector indicating whether a condition is satisfied
+HighPurch<-MktDATA$TotPurch>20
+CI.prop(HighPurch,conf.level=0.99,digits=3,data=MktDATA,markd=T)
+```
+```{r,eval=F}
+# Build a (logical) vector indicating whether a condition is satisfied
+IsTop<-MktDATA$CustClass=="Gold" | MktDATA$CustClass=="Platinum"
+CI.prop(IsTop,conf.level=0.9,digits=3,data=MktDATA)
+```
+```{r,echo=F}
+# Build a (logical) vector indicating whether a condition is satisfied
+IsTop<-MktDATA$CustClass=="Gold" | MktDATA$CustClass=="Platinum"
+CI.prop(IsTop,conf.level=0.9,digits=3,data=MktDATA,markd=T)
+```
+
+
+### Test of hypotheses on the proportion
+The function `TEST.prop` reports the same information displayed by `CI.prop` plus the value of the *test statistic*  (**`Stat`**) and its **`p-value`**.  
+The same considerations about the features of input vectors and the coding of success seen when building confidence intervals hold also when one wants to test hypotheses on proportions. Below are some examples, based on data of different type.
+```{r,eval=F}
+# Bilateral test (character or factor: specific value/level)
+TEST.prop(WouldSuggest,success="Yes",p0=0.7,data=MktDATA)
+```
+```{r,echo=F}
+TEST.prop(WouldSuggest,success="Yes",p0=0.7,data=MktDATA,markd=T)
+```
+```{r,eval=F}
+# Unilateral test (binary variable - takes values 0/1)
+TEST.prop(LastCampaign,p0=0.2,alternative="less",digits=3,data=MktDATA)
+# same as
+# TEST.prop(LastCampaign,success=1,p0=0.2,alternative="less",digits=3,data=MktDATA)
+```
+```{r,echo=F}
+TEST.prop(LastCampaign,p0=0.2,alternative="less",digits=3,data=MktDATA,markd=T) 
+```
+```{r,eval=F}
+# Unilateral test (logical variable, taking values TRUE/FALSE)
+TEST.prop(Deals.ge50,p0=0.13,alternative="greater",digits=3,data=MktDATA)
+# same as
+# TEST.prop(Deals.ge50,success=T,p0=0.13,alternative="greater",
+#           digits=3,data=MktDATA)
+```
+```{r,echo=F}
+TEST.prop(Deals.ge50,p0=0.13,alternative="greater",digits=3,data=MktDATA,markd=T)
+```
+```{r,eval=F}
+# Build a (logical) vector indicating whether a condition is satisfied
+IsTop<-MktDATA$CustClass=="Gold" | MktDATA$CustClass=="Platinum"
+TEST.prop(IsTop,p0=0.2,alternative="less",data=MktDATA)
+```
+```{r,echo=F}
+# Build a (logical) vector indicating whether a condition is satisfied
+IsTop<-MktDATA$CustClass=="Gold" | MktDATA$CustClass=="Platinum"
+TEST.prop(IsTop,p0=0.2,alternative="less",data=MktDATA,markd=T)
+```
+
+## Inference on the difference between means
+The functions `CI.diffmean(x`, `y`, `by`, `type="independent"`, `sigma.x=NULL`, `sigma.y=NULL`, `sigma.by=NULL`, `sigma.d=NULL`, `conf.level=0.95`, `digits=2`, `data)` and `TEST.diffmean(x`, `y`, `by`, `type="independent"`, `mdiff0=0`, `sigma.x=NULL`, `sigma.y=NULL`, `sigma.by=NULL`, `sigma.d=NULL`, `alternative="two.sided"`, `digits=2`, `var.test=FALSE`, `data)` allow building confidence intervals for the difference between the means of two populations and to test hypotheses on it. In both the functions:
+```{=latex}
+$\bullet \:$ \textbf{\texttt{type}}: type of samples,  `"independent"` or 
+`"paired"`.\\
+$\bullet \:$ \textbf{\texttt{x}}, \textbf{\texttt{y}}, \textbf{\texttt{by}}: arguments used to identify the two  samples whose means have to be compared. \textbf{\texttt{x}} must be specified, and can be combined with \textbf{\texttt{y}} \textbf{or} with \textbf{\texttt{by}} (only \textbf{one} between \textbf{\texttt{y}} and \textbf{\texttt{by}} can be specified).\\ \vspace*{-5mm}  
+\begin{itemize}
+\item \textbf{\texttt{x}}, \textbf{\texttt{y}}: should be specified when data on the two sub-samples are stored in two distinct vectors. \textbf{\texttt{x}}, \textbf{\texttt{y}} can be the names of  \textbf{numeric} vectors  \textbf{or}  the names of two numeric columns in the dataframe specified in \textbf{\texttt{data}}. It is possible to use a mixed specification (e.g, one vector and one column in {\texttt{data}}).  
+\item \textbf{\texttt{x}}, \textbf{\texttt{by}}: should be specified when data on the two sub-samples should be obtained by \textit{splitting} \textbf{\texttt{x}} into two groups based on the \textbf{two values} of the \textbf{\texttt{by}} vector; in this case, \textbf{\texttt{x}} and \textbf{\texttt{by}} must have the same length, \textbf{\texttt{x}} must be numeric, and \textbf{\texttt{by}} can take only two values; \textbf{\texttt{x}}, \textbf{\texttt{by}} can be the names of  two vectors, \textbf{or} the names of two columns in the dataframe specified in \textbf{\texttt{data}} (it is possible to use a mixed specification (e.g, one vector and one column in {\texttt{data}}). Note that this option is available only for \textbf{independent} samples, to avoid errors in matching cases.
+\end{itemize}
+$\bullet \:$ The functions allow dealing also with the (very rare case) when the populations' variances are known. In particular: \\ \vspace*{-5mm}  
+\begin{itemize}
+\item \textbf{\texttt{sigma.x}} and \textbf{\texttt{sigma.y}} are  (optional) arguments to specify the possibly known variances for two \textbf{independent samples} identified by \textbf{\texttt{x}} and \textbf{\texttt{y}}. If only one of the two arguments is specified, the known variances are assumed to be equal. 
+\item \textbf{\texttt{sigma.by}} is an (optional) argument to specify the possily known variances  for the two \textbf{\texttt{independent sample}} identified via \textbf{\texttt{by}}. \textbf{\texttt{sigma.by}} can be a single value indicating the same variance in the two \textbf{\texttt{by}}-groups, or a vector with two values, specifying the variances in the two \textbf{\texttt{by}}-groups. To avoid errors, in the latter case the vector should be \textbf{named}, with names coinciding with the two levels of \textbf{\texttt{by}}.
+\item \textbf{\texttt{sigma.d}} is an (optional) argument to specify the possibly known variance of the \textbf{\texttt{difference}} in \textbf{paired} samples.
+\end{itemize}  
+$\bullet \:$ \textbf{\texttt{var.test}} allows indicating 
+whether a test on the equality of variance in two (\textbf{independent}) samples is required (\textbf{\texttt{var.test=TRUE}}) or not (\textbf{\texttt{var.test=FALSE}}, default) \\
+$\bullet \:$ \textbf{\texttt{digits}}: number of decimals used to round statistics (default=2 decimals)
+```
+
+<!-- Note that when the two samples have to be obtained by splitting `x` based on the two groups induced by `by`, it is always possible to build two vectors containing the data on `x` in the two groups and to specify the inputs using the **`x`,`y`** approach (indeed, this is the approach that we **recommend** to beginners). -->
+
+Also in this case, the function `CI.diffmean` used to build **confidence intervals** has an additional argument, **`conf.level`** to specify the confidence level 
+(default is 0.95).  
+In the function `TEST.diffmean` used to **test hypotheses**, 
+the argument **`mdiff0`** specifies the null hypothesis  (default is 0.5); if  **`x`** and  **`y`** are given as inputs,  `mdiff0` is the value of the difference ${\mu}_{\rm x}-\mu_{\rm y}$; if  **`x`** and  **`by`** are given as inputs, the two levels of the variable specified in **`by`** are considered in their standard order (alphabetical or numeric, or order of the levels for factors), say ${\rm by}_{\rm 1}$ and ${\rm by}_{\rm 2}$ and  `mdiff0` is the value of the difference 
+$\mu_{{\rm by}_{\rm 1}}-\mu_{{\rm by}_{\rm 2}}$.  
+The argument  **`alternative`** specifies the direction of the alternative hypothesis, which can be  `"two.sided"` (difference between populations' means is different from `mdiff0`, default), or `"less"` (difference between populations' means lower than `mdiff0`), or `"greater"` (difference between populations' means is higher than `mdiff0`).
+
+<!-- Note that the functions do not verify whether the assumptions guaranteeing inference on the difference are fullfilled.   -->
+
+### Confidence intervals for independent samples
+We illustrate how to build confidence intervals for the means of independent samples, starting with the more common case when variances are **unknown**. 
+We will obtain the intervals using both arguments **`x`**, **`y`** (data on the two samples are in two separate vectors\footnote{We will consider the case when \textbf{\texttt{x}} and \textbf{\texttt{y}} are two vectors in the environment; of course, in some applications the vectors with data on the two samples might be columns of the same dataframe. In this case, \textbf{\texttt{x}} and \textbf{\texttt{y}}  will be the names of the two columns.}) and arguments \textbf{\texttt{x}}, \textbf{\texttt{by}} (the two samples are obtained by splitting data in \textbf{\texttt{x}} based on an existing or appositely created vector taking two values). Note that if  **`x`** and  **`y`** are given, the confidence interval is built for $({\mu}_{\rm x}-\mu_{\rm y})$; if  **`x`** and  **`by`** are used, the two levels of the variable specified in **`by`** are ordered (alphabetical or numerical order, or order of the levels for factors), say ${\rm by}_{\rm 1}$ and ${\rm by}_{\rm 2}$ and the confidence interval is built for $(\mu_{{\rm by}_{\rm 1}}-\mu_{{\rm by}_{\rm 2}})$.  
+
+#### Unknown variances.
+When variances are unknown, confidence intervals are built both under the assumption of equality and under the assumption of inequality of variances.  
+Below we refer to two vectors containing data on the variable `AOV` for females and males:
+```{r,eval=F}
+# CI for the difference between means in groups of males and females
+# based on x,y: build vectors with data on the two groups
+AOV_F<-MktDATA$AOV[MktDATA$Gender=="F"]
+AOV_M<-MktDATA$AOV[MktDATA$Gender=="M"]
+CI.diffmean(x=AOV_M,y=AOV_F,type="independent") # note: vectors in environment, no data specified
+```
+```{r,echo=F}
+# CI for the difference between means in groups of males and females
+# based on x,y: build vectors with data on the two groups
+AOV_F<-MktDATA$AOV[MktDATA$Gender=="F"]
+AOV_M<-MktDATA$AOV[MktDATA$Gender=="M"]
+CI.diffmean(x=AOV_M,y=AOV_F,type="independent",
+            markd=T) # note: vectors in environment, no data specified
+```
+
+The same result can be obtained based on the entire set of data on `AOV` split into two samples based on the levels of variable `Gender`; nonetheless the levels of `Gender` would be ordered alphabetically (`F` and `M`) and the interval for the difference between females and males would be obtained. Therefore we need to create a splitting vector with the correct order (output printed at the end of this section):
+```{r,eval=F}
+# same result as before using:
+# based on x,by: x split based on the by's (2) levels
+MktDATA$Gender.R<-factor(MktDATA$Gender,levels=c("M","F"))
+CI.diffmean(x=AOV,by=Gender.R,type="independent",
+            data=MktDATA) # columns in dataframe, data specified
+```
+```{r,echo=F}
+MktDATA$Gender.R<-factor(MktDATA$Gender,levels=c("M","F"))
+```
+
+**Note that** the function returns information on the sample statistics used to build the interval (samples' sizes, `n_x` and `n_y`; samples' means, `xbar` and `ybar`, samples' standard deviations, `sd_x` and `sd_y`, and estimated standard error of the means' difference, `SE`) and the lower and upper bounds of the intervals built under the assumption of equal and of unequal variances. In both cases, **two confidence intervals** are reported based on the normal approximation and on the Student's t distribution. Of course,  one could be interested to **test** whether the unknown populations' variances are equal or not (see the end of the section). 
+
+\newpage
+Below is another example, where we define the two groups based on a condition, building two vectors with data on `AOV` depending on whether the respondents have children or not:
+```{r,eval=F}
+# CI for the difference between means in groups of respondents with and without children 
+# based on x,y: build vectors with data on the two groups
+AOV_no_child<-MktDATA$AOV[MktDATA$Children==0]
+AOV_w_child<-MktDATA$AOV[MktDATA$Children>0]
+CI.diffmean(x=AOV_no_child,y=AOV_w_child,type="independent",
+            conf.level=0.90) # no data specified
+```
+```{r,echo=F}
+# CI for the difference between means in groups of respondents 
+# with and without children 
+# based on x,y: vectors with data on the two groups
+AOV_no_child<-MktDATA$AOV[MktDATA$Children==0]
+AOV_w_child<-MktDATA$AOV[MktDATA$Children>0]
+CI.diffmean(x=AOV_no_child,y=AOV_w_child,type="independent",
+            conf.level=0.90,markd=T) # no data specified
+```
+
+Also in this case, the syntax based on **`x`**,**`by`** can be used, by preliminarily building a vector whose levels define the splitting criterion: 
+```{r,eval=F}
+# same result as before using:
+# based on x,by: build the grouping vector and then the interval
+HasChildren<-MktDATA$Children>0
+CI.diffmean(x=AOV,by=HasChildren,type="independent",
+            conf.level=0.90,data=MktDATA) # data specified for x
+```
+
+\textcolor{red}{\textbf{Verifying hypotesis on the equality of variance}}. To obtain -- besides the confidence intervals -- also a test on the equality of variances, it is possible to specify `var.test = TRUE`, as shown in the example below, where we build the same confidence intervals obtained before based on the entire set of data on `AOV` split into two samples based on the levels (2) of the variable `Gender.R`\footnote{Note that the output displayed here is slightly different from the output obtained with RStudio: since the symbol $\sigma$ cannot be printed, here s2{\textunderscore}x and s2{\textunderscore}y are used.}:
+
+```{r,eval=F}
+# CI for the difference between means in groups of males and
+# based on x,by: x split based on the by's (2) levels
+CI.diffmean(x=AOV,by=Gender.R,type="independent",
+            var.test=T,data=MktDATA) # columns in dataframe, data specified
+```
+```{r,echo=F}
+# same result as before using:
+# based on x,by: x split based on the by's (2) levels
+CI.diffmean(x=AOV,by=Gender.R,type="independent",
+            var.test=T,data=MktDATA,markd=T) # columns in dataframe, data specified
+```
+
+:::: {.noexambox data-latex=""}
+#### Known variances.
+As mentioned, the case when the variances in the two compared populations are known is very rare (particularly in social sciences). For the sake of completeness, we report below some examples.
+
+```{r,eval=F}
+# CI for the difference between means in groups of males and females
+# based on x,y: build vectors with data on the two groups
+AOV_F<-MktDATA$AOV[MktDATA$Gender=="F"]
+AOV_M<-MktDATA$AOV[MktDATA$Gender=="M"]
+CI.diffmean(x=AOV_M,y=AOV_F,type="independent",sigma.x=30,sigma.y=25,conf.level=0.99) 
+```
+
+```{r,echo=F}
+# CI for the difference between means in groups of males and females
+# based on x,y: build vectors with data on the two groups
+AOV_F<-MktDATA$AOV[MktDATA$Gender=="F"]
+AOV_M<-MktDATA$AOV[MktDATA$Gender=="M"]
+CI.diffmean(x=AOV_M,y=AOV_F,type="independent",
+            sigma.x=30,sigma.y=25,conf.level=0.99,
+            markd=T) # note: vectors in environment, no data specified
+```
+
+Similarly to what was illustrated in the previous section, the same result (not printed) can be obtained using **`x`**, **`by`**:
+```{r,eval=F}
+# same result as before (not printed) using:
+# based on x,by: x split based on the by's (2) levels
+CI.diffmean(x=AOV,by=Gender.R,type="independent",
+            sigma.by=c("F"=25,"M"=30),conf.level=0.99,data=MktDATA) 
+```
+Note importantly that when `by` is used (and the known variances differ), `sigma.by` should be a **named** vector (guaranteeing the correct assignment of the variance to the two `by`-subsets), otherwise the function returns an error. This is the reason why we suggest to prefer the approach based on **`x`**, **`y`** in this case.
+
+In the particular case when the variances are assumed to be **known** and **equal**, a single value can be specified for the common variance; in this case, if `by` is used, `sigma.by` does not need to be named, because the assignment of variance to the groups is clear.
+```{r,eval=F}
+# based on x,y: vectors with data on the two groups
+# note that only one between sigma.x and sigma.y needs to be specified
+CI.diffmean(x=AOV_M,y=AOV_F,type="independent",sigma.x=28,conf.level=0.99) 
+```
+::::
+
+:::: {.noexambox data-latex=""}
+```{r,echo=F}
+# note that only one between sigma.x and sigma.y needs to be specified
+CI.diffmean(x=AOV_N,y=AOV_F,type="independent",
+            sigma.x=28,conf.level=0.99,
+            markd=T) # note: vectors in environment, no data specified
+```
+
+The same result (not printed) is obtained using:
+```{r,eval=F}
+# same as (not printed):
+# based on x,by: x split based on the by's (2) levels
+# note that a single value is specified in sigma.by, and no names are needed
+CI.diffmean(x=AOV,by=Gender.R,type="independent",sigma.by=28,
+            conf.level=0.99,data=MktDATA) # data specified
+```
+::::
+
+### Hypotheses testing for independent samples
+Hypotheses on the means of independent samples can be tested using inputs and syntax identical to those needed to build confidence intervals; the unique difference is that instead of specifying the confidence level, it is necessary to specify the null value hypothesized for the difference between the means and the direction of the alternative hypothesis.  
+In the examples below we report only the syntax based on the **`x`** and **`y`** inputs for the same examples considered in the previous section; the syntax based on the **`x`** and **`by`** is reported but not printed.
+
+#### Unknown variances.
+When variances are unknown, tests on hypotheses on the difference between means are built both under the assumption of equality and under the assumption of inequality of variances. **Importantly**, the function `TEST.diffmean` in this case allows testing the hypothesis of equality between variances, in order to draw conclusions on the most convenient assumption about the variances,
+by specifying `var.test = TRUE`, as shown below\footnote{The test on the equality of variances can also be run independently of the test on the difference between means, for example combined with confidence intervals on the difference in the case of unknown variance. For the sake of completeness, the syntax for the test is presented later (see sec. \@ref(testvar)).}.
+```{r,eval=F}
+# Unilateral test for the difference between means in groups of males and females
+# based on x,y: build vectors with data on the two groups
+AOV_F<-MktDATA$AOV[MktDATA$Gender=="F"]
+AOV_M<-MktDATA$AOV[MktDATA$Gender=="M"]
+TEST.diffmean(x=AOV_M,y=AOV_F,type="independent",mdiff0=30,alternative="two.sided",var.test = T)
+
+# same as (not printed):
+# based on x,by: x split based on the by's (2) levels
+TEST.diffmean(x=AOV,by=Gender.R,type="independent",mdiff0=30,alternative="two.sided",
+              var.test = T,data=MktDATA) # data specified
+```
+```{r,echo=F}
+# based on x,y: vectors with data on the two groups
+TEST.diffmean(x=AOV_M,y=AOV_F,type="independent",
+            mdiff0=30,alternative="two.sided",var.test = T,markd=T)
+```
+
+
+Below is an example of groups identified based on a condition defined on the variable `Children`:
+```{r,eval=F}
+# Test for the difference between means in groups of respondents 
+# with and without children 
+# based on x,y: build vectors with data on the two groups
+AOV_no_child<-MktDATA$AOV[MktDATA$Children==0]
+AOV_w_child<-MktDATA$AOV[MktDATA$Children>0]
+TEST.diffmean(x=AOV_no_child,y=AOV_w_child,type="independent",
+            mdiff0=35,alternative="less") # no data specified
+
+# same as (not printed):
+# based on x,by: build the grouping vector and then the interval
+HasChildren<-MktDATA$Children>0
+TEST.diffmean(x=AOV,by=HasChildren,type="independent",
+            mdiff0=35,alternative="less",
+            data=MktDATA) # data specified for x
+```
+```{r,echo=F}
+# Test for the difference between means in groups of respondents 
+# with and without children 
+# based on x,y: build vectors with data on the two groups
+AOV_no_child<-MktDATA$AOV[MktDATA$Children==0]
+AOV_w_child<-MktDATA$AOV[MktDATA$Children>0]
+TEST.diffmean(x=AOV_no_child,y=AOV_w_child,type="independent",
+            mdiff0=35,alternative="less",
+            markd=T) # no data specified
+```
+
+:::: {.noexambox data-latex=""}
+#### Known variances.
+We present below two examples relative to the (rather uncommon) case when variances are known. In the first case we assume that variances are known and different:
+```{r,eval=F}
+# Unilateral test for the difference between means in groups of males and females
+# based on x,y: build vectors with data on the two groups
+# different variances
+AOV_F<-MktDATA$AOV[MktDATA$Gender=="F"]
+AOV_M<-MktDATA$AOV[MktDATA$Gender=="M"]
+TEST.diffmean(x=AOV_M,y=AOV_F,type="independent",
+            sigma.x=30,sigma.y=25,mdiff0=30,
+            alternative="greater") # note: vectors in environment, no data specified
+
+# same result (not printed) using:
+# based on x,by: x split based on the by's (2) levels
+TEST.diffmean(x=AOV,by=Gender.R,type="independent",
+            sigma.by=c("F"=25,"M"=30),
+            mdiff0=30,alternative="greater",
+            data=MktDATA) # columns in dataframe, data specified
+```
+```{r,echo=F}
+# Unilateral test for the difference between means in groups of males and females
+# based on x,y: build vectors with data on the two groups
+AOV_F<-MktDATA$AOV[MktDATA$Gender=="F"]
+AOV_M<-MktDATA$AOV[MktDATA$Gender=="M"]
+TEST.diffmean(x=AOV_M,y=AOV_F,type="independent",
+            sigma.x=30,sigma.y=25,
+            mdiff0=30,alternative="greater",
+            markd=T) # note: vectors in environment, no data specified
+```
+
+$\:$
+
+In this case, instead, we assume that variances are known and equal:
+```{r,eval=F}
+# Test for the difference between means in groups of respondents 
+# with and without children 
+# based on x,y: build vectors with data on the two groups
+# equal variances (only sigma.x specified)
+AOV_no_child<-MktDATA$AOV[MktDATA$Children==0]
+AOV_w_child<-MktDATA$AOV[MktDATA$Children>0]
+TEST.diffmean(x=AOV_no_child,y=AOV_w_child,type="independent",
+            sigma.x=25,mdiff0=35,alternative="less") # no data specified
+
+# same as (not printed):
+# based on x,by: build the grouping vector and then the interval
+# equal variances: sigma.by is a single value
+HasChildren<-MktDATA$Children>0
+TEST.diffmean(x=AOV,by=HasChildren,type="independent",
+            sigma.by=25,mdiff0=35,alternative="less",
+            data=MktDATA) # data specified for x
+```
+::::
+
+:::: {.noexambox data-latex=""}
+```{r,echo=F}
+# Test for the difference between means in groups of respondents 
+# with and without children 
+# based on x,y: build vectors with data on the two groups
+AOV_no_child<-MktDATA$AOV[MktDATA$Children==0]
+AOV_w_child<-MktDATA$AOV[MktDATA$Children>0]
+TEST.diffmean(x=AOV_no_child,y=AOV_w_child,type="independent",
+            sigma.x=25,mdiff0=35,alternative="less",
+            markd=T) # no data specified
+```
+::::
+
+### Test on the equality of variance for independent samples{#testvar}
+The function `TEST.diffvar(x`, `y`, `by`, `digits=2`, `data)` allows testing the equality between the variances of two independent samples. The input arguments must be specified as described above. For example, to test the equality of variances as done in the last example without running the test on the difference between means:
+```{r,eval=F}
+# based on x,y: vectors with data on the two groups
+TEST.diffvar(x=AOV_M,y=AOV_F)
+
+# same as (not printed): x split based on the by's (2) levels
+TEST.diffvar(x=AOV,by=Gender.R,data=MktDATA) # data specified
+```
+```{r,echo=F}
+# based on x,y: vectors with data on the two groups
+TEST.diffvar(x=AOV_M,y=AOV_F,markd=T)
+```
+
+### Confidence intervals for paired samples
+Paired samples can only be identified using the arguments `x` and `y` in the function `CI.diffmean` (thus, `by` is not allowed). Below we consider the case when the vectors with data on the two paired samples are two columns of the same dataframe, and  the case when vectors with data on the two paired samples need to be built.
+
+#### Variance of the difference unknown
+Below is the syntax to build the confidence interval for the difference between the means of the number of purchases online and in-store, when no information on the variance is available:
+```{r,eval=F}
+# paired samples, variance of the difference assumed UNKNOWN 
+CI.diffmean(x=NStore_Purch,y=NWeb_Purch,type="paired",conf.level=0.90,data=MktDATA)
+```
+```{r,echo=F}
+# paired samples, variance of the difference assumed UNKNOWN 
+CI.diffmean(x=NStore_Purch,y=NWeb_Purch,type="paired",
+            conf.level=0.90,data=MktDATA,markd=T)
+```
+In this case, two intervals are reported, based on the normal approximation and on the Student's t distribution. Note that the function does not perform any control about the reliability of the assumptions on the underlying populations' distributions.
+
+Below we consider a particular case when two paired vectors are built; specifically, we obtain the confidence interval for the difference between the means of the two variables considered above limiting attention to female respondents; note that the samples are paired because data are extracted from the same dataframe using the same indexing vector (indicating whether a respondent is a female)
+```{r,eval=F}
+# build the paired samples vectors
+NWeb_Purch.F<-MktDATA$NWeb_Purch[MktDATA$Gender=="F"]
+NStore_Purch.F<-MktDATA$NStore_Purch[MktDATA$Gender=="F"]
+CI.diffmean(x=NStore_Purch.F,y=NWeb_Purch.F,type="paired",
+            conf.level=0.90)
+```
+```{r,echo=F}
+# build the paired samples vectors
+NWeb_Purch.F<-MktDATA$NWeb_Purch[MktDATA$Gender=="F"]
+NStore_Purch.F<-MktDATA$NStore_Purch[MktDATA$Gender=="F"]
+CI.diffmean(x=NStore_Purch.F,y=NWeb_Purch.F,type="paired",
+            conf.level=0.90,data=MktDATA,markd=T)
+```
+
+:::: {.noexambox data-latex=""}
+#### Variance of the difference known.
+We briefly acknowledge the particular case when the variance of the **difference** between the two variables considered before is known:
+```{r,eval=F}
+# paired samples, variance of the difference assumed KNOWN 
+CI.diffmean(x=NStore_Purch,y=NWeb_Purch,type="paired",
+            sigma.d=3,conf.level=0.90,data=MktDATA)
+```
+```{r,echo=F}
+# paired samples, variance of the difference assumed KNOWN 
+CI.diffmean(x=NStore_Purch,y=NWeb_Purch,type="paired",
+            sigma.d=3,conf.level=0.90,data=MktDATA,markd=T)
+```
+As shown in the previous section, it is also possible to build confidence intervals based on two properly defined vectors.
+::::
+
+### Hypotheses testing for paired samples
+Hypotheses on the means of independent samples can be tested using inputs and syntax identical to those needed to build confidence intervals, specifying the null value hypothesized for the difference and the direction of the alternative hypothesis instead of the confidence level.  
+In the examples below we report only the syntax based on the **`x`** and **`y`** inputs for the same examples considered in the previous section.
+
+#### Variance of the difference unknown
+$\:$
+
+```{r,eval=F}
+# paired samples, variance of the difference assumed UNKNOWN 
+TEST.diffmean(x=NStore_Purch,y=NWeb_Purch,type="paired",
+            mdiff0=2,alternative="less",data=MktDATA)
+```
+```{r,echo=F}
+# paired samples, variance of the difference assumed UNKNOWN 
+TEST.diffmean(x=NStore_Purch,y=NWeb_Purch,type="paired",
+            mdiff0=2,alternative="less",data=MktDATA,markd=T)
+```
+
+For two vectors (not columns in a dataframe):
+```{r,eval=F}
+# build the paired samples vectors
+NWeb_Purch.F<-MktDATA$NWeb_Purch[MktDATA$Gender=="F"]
+NStore_Purch.F<-MktDATA$NStore_Purch[MktDATA$Gender=="F"]
+TEST.diffmean(x=NStore_Purch.F,y=NWeb_Purch.F,type="paired",
+            mdiff0=1,alternative="greater",data=MktDATA)
+```
+```{r,echo=F}
+NWeb_Purch.F<-MktDATA$NWeb_Purch[MktDATA$Gender=="F"]
+NStore_Purch.F<-MktDATA$NStore_Purch[MktDATA$Gender=="F"]
+TEST.diffmean(x=NStore_Purch.F,y=NWeb_Purch.F,type="paired",
+            mdiff0=1,alternative="greater",data=MktDATA,markd=T)
+```
+
+:::: {.noexambox data-latex=""}
+#### Variance of the difference known
+$\:$
+
+```{r,eval=F}
+# paired samples, variance of the difference assumed KNOWN 
+TEST.diffmean(x=NStore_Purch,y=NWeb_Purch,type="paired",
+            sigma.d=3,mdiff0=2,data=MktDATA)
+```
+```{r,echo=F}
+# paired samples, variance of the difference assumed KNOWN 
+TEST.diffmean(x=NStore_Purch,y=NWeb_Purch,type="paired",
+            sigma.d=3,mdiff0=2,data=MktDATA,markd=T)
+```
+:::: 
+
+
+## Inference on the difference between proportions
+The function `CI.diffprop(x`, `y`, `by`, `success.x=NULL`, `success.y=NULL`, `conf.level=0.95`, `digits=2`, `data)` and `TEST.diffprop(x`, `y`, `by`, `success.x=NULL`, `success.y=NULL`, `pdiff0=0`, `alternative="two.sided"`, `digits=2`, `data)` allow building confidence intervals for the difference between the proportions in two populations, and to test hypotheses on it. In both the functions:
+```{=latex}
+$\bullet \:$ \textbf{\texttt{x}}, \textbf{\texttt{y}}, \textbf{\texttt{by}}: arguments used to identify the two  samples whose proportions have to be compared. \textbf{\texttt{x}} must be specified, and can be combined with \textbf{\texttt{y}} \textbf{or} with \textbf{\texttt{by}} (only \textbf{one} between \textbf{\texttt{y}} and \textbf{\texttt{by}} can be specified).\\ \vspace*{-5mm}  
+\begin{itemize}
+\item \textbf{\texttt{x}}, \textbf{\texttt{y}}: should be specified when data on the two sub-samples are stored in two distinct vectors. \textbf{\texttt{x}}, \textbf{\texttt{y}} can be the names of  \textbf{numeric} vectors  \textbf{or}  the names of two numeric columns in the dataframe specified in \textbf{\texttt{data}}. It is possible to use a mixed specification (e.g, one vector and one column in {\texttt{data}}).  
+\item \textbf{\texttt{x}}, \textbf{\texttt{by}}: should be specified when data on the two sub-samples should be obtained by \textit{splitting} \textbf{\texttt{x}} into two groups based on the \textbf{two values} of the \textbf{\texttt{by}} vector; in this case, \textbf{\texttt{x}} and \textbf{\texttt{by}} must have the same length, \textbf{\texttt{x}} must be numeric, and \textbf{\texttt{by}} can take only two values; \textbf{\texttt{x}}, \textbf{\texttt{by}} can be the names of  two vectors, \textbf{or} the names of two columns in the dataframe specified in \textbf{\texttt{data}} (it is possible to use a mixed specification (e.g, one vector and one column in {\texttt{data}}). Note that this option is available only for \textbf{independent} samples, to avoid errors in matching cases.
+\end{itemize}
+$\bullet \:$ \textbf{\texttt{success.x}}: if \textbf{\texttt{x}} is a factor, a character vector, or a numeric non-binary vector, \textbf{\texttt{success.x}} \textbf{must} be used to indicate the category/value corresponding to success. The argument can be omitted if \textbf{\texttt{x}} is a binary numeric vector (takes values 0 or 1 only; in this case \textbf{\texttt{success.x}} is assumed to be 1) or a logical vector (in these cases \textbf{\texttt{success.x}} is assumed to be {\texttt{TRUE}}). \\
+$\bullet \:$ \textbf{\texttt{success.y}}: same explanation as for \textbf{\texttt{success.x}} (needed when \textbf{\texttt{y}} is used). Note that if the value/level coded as success is the same for \textbf{\texttt{x}} and \textbf{\texttt{y}}, \textbf{\texttt{success.y}} can be omitted. \\   
+$\bullet \:$ \textbf{\texttt{digits}}: number of decimals used to round statistics (default=2 decimals)
+```
+
+As seen in the previous sections, the two functions have additional specific parameters.
+
+In function `CI.diffprop` the argument **`conf.level`** allows specifying the confidence level (default is 0.95).  
+For the function `TEST.diffprop`,
+ **`pdiff0`** specifies the null hypothesis (the default is 0); if  **`x`** and  **`y`** are given as inputs,  `pdiff0` is the value of the difference ${p}_{\rm y}-p_{\rm x}$; if  **`x`** and  **`by`** are given as inputs, the two levels of the variable specified in **`by`** are considered in their standard order (alphabetical or numeric, or order of the levels for factors), say ${\rm by}_{\rm 1}$ and ${\rm by}_{\rm 2}$ and  `pdiff0` is the value of the difference 
+$p_{{\rm by}_{\rm 2}}-p_{{\rm by}_{\rm 1}}$.  
+The argument  **`alternative`** specifies the direction of the alternative hypothesis, which can be  `"two.sided"` (difference between populations' proportions is different from `pdiff0`, default), or `"less"` (difference between populations' proportions lower than `pdiff0`), or `"greater"` (difference between populations' proportions is higher than `pdiff0`).
+
+### Confidence intervals for the difference between proportions
+We will illustrate how to build the intervals using both arguments **`x`**, **`y`** (data on the two samples are in two separate vectors\footnote{We will consider the case when \textbf{\texttt{x}} and \textbf{\texttt{y}} are two vectors in the environment; of course, in some applications the vectors with data on the two samples might be columns of the same dataframe. In this case, \textbf{\texttt{x}} and \textbf{\texttt{y}}  will be the names of the two columns.}) and arguments \textbf{\texttt{x}}, \textbf{\texttt{by}} (the two samples are obtained by splitting data in \textbf{\texttt{x}} based on an existing or appositely created vector taking two values). Note that if  **`x`** and  **`y`** are given as inputs, the confidence interval is built for $({p}_{\rm x}-p_{\rm y})$; if  **`x`** and  **`by`** are given as inputs, the two levels of the variable specified in **`by`** are considered in their standard order (alphabetical or numeric, or order of the levels for factors), say ${\rm by}_{\rm 1}$ and ${\rm by}_{\rm 2}$ and the confidence interval is built for $(p_{{\rm by}_{\rm 1}}-p_{{\rm by}_{\rm 2}})$.      
+
+We start builing confidence intervals for input vectors that are **not binary or logical**, so that the value coded as success must be indicated.
+```{r,eval=F}
+# input vectors: Characters (same for factors)
+# based on x,y: build vectors with data on the two groups
+WouldSuggest_F<-MktDATA$WouldSuggest[MktDATA$Gender=="F"]
+WouldSuggest_M<-MktDATA$WouldSuggest[MktDATA$Gender=="M"]
+CI.diffprop(x=WouldSuggest_M,y=WouldSuggest_F,
+            success.x="Yes", # success.x=success.y
+            conf.level=0.99,digits=2) # no data specified
+```
+
+```{r,echo=F}
+# confidence intervals for the difference between proportions
+# based on x,y: build vectors with data on the two groups
+WouldSuggest_F<-MktDATA$WouldSuggest[MktDATA$Gender=="F"]
+WouldSuggest_M<-MktDATA$WouldSuggest[MktDATA$Gender=="M"]
+CI.diffprop(x=WouldSuggest_M,y=WouldSuggest_F,
+            success.x="Yes", # success.x=success.y
+            conf.level=0.99, markd=T)
+```
+
+The same result (not printed) can be obtained using **`x`** and **`by`**:
+```{r,eval=F}
+# same result (not printed) using:
+# based on x,by: x split based on the by's (2) levels
+CI.diffprop(x=WouldSuggest,by=Gender.R,success.x="Yes",conf.level=0.99,data=MktDATA) 
+```
+
+The same procedures can be applied for **numeric** input vectors; for example below we consider the difference in the proportions of respondents who **did not join** any of the past campaigns (thus, `success` is 0) among females and males:
+```{r,eval=F}
+# input vectors: Numeric, based on x,y
+PastCampaigns_F<-MktDATA$PastCampaigns[MktDATA$Gender=="F"]
+PastCampaigns_M<-MktDATA$PastCampaigns[MktDATA$Gender=="M"]
+CI.diffprop(x=PastCampaigns_M,y=PastCampaigns_F,
+            success.x=0, # success.x=success.y
+            conf.level=0.99) 
+
+# same result (not printed) using:
+# based on x,by: x split based on the by's (2) levels
+CI.diffprop(x=PastCampaigns,by=Gender.R,success.x=0,conf.level=0.99,data=MktDATA) 
+```
+```{r,echo=F}
+# input vectors: Numeric, based on x,y
+PastCampaigns_F<-MktDATA$PastCampaigns[MktDATA$Gender=="F"]
+PastCampaigns_M<-MktDATA$PastCampaigns[MktDATA$Gender=="M"]
+CI.diffprop(x=PastCampaigns_F,y=PastCampaigns_M,
+            success.x=0, # success.x=success.y
+            conf.level=0.99,markd=T) # no data specified
+```
+
+Instead below we consider the **binary** variable `LastCampaign`, indicating whether respondents joined (1) or not (0) the last marketing campaign). In this case -– provided that the success event is 1 –- the arguments `success.x` and `success.y` can be omitted. 
+We compare once again the proportions of successes among males and females.
+```{r,eval=F}
+# CI for the proportion based on binary variables (taking values 0/1)
+LastCampaign_F<-MktDATA$LastCampaign[MktDATA$Gender=="F"]
+LastCampaign_M<-MktDATA$LastCampaign[MktDATA$Gender=="M"]
+CI.diffprop(x=LastCampaign_M,y=LastCampaign_F,
+            conf.level=0.99,digits=3) # no data specified
+
+# same as (not printed)
+CI.diffprop(x=LastCampaign,by=Gender.R,conf.level=0.99,digits=3,data=MktDATA)
+```
+
+```{r,echo=F}
+# CI for the proportion based on binary variables (taking values 0/1)
+LastCampaign_F<-MktDATA$LastCampaign[MktDATA$Gender=="F"]
+LastCampaign_M<-MktDATA$LastCampaign[MktDATA$Gender=="M"]
+CI.diffprop(x=LastCampaign_M,y=LastCampaign_F,
+            conf.level=0.99,markd=T)
+```
+
+\newpage 
+A similar syntax can be used when attention is focused on the **logical** variable `Deals.ge50`, indicating whether or not (`TRUE`/`FALSE`) the  share of products purchases with discount is higher than or equal to 0.5. For this variable we compare the proportions of successes among respondents with or without children, building a two-levels vector identifying the groups; note that `success.x` and `success.y` are omitted and therefore it is assumed that the `success` event is `TRUE`:  
+```{r,eval=F}
+# CI for difference between proportion based on logical variable
+NoChildren<-MktDATA$Children==0 # logical vector
+Deals_w_child<-MktDATA$Deals.ge50[NoChildren==FALSE]
+Deals_no_child<-MktDATA$Deals.ge50[NoChildren==TRUE]
+CI.diffprop(x=Deals_w_child,y=Deals_no_child,conf.level=0.9,digits=3)
+
+# same as (not printed)
+CI.diffprop(x=Deals.ge50,by=NoChildren,conf.level=0.9,digits=3,data=MktDATA) 
+```
+```{r,echo=F}
+# CI for the proportion based on logical variables (not shown)
+NoChildren<-MktDATA$Children==0 # logical vector
+Deals_w_child<-MktDATA$Deals.ge50[NoChildren==FALSE]
+Deals_no_child<-MktDATA$Deals.ge50[NoChildren==TRUE]
+CI.diffprop(x=Deals_w_child,y=Deals_no_child,
+            conf.level=0.9,digits=3,markd=T) 
+```
+
+### Hypotheses testing on the difference between proportions
+Hypotheses on the proportions of independent samples can be tested using inputs and syntax identical to those needed to build confidence intervals, specifying the null value hypothesized for the difference and the direction of the alternative hypothesis instead of the confidence level.  
+In the examples below we report only the syntax based on the **`x`** and **`y`** inputs for the same examples considered in the previous section.
+
+Character (or factor) input vectors:
+```{r,eval=F}
+# input vectors: Characters (same for factors)
+# based on x,y: build vectors with data on the two groups
+WouldSuggest_F<-MktDATA$WouldSuggest[MktDATA$Gender=="F"]
+WouldSuggest_M<-MktDATA$WouldSuggest[MktDATA$Gender=="M"]
+TEST.diffprop(x=WouldSuggest_F,y=WouldSuggest_M,
+            success.x="Yes", pdiff0=0,alternative="two.sided") 
+```
+
+```{r,echo=F}
+WouldSuggest_F<-MktDATA$WouldSuggest[MktDATA$Gender=="F"]
+WouldSuggest_M<-MktDATA$WouldSuggest[MktDATA$Gender=="M"]
+TEST.diffprop(x=WouldSuggest_F,y=WouldSuggest_M,
+            success.x="Yes", pdiff0=0,alternative="two.sided", markd=T)
+```
+
+Numeric input vectors
+```{r,eval=F}
+# input vectors: Numeric, based on x,y
+PastCampaigns_F<-MktDATA$PastCampaigns[MktDATA$Gender=="F"]
+PastCampaigns_M<-MktDATA$PastCampaigns[MktDATA$Gender=="M"]
+TEST.diffprop(x=PastCampaigns_F,y=PastCampaigns_M,
+            success.x=0, pdiff0=0.1,alternative="greater") 
+```
+```{r,echo=F}
+PastCampaigns_F<-MktDATA$PastCampaigns[MktDATA$Gender=="F"]
+PastCampaigns_M<-MktDATA$PastCampaigns[MktDATA$Gender=="M"]
+TEST.diffprop(x=PastCampaigns_F,y=PastCampaigns_M,
+            success.x=0, pdiff0=0.1,alternative="greater",markd=T) 
+```
+
+Binary input vectors:
+```{r,eval=F}
+LastCampaign_F<-MktDATA$LastCampaign[MktDATA$Gender=="F"]
+LastCampaign_M<-MktDATA$LastCampaign[MktDATA$Gender=="M"]
+TEST.diffprop(x=LastCampaign_M,y=LastCampaign_F,
+            pdiff0=0,alternative="greater",digits=3) 
+```
+
+```{r,echo=F}
+LastCampaign_F<-MktDATA$LastCampaign[MktDATA$Gender=="F"]
+LastCampaign_M<-MktDATA$LastCampaign[MktDATA$Gender=="M"]
+TEST.diffprop(x=LastCampaign_M,y=LastCampaign_F,
+            pdiff0=0,alternative="greater",digits=3,markd=T) 
+```
+
+Logical input vectors:
+```{r,eval=F}
+# CI for the proportion based on logical variables (not shown)
+NoChildren<-MktDATA$Children==0 # logical vector
+Deals_w_child<-MktDATA$Deals.ge50[NoChildren==FALSE]
+Deals_no_child<-MktDATA$Deals.ge50[NoChildren==TRUE]
+TEST.diffprop(x=Deals_w_child,y=Deals_no_child,
+            pdiff0=0.2,alternative="less",digits=3)
+```
+
+```{r,echo=F}
+NoChildren<-MktDATA$Children==0 # logical vector
+Deals_w_child<-MktDATA$Deals.ge50[NoChildren==FALSE]
+Deals_no_child<-MktDATA$Deals.ge50[NoChildren==TRUE]
+TEST.diffprop(x=Deals_w_child,y=Deals_no_child,
+            pdiff0=0.2,alternative="less",digits=3,markd=T)
+```
+
+\newpage
+## Goodness-of-fit and independence tests
+In this section, we describe two tests allowing verifying whether a univariate or a bivariate distribution, relative to categorical or discrete variables taking a limited number of values, differs from a theoretical probability distribution. Differently from what was done 
+in the previous sections, in this case we rely on the function `chisq.test(x`, `y=NULL`, `p)` available in base R (note that attention is limited only to the arguments relevant in the course), and in the following sections we describe into details which arguments should be specified to properly apply the tests.
+
+$\bullet \:$ **`x`**:  input vector or factor (note that `x` cannot be the name of a column in a dataframe). If the optional argument `y` is not specified, a goodness-of-fit test is applied to compare the sample distribution of `x` with the theorical probability distribution specified in `p` [it is worth to mention that `x` can also be a vector or matrix; we will briefly discuss about this when presenting the specific tests]  
+$\bullet \:$ **`p`**:  if only `x` is given, the function tests the hypothesis that the population probabilities equal those specified in `p`, or the hypothesis that they are all equal if `p` is not given.  
+$\bullet \:$ **`y`**:  optional input vector or factor (note that `y` cannot be the name of a column in a dataframe), with the same length as `x`. If `y` is specified, an independence test is performed to test the association between `x` and `y`, and the argument `p` is ignored.
+
+
+### Goodness-of-fit (fully specified probabilities)
+The chi-squared goodness-of-fit test for given probabilities allows verifying whether the observed distribution of a categorical or discrete variable differs from a theoretical probability distribution (thus,  the null hypothesis that the population distribution coincides with the theoretical one is contrasted with the alternative hypothesis that the two distributions are different). To perform the test, the function `chisq.test(x`,`p)` can be used (thus, argument `y` should not be specified). In this case, `x` should be the sample frequency distribution of a categorical or discrete variable, and the function tests the hypothesis that the population probabilities equal those specified in `p`, or the hypothesis that they are all equal if `p` is not given.  
+We distinguish between the case when the test has to be applied to a variable and the case when it has to be applied to a specific sample distribution (aggregated data).
+
+#### Test based on raw data.
+Below we consider the distribution of the variable `CustClass`, describing the classification of customers based on their relevance. According to some authors, the proportions of cases in the four classes is  `p=(0.8,0.15,0.4,0.01)`.
+```{r}
+# tabulate the distribution using table() or distr.table.x()
+distr.table.x(MktDATA$CustClass,freq="prop")
+```
+Note that since the variable is a factor, its levels are properly ordered. We can proceed with the test to assess whether the evident difference between the empirical and the theoretical distribution is significant:
+```{r}
+chisq.test(x=table(MktDATA$CustClass),p=c(0.8,0.15,0.04,0.01))
+```
+
+#### Test based on aggregated data.
+As a further example, assume we have information on the distribution of a variable, and we want to test whether at the population level the probabilities of the variable's values are all equal (default option):
+```{r,collapse=F}
+# observed distribution
+p.obs<-c(150,149,165,135,114)
+chisq.test(x=p.obs) 
+# same as chisq.test(x=p.obs,p=c(0.2,0.2,0.2,0.2,0.2))
+```
+
+### Test of association
+The chi-squared association test allows verifying whether the observed **joint** distribution of two categorical or discrete variable differs from a specific theoretical probability distribution, namely the distribution under the assumption of independence between the two variables (thus, the null hypothesis states that the two variables are independent -- or not associated -- is contrasted with the alternative hypotesis that they are associated. To perform the test, the function `chisq.test(x`,`y)` can be used, where `x` and `y` are two vectors with the same length (thus `p` is disregarded). In this case, the function determines the cross-table and tests the hypothesis. Otherwise, `x` can be itself a matrix or a table whose elements are the joint counts (in this case `y` should not be specified).  
+We distinguish between the case when the test has to be applied to two variables and the case when it has to be applied to a specific joint sample distribution (aggregated data).
+
+#### Test based on raw data
+Below we verify whether the  variable `CustClass` is associated with `Education`.
+```{r}
+chisq.test(x=MktDATA$Education,y=MktDATA$CustClass)
+```
+Note that when  testing the association between  `CustClass` and `Children`:
+```{r}
+chisq.test(x=MktDATA$Children,y=MktDATA$CustClass)
+```
+
+a warning is printed out.  
+Actually, the test is based on an approximation, and it is not reliable when one or more of the expected frequencies are small (5 or less) as in the considered case:
+```{r}
+distr.table.xy(x=Children,y=CustClass,data=MktDATA)
+```
+
+#### Test based on aggregated data
+As a further example, assume we are provided with the contingency table characterizing two variables, and we want to test association. In this case, we can apply the function to the table:
+```{r}
+obs.joint<-matrix(c(15,20,5,7,
+                33,10,5,15,
+                20,5,10,20),byrow=T,nrow=3)
+chisq.test(obs.joint)
+```
+
+## Test on the correlation coefficient
+R provides the function `cor.test(x`, `y`, `alternative="two.sided"`,`conf.level=0.95)` (note: attention  limited to the arguments relevant for the course) to contrast the null hypotheses that the linear correlation coefficient is zero with bilateral or unilateral alternative hypotheses, and also builds the confidence interval for the coefficient. The function requires two input vectors  `x` and `y` and the specification of the direction of the alternative hypothesis (`"two.sided"`, `"less"`, and `"greater"`).  
+A call of the function based on default values performs a bilateral test:
+```{r}
+cor(MktDATA$Baseline,MktDATA$TotVal,use="complete")
+cor.test(MktDATA$Baseline,MktDATA$TotVal)
+```
+
+When the alternative hypothesis is unilateral the obtained interval has lower endpoint equal to -1 (if `alternative="less"`) or upper endpoint equal to 1 (if `alternative="greater"`).
+```{r}
+cor.test(MktDATA$Baseline,MktDATA$TotVal,alternative="less",conf.level=0.99)
+```
