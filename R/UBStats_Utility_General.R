@@ -10,8 +10,9 @@ stop_quietly <- function() {
 }
 
 # Function to printout in markdown
+#' @importFrom utils write.table
 my.p.err <- function(m){
-  write.table(format(m, justify="left"),
+  utils::write.table(format(m, justify="left"),
               row.names=F, col.names=F, quote=F)}
 
 # Function to printout list with messages and df
@@ -19,7 +20,7 @@ my.p.list<-function(use.xx,type.print="print"){
   pp.c<-NULL
   c.pp<-0
   for(k in 1:length(use.xx)){
-    if(class(use.xx[[k]])=="data.frame"){
+    if(inherits(use.xx[[k]],"data.frame")){
       if(!is.null(pp.c)){
         if(type.print=="print"){my.p.err(c(pp.c," "))}
         if(type.print=="cat"){cat(c(pp.c," "),sep="\n",file=stderr())}
@@ -27,7 +28,7 @@ my.p.list<-function(use.xx,type.print="print"){
       print(use.xx[[k]])
       my.p.err(c(" "))
     }
-    if(class(use.xx[[k]])=="character"){
+    if(inherits(use.xx[[k]],"character")){
       pp.c<-c(pp.c,use.xx[[k]])
     }
     if(k==length(use.xx) & !is.null(pp.c)){
@@ -58,7 +59,7 @@ chk.data.old<-function(x,data,name.data,name.x,num=F,missing=F,
     }
     if(!is.null(check.dim) & required=="vector"){
       err.list<-c(err.list,paste0("'",which,"' should be vector, not ",class(x))) } 
-    if(!is.null(check.dim) & required=="data" && (class(x)=="matrix" | class(x)=="data.frame")){
+    if(!is.null(check.dim) & required=="data" && (inherits(x,"matrix") | inherits(x,"data.frame"))){
       exist.x<-T; vec.x<-x; class.x<-"data"
     }
     # if(exist.x==T && isFALSE(missing(data))){
@@ -154,7 +155,7 @@ chk.data<-function(x,data,name.data,name.x,num=F,missing=F,
     
     if(!is.null(check.dim) & required=="vector"){
       x.err.list<-c(x.err.list,paste0("'",which,"' should be vector, not ",class(x))) } 
-    if(!is.null(check.dim) & required=="data" && (class(x)=="matrix" | class(x)=="data.frame")){
+    if(!is.null(check.dim) & required=="data" && (inherits(x,"matrix") | inherits(x,"data.frame"))){
       x.exist.x<-T; x.vec.x<-x; x.class.x<-"data"
     }
     
@@ -276,10 +277,10 @@ chkpar.option<-function(value,allowed,onlyone=T,listall=T,
   if(sum(ok.value)==0){
     err.list<-c(err.list,paste0("All the elements of '",what,"' are missing!"))
   } else if(sum(ok.value)>0){
-    if(class(value)[1] != "character"){
+    if(!inherits(value,"character")){
       err.list<-c(err.list,paste0("'",what,"' cannot be a ",class(value)[1]))
     } 
-    if(class(value)[1] == "character"){
+    if(inherits(value,"character")){
       value<-value[ok.value==T]
       is.inchar<-pmatch(toupper(value),toupper(allowed))
       valid<-!is.na(is.inchar)

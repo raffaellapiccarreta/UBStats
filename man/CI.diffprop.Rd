@@ -24,6 +24,14 @@ the columns in the data frame specified in the \code{data} argument.
 It is possible to use a mixed specification (e.g, one vector and one
 column in data).}
 
+\item{success.x, success.y}{If \code{x,y} are factors, character
+vectors, or numeric non-binary vectors, success must be used to indicate
+the category/value corresponding to success in the populations. These
+arguments can be omitted (\code{NULL}, default) if \code{x,y} are binary
+numeric vectors (taking values 0 or 1 only; in this case success is
+assumed to correspond to 1) or a logical vector (in these cases success
+is assumed to correspond to \code{TRUE}).}
+
 \item{conf.level}{Numeric value corresponding to the confidence level
 required. Default to 0.95.}
 
@@ -50,14 +58,6 @@ If not found in \code{data}, the variables are taken from the environment
 from which \code{CI.diffprop()} is called.}
 
 \item{...}{Additional arguments to be passed to low level functions.}
-
-\item{successes.x, }{successes.y If \code{x,y} are factors, character
-vectors, or numeric non-binary vectors, success must be used to indicate
-the category/value corresponding to success in the populations. These
-arguments can be omitted (\code{NULL}, default) if \code{x,y} are binary
-numeric vectors (taking values 0 or 1 only; in this case success is
-assumed to correspond to 1) or a logical vector (in these cases success
-is assumed to correspond to \code{TRUE}).}
 }
 \value{
 A table reporting the confidence intervals for the population

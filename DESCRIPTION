@@ -16,14 +16,15 @@ NeedsCompilation: no
 Repository: CRAN
 LazyData: true
 Imports:
-    graphics
+    graphics,
+    grDevices,
+    stats,
+    utils
 Suggests:
     knitr,
     testthat
 Depends:
-    R (>= 3.5.0),
-    stats,
-    utils
+    R (>= 3.5.0)
 BugReports: https://github.com/raffaellapiccarreta/UBStats/issues
 Encoding: UTF-8
 RoxygenNote: 7.2.3

@@ -271,7 +271,7 @@ CI.prop<-function(x, success=NULL,conf.level = 0.95, digits = 2,
 #'     samples.
 #' @param type A length-one character vector specifying the type of samples.
 #'   Allowed values are \code{"independent"} or \code{"paired"}.
-#' @param sigma.x, sigma.y Optional numeric values representing the population
+#' @param sigma.x,sigma.y Optional numeric values representing the population
 #'   standard deviations for the two population. If \code{NULL} they estimate
 #'   the populations standard deviations using the data.
 #' @param sigma.by An optional numeric value used to specify the possibly known
@@ -506,7 +506,7 @@ CI.diffmean<-function(x,y,type="independent",sigma.x=NULL,sigma.y=NULL,sigma.by=
 #'     the same length, \code{x} must be numeric, and \code{by} can take only
 #'     two values. Note that this option is available only for \bold{independent}
 #'     samples.
-#' @param successes.x, successes.y If \code{x,y} are factors, character
+#' @param success.x,success.y If \code{x,y} are factors, character
 #'   vectors, or numeric non-binary vectors, success must be used to indicate
 #'   the category/value corresponding to success in the populations. These
 #'   arguments can be omitted (\code{NULL}, default) if \code{x,y} are binary
@@ -975,7 +975,7 @@ TEST.prop<-function(x, success=NULL,p0=0.5,
 #'     samples.
 #' @param type A length-one character vector specifying the type of samples.
 #'   Allowed values are \code{"independent"} or \code{"paired"}.
-#' @param sigma.x, sigma.y Optional numeric values representing the population
+#' @param sigma.x,sigma.y Optional numeric values representing the population
 #'   standard deviations for the two population. If \code{NULL} they estimate
 #'   the populations standard deviations using the data.
 #' @param sigma.by An optional numeric value used to specify the possibly known
@@ -1233,7 +1233,7 @@ TEST.diffmean<-function(x,y,type="independent",mdiff0=0,sigma.x=NULL,
 #'     the same length, \code{x} must be numeric, and \code{by} can take only
 #'     two values. Note that this option is available only for \bold{independent}
 #'     samples.
-#' @param successes.x, successes.y If \code{x,y} are factors, character
+#' @param success.x,success.y If \code{x,y} are factors, character
 #'   vectors, or numeric non-binary vectors, success must be used to indicate
 #'   the category/value corresponding to success in the populations. These
 #'   arguments can be omitted (\code{NULL}, default) if \code{x,y} are binary

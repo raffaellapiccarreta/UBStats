@@ -31,7 +31,7 @@ column in data).}
 \item{type}{A length-one character vector specifying the type of samples.
 Allowed values are \code{"independent"} or \code{"paired"}.}
 
-\item{sigma.x, }{sigma.y Optional numeric values representing the population
+\item{sigma.x, sigma.y}{Optional numeric values representing the population
 standard deviations for the two population. If \code{NULL} they estimate
 the populations standard deviations using the data.}
 
