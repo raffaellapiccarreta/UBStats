@@ -5,8 +5,28 @@
 \alias{UBStats-package}
 \alias{UBStats-pkg}
 \alias{UBStats-p}
-\title{UBStats: A package for teaching statistics at Università Bocconi}
+\alias{UBStats}
+\title{UBStats: a package for teaching introductory statistics courses at Bocconi University (Milan, Italy)}
 \description{
-The \pkg{UBStats} package ...
+The \pkg{UBStats} package contains functions for performing basic
+statistical analyses. The package has been developed to be used
+in statistics courses at Bocconi University (Milan, Italy).
+
+Currently, the package includes some exploratory and inferential analyses
+usually presented in introductory statistics courses.
+
+The main functions included in the package are:
+\itemize{
+\item \code{\link{distr.table.x}()}
+\item \code{\link{distr.table.xy}()}
+\item \code{\link{distr.plot.x}()}
+\item \code{\link{distr.plot.xy}()}
+\item \code{\link{distr.summary.x}()}
+\item \code{\link{CI.mean}()} and \code{\link{TEST.mean}()}
+\item \code{\link{CI.prop}()} and \code{\link{TEST.prop}()}
+\item \code{\link{CI.diffmean}()} and \code{\link{TEST.diffmean}()}
+\item \code{\link{CI.diffprop}()} and \code{\link{TEST.diffprop}()}
+\item \code{\link{TEST.diffvar}()}
+}
 }
 \keyword{internal}
