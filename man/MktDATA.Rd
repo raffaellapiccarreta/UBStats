@@ -5,15 +5,12 @@
 \alias{MktDATA}
 \title{Data: MktDATA}
 \format{
-An object of class \code{data.frame} with 2224 rows and 26 columns.
+A data frame with 2224 observations and 26 variables.
 }
 \usage{
 data(MktDATA)
 }
 \description{
-A data frame with 2224 observations and 26 variables.
-}
-\details{
 This dataset is a modification of the original \code{\link{MktDATA.Orig}}
 dataset and it is provided for user convenience.
 }

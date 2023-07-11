@@ -5,19 +5,10 @@
 \alias{MktDATA.Orig}
 \title{Data: MktDATA.Orig}
 \format{
-An object of class \code{data.frame} with 2224 rows and 19 columns.
-}
-\source{
-The data set has been adapted from \href{https://www.kaggle.com/code/dmitryuarov/customers-clustering-eda}{https://www.kaggle.com/code/dmitryuarov/customers-clustering-eda}.
-}
-\usage{
-data(MktDATA.Orig)
-}
-\description{
 A data frame with 2224 observations and the following 19
 variables (levels of the variables listed in alphabetical order):
+#' * \strong{\code{CustId}} (num): customer's identification label
 \itemize{
-\item \strong{\code{CustId}} (num): customer's identification label
 \item \strong{\code{Gender}} (chr): customer's gender (\code{F}, \code{M})
 \item \strong{\code{Age}} (num): customer's age (in years)
 \item \strong{\code{Education}} (chr): customer's level of education(\code{College}, \code{Graduate},
@@ -39,7 +30,13 @@ household
 \item \strong{\code{WouldSuggest}} (chr): variable signalling whether (\code{Yes}) or not
 }
 }
-\details{
+\source{
+The data set has been adapted from \href{https://www.kaggle.com/code/dmitryuarov/customers-clustering-eda}{https://www.kaggle.com/code/dmitryuarov/customers-clustering-eda}.
+}
+\usage{
+data(MktDATA.Orig)
+}
+\description{
 This dataset contains the variables from a survey on a set of customers
 of a company operating in the retail food sector. The company sells
 products from 3 major categories (referred to as A, B, C) The customers can
