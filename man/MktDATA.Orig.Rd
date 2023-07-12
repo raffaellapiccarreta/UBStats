@@ -13,7 +13,7 @@ variables (levels of the variables listed in alphabetical order):
 \item \strong{\code{Gender}} (\code{chr}): customer's gender (\code{F}, \code{M})
 \item \strong{\code{Age}} (\code{num}): customer's age (in years)
 \item \strong{\code{Education}} (\code{chr}): customer's level of education(\code{College}, \code{Graduate},
-\code{HighSchool},\code{Post-Grad})
+\code{HighSchool}, \code{Post-Grad})
 \item \strong{\code{Marital_Status}} (\code{chr}): customer's marital status
 (\code{Divorced}, \code{Married}, \code{Single}, \code{Together}, \code{Widow})
 \item \strong{\code{Children}} (\code{num}): number of children in the household
