@@ -1,4 +1,4 @@
-#' Data: MktDATA.Orig
+#' Data: MktDATAOrig
 #'
 #' This dataset contains the variables from a survey on a set of customers
 #' of a company operating in the retail food sector. The company sells
@@ -12,7 +12,7 @@
 #' marketing campaigns were launched; a last campaign was launched at the end of
 #' the observation period.
 #'
-#' @usage data(MktDATA.Orig)
+#' @usage data(MktDATAOrig)
 #'
 #' @format{
 #'   A data frame with 2224 observations and the following 19
@@ -54,11 +54,11 @@
 #' }
 #' 
 #' @source The data set has been adapted from \href{https://www.kaggle.com/code/dmitryuarov/customers-clustering-eda}{https://www.kaggle.com/code/dmitryuarov/customers-clustering-eda}.
-"MktDATA.Orig"
+"MktDATAOrig"
 
 #' Data: MktDATA
 #'
-#' This dataset is a modification of the original \code{\link{MktDATA.Orig}}
+#' This dataset is a modification of the original \code{\link{MktDATAOrig}}
 #' dataset and it is provided for user convenience.
 #'
 #' @usage data(MktDATA)
