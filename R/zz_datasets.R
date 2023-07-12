@@ -21,7 +21,7 @@
 #'   * **`Gender`** (`chr`): customer's gender (`F`, `M`)
 #'   * **`Age`** (`num`): customer's age (in years)
 #'   * **`Education`** (`chr`): customer's level of education(`College`, `Graduate`,
-#'     `HighSchool`,`Post-Grad`)
+#'     `HighSchool`, `Post-Grad`)
 #'   * **`Marital_Status`** (`chr`): customer's marital status
 #'     (`Divorced`, `Married`, `Single`, `Together`, `Widow`)
 #'   * **`Children`** (`num`): number of children in the household
