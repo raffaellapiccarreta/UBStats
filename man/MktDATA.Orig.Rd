@@ -5,6 +5,7 @@
 \alias{MktDATA.Orig}
 \title{Data: MktDATA.Orig}
 \format{
+{
 A data frame with 2224 observations and the following 19
 variables (levels of the variables listed in alphabetical order):
 \itemize{
@@ -42,6 +43,7 @@ the end of the observation period
 \item \strong{\code{WouldSuggest}} (\code{chr}): variable signalling whether (\code{Yes}) or not
 (\code{No}) the customer declared they would suggest the company's products
 to friends and family
+}
 }
 }
 \source{
