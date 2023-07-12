@@ -11,7 +11,7 @@
 data(MktDATA)
 }
 \description{
-This dataset is a modification of the original \code{\link{MktDATAOrig}}
+This dataset is a modification of the original \code{\link{MktDATA.Orig}}
 dataset and it is provided for user convenience.
 }
 \keyword{datasets}
