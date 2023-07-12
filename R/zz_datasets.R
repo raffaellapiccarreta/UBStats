@@ -1,6 +1,6 @@
 #' Data: MktDATA
 #'
-#' This dataset is a modification of the original \code{\link{MktDATA.Orig}}
+#' This dataset is a modification of the original MktDATA.Orig
 #' dataset and it is provided for user convenience.
 #'
 #' @usage data(MktDATA)
