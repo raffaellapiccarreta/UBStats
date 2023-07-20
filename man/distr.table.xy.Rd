@@ -22,7 +22,7 @@ distr.table.xy(
 )
 }
 \arguments{
-\item{x, y}{Quoted or unquoted strings identifying the variables whose
+\item{x, y}{Unquoted strings identifying the variables whose
 distribution has to be analysed. \code{x} and \code{y} can be the
 name of a vector or a factor in the workspace or the name of one of
 the columns in the data frame specified in the \code{data} argument.

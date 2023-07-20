@@ -251,13 +251,13 @@ CI.prop<-function(x, success=NULL,conf.level = 0.95, digits = 2,
 #' \code{CI.diffmean()} computes confidence intervals for the difference
 #'   between the means of two populations.
 #'
-#' @param x,y Quoted or unquoted strings identifying the variables whose
+#' @param x,y Unquoted strings identifying the variables whose
 #'   distribution has to be analysed. \code{x} and \code{y} can be the
 #'   name of a vector or a factor in the workspace or the name of one of
 #'   the columns in the data frame specified in the \code{data} argument.
 #'   It is possible to use a mixed specification (e.g, one vector and one
 #'   column in data).
-#' @param by Quoted or unquoted string identifying the variable used to
+#' @param by Unquoted string identifying the variable used to
 #'   identify the two samples whose means have to be compared. Note that
 #'   only \bold{one} between \code{y} and \code{by} can be specified. More
 #'   specifically:
@@ -488,13 +488,13 @@ CI.diffmean<-function(x,y,type="independent",sigma.x=NULL,sigma.y=NULL,sigma.by=
 #' \code{CI.diffprop()} computes confidence intervals for the difference
 #'   between the proportion of successes of two populations.
 #'
-#' @param x,y Quoted or unquoted strings identifying the variables whose
+#' @param x,y Unquoted strings identifying the variables whose
 #'   distribution has to be analysed. \code{x} and \code{y} can be the
 #'   name of a vector or a factor in the workspace or the name of one of
 #'   the columns in the data frame specified in the \code{data} argument.
 #'   It is possible to use a mixed specification (e.g, one vector and one
 #'   column in data).
-#' @param by Quoted or unquoted string identifying the variable used to
+#' @param by Unquoted string identifying the variable used to
 #'   identify the two samples whose means have to be compared. Note that
 #'   only \bold{one} between \code{y} and \code{by} can be specified. More
 #'   specifically:
@@ -955,13 +955,13 @@ TEST.prop<-function(x, success=NULL,p0=0.5,
 #' \code{TEST.diffmean()} computes tests for the difference between the
 #'   means of two populations.
 #'
-#' @param x,y Quoted or unquoted strings identifying the variables whose
+#' @param x,y Unquoted strings identifying the variables whose
 #'   distribution has to be analysed. \code{x} and \code{y} can be the
 #'   name of a vector or a factor in the workspace or the name of one of
 #'   the columns in the data frame specified in the \code{data} argument.
 #'   It is possible to use a mixed specification (e.g, one vector and one
 #'   column in data).
-#' @param by Quoted or unquoted string identifying the variable used to
+#' @param by Unquoted string identifying the variable used to
 #'   identify the two samples whose means have to be compared. Note that
 #'   only \bold{one} between \code{y} and \code{by} can be specified. More
 #'   specifically:
@@ -1215,13 +1215,13 @@ TEST.diffmean<-function(x,y,type="independent",mdiff0=0,sigma.x=NULL,
 #' \code{TEST.diffprop()} computes tests for the difference between the
 #'   proportion of successes of two populations.
 #'
-#' @param x,y Quoted or unquoted strings identifying the variables whose
+#' @param x,y Unquoted strings identifying the variables whose
 #'   distribution has to be analysed. \code{x} and \code{y} can be the
 #'   name of a vector or a factor in the workspace or the name of one of
 #'   the columns in the data frame specified in the \code{data} argument.
 #'   It is possible to use a mixed specification (e.g, one vector and one
 #'   column in data).
-#' @param by Quoted or unquoted string identifying the variable used to
+#' @param by Unquoted string identifying the variable used to
 #'   identify the two samples whose means have to be compared. Note that
 #'   only \bold{one} between \code{y} and \code{by} can be specified. More
 #'   specifically:
@@ -1427,13 +1427,13 @@ TEST.diffprop<-function(x,y,success.x=NULL,success.y=NULL,pdiff0=0,
 #' \code{TEST.diffvar()} allows testing the equality between the variances
 #'   of two independent samples.
 #'
-#' @param x,y Quoted or unquoted strings identifying the variables whose
+#' @param x,y Unquoted strings identifying the variables whose
 #'   distribution has to be analysed. \code{x} and \code{y} can be the
 #'   name of a vector or a factor in the workspace or the name of one of
 #'   the columns in the data frame specified in the \code{data} argument.
 #'   It is possible to use a mixed specification (e.g, one vector and one
 #'   column in data).
-#' @param by Quoted or unquoted string identifying the variable used to
+#' @param by Unquoted string identifying the variable used to
 #'   identify the two samples whose means have to be compared. Note that
 #'   only \bold{one} between \code{y} and \code{by} can be specified. More
 #'   specifically:
