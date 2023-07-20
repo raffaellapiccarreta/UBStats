@@ -2,7 +2,7 @@ Package: UBStats
 Type: Package
 Title: Basic Statistics with R
 Version: 0.1.0
-Date: 2023-07-14
+Date: 2023-07-20
 Authors@R: c(
   person("Raffaella", "Piccarreta", role=c("aut", "cre"), email = "raffaella.piccarreta@unibocconi.it"),
   person("Sergio", "Venturini", role=c("ctb"), email = "sergio.venturini@unicatt.it"))
@@ -22,8 +22,7 @@ Imports:
     utils
 Suggests:
     knitr,
-    rmarkdown,
-    testthat
+    rmarkdown
 Depends:
     R (>= 3.5.0)
 BugReports: https://github.com/raffaellapiccarreta/UBStats/issues
