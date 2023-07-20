@@ -17,7 +17,7 @@ CI.diffprop(
 )
 }
 \arguments{
-\item{x, y}{Quoted or unquoted strings identifying the variables whose
+\item{x, y}{Unquoted strings identifying the variables whose
 distribution has to be analysed. \code{x} and \code{y} can be the
 name of a vector or a factor in the workspace or the name of one of
 the columns in the data frame specified in the \code{data} argument.
@@ -38,7 +38,7 @@ required. Default to 0.95.}
 \item{digits}{Integer value specifying the number of decimals used
 to round statistics; default to 2.}
 
-\item{by}{Quoted or unquoted string identifying the variable used to
+\item{by}{Unquoted string identifying the variable used to
 identify the two samples whose means have to be compared. Note that
 only \bold{one} between \code{y} and \code{by} can be specified. More
 specifically:

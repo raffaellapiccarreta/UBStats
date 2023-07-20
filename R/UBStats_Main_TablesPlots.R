@@ -228,7 +228,7 @@ distr.table.x<-function(x,freq=c("counts","proportions"),total=TRUE,
 #' \code{distr.table.xy()} allows displaying tables of joint or conditional
 #'   distributions.
 #'
-#' @param x,y Quoted or unquoted strings identifying the variables whose
+#' @param x,y Unquoted strings identifying the variables whose
 #'   distribution has to be analysed. \code{x} and \code{y} can be the
 #'   name of a vector or a factor in the workspace or the name of one of
 #'   the columns in the data frame specified in the \code{data} argument.
@@ -818,7 +818,7 @@ distr.plot.x<-function(x,freq="Counts",plot.type,ord.freq="none",
 #'
 #' \code{distr.plot.xy()} generates plots of a bivariate distribution.
 #'
-#' @param x,y Quoted or unquoted strings identifying the variables whose
+#' @param x,y Unquoted strings identifying the variables whose
 #'   distribution has to be analysed. \code{x} and \code{y} can be the
 #'   name of a vector or a factor in the workspace or the name of one of
 #'   the columns in the data frame specified in the \code{data} argument.
@@ -1500,7 +1500,7 @@ build.summaries<-function(x,by1=NULL,by2=NULL,name.1=NULL,name.2=NULL,
 #'   distribution has to be analysed. \code{x} can be the name of a vector
 #'   or a factor in the workspace or the name of one of the columns in the
 #'   data frame specified in the \code{data} argument.
-#' @param by1,by2 Quoted or unquoted strings identifying optional variables
+#' @param by1,by2 Unquoted strings identifying optional variables
 #'   (typically taking few values/levels) used to build conditional summaries,
 #'   that can be defined same way as x.
 #' @param stats String vector providing the summary statistics to compute.

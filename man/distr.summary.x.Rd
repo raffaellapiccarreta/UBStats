@@ -21,7 +21,7 @@ distribution has to be analysed. \code{x} can be the name of a vector
 or a factor in the workspace or the name of one of the columns in the
 data frame specified in the \code{data} argument.}
 
-\item{by1, by2}{Quoted or unquoted strings identifying optional variables
+\item{by1, by2}{Unquoted strings identifying optional variables
 (typically taking few values/levels) used to build conditional summaries,
 that can be defined same way as x.}
 
