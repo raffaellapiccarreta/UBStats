@@ -2,7 +2,7 @@
 #'
 #' \code{CI.mean()} computes confidence intervals for the mean of a population.
 #'
-#' @param x A quoted or unquoted string identifying the variable whose
+#' @param x An unquoted string identifying the variable whose
 #'   distribution has to be analysed. \code{x} can be the name of a vector
 #'   or a factor in the workspace or the name of one of the columns in the
 #'   data frame specified in the \code{data} argument.
@@ -117,7 +117,7 @@ CI.mean<-function(x,sigma = NULL,conf.level = 0.95, digits = 2,
 #' \code{CI.prop()} computes confidence intervals for the proportion of
 #'   successes for a population.
 #'
-#' @param x A quoted or unquoted string identifying the variable whose
+#' @param x An unquoted string identifying the variable whose
 #'   distribution has to be analysed. \code{x} can be the name of a vector
 #'   or a factor in the workspace or the name of one of the columns in the
 #'   data frame specified in the \code{data} argument.
@@ -680,7 +680,7 @@ CI.diffprop<-function(x,y,success.x=NULL,success.y=NULL,
 #'
 #' \code{TEST.mean()} performs tests on the mean of a population.
 #'
-#' @param x A quoted or unquoted string identifying the variable whose
+#' @param x An unquoted string identifying the variable whose
 #'   distribution has to be analysed. \code{x} can be the name of a vector
 #'   or a factor in the workspace or the name of one of the columns in the
 #'   data frame specified in the \code{data} argument.
@@ -808,7 +808,7 @@ TEST.mean<-function(x,sigma = NULL,mu0=0,alternative="two.sided",
 #' \code{TEST.prop()} performs tests on the proportion of successes for a
 #'   population.
 #'
-#' @param x A quoted or unquoted string identifying the variable whose
+#' @param x An unquoted string identifying the variable whose
 #'   distribution has to be analysed. \code{x} can be the name of a vector
 #'   or a factor in the workspace or the name of one of the columns in the
 #'   data frame specified in the \code{data} argument.

@@ -7,7 +7,7 @@
 CI.mean(x, sigma = NULL, conf.level = 0.95, digits = 2, data, ...)
 }
 \arguments{
-\item{x}{A quoted or unquoted string identifying the variable whose
+\item{x}{An unquoted string identifying the variable whose
 distribution has to be analysed. \code{x} can be the name of a vector
 or a factor in the workspace or the name of one of the columns in the
 data frame specified in the \code{data} argument.}

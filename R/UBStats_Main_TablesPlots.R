@@ -2,7 +2,7 @@
 #'
 #' \code{distr.table.x()} computes the frequency table of a vector or a factor.
 #'
-#' @param x A quoted or unquoted string identifying the variable whose
+#' @param x An unquoted string identifying the variable whose
 #'   distribution has to be analysed. \code{x} can be the name of a vector
 #'   or a factor in the workspace or the name of one of the columns in the
 #'   data frame specified in the \code{data} argument.
@@ -533,7 +533,7 @@ Proportions=prop.table(tab.c,margin=use.m[1]),
 #'
 #' \code{distr.plot.x()} generates plots of a univariate distribution.
 #'
-#' @param x A quoted or unquoted string identifying the variable whose
+#' @param x An unquoted string identifying the variable whose
 #'   distribution has to be analysed. \code{x} can be the name of a vector
 #'   or a factor in the workspace or the name of one of the columns in the
 #'   data frame specified in the \code{data} argument.
@@ -1496,7 +1496,7 @@ build.summaries<-function(x,by1=NULL,by2=NULL,name.1=NULL,name.2=NULL,
 #'
 #' \code{distr.summary.x()} computes the frequency table of a vector or a factor.
 #'
-#' @param x A quoted or unquoted string identifying the variable whose
+#' @param x An unquoted string identifying the variable whose
 #'   distribution has to be analysed. \code{x} can be the name of a vector
 #'   or a factor in the workspace or the name of one of the columns in the
 #'   data frame specified in the \code{data} argument.
