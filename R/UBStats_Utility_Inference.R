@@ -446,7 +446,7 @@ ci.diff.paired_known<-function(x,y,names.xy,sigma.d,
   z.q<-qnorm(0.5+conf.level/2)
   if(n.xy<n.or){
     my.p.list(paste0("\n Warning: ",(n.or-n.xy),
-                     " obs with NA on 'x' removed"),
+                     " obs with NA on 'x,y' removed"),
               type.print=type.print)
   }
   out<-t(as.matrix(c(n.xy,mean(x),mean(y),
@@ -478,7 +478,7 @@ hyp.diff.paired_known<-function(x,y,mdiff0=0,names.xy,sigma.d,
   se.diff<-s.diff/sqrt(n.xy)
   if(n.xy<n.or){
     my.p.list(paste0("\n Warning: ",(n.or-n.xy),
-                     " obs with NA on 'x' removed"),
+                     " obs with NA on 'x,y' removed"),
               type.print=type.print)
   }
   z <- (m.diff - mdiff0) / se.diff
@@ -547,7 +547,7 @@ ci.diff.paired_unknown<-function(x,y,names.xy,conf.level = 0.95,
   se.diff<-s.diff/sqrt(n.xy)
   if(n.xy<n.or){
     my.p.list(paste0("\n Warning: ",(n.or-n.xy),
-                     " obs with NA on 'x' removed"),
+                     " obs with NA on 'x,y' removed"),
               type.print=type.print)
   }
   out<-rbind(c(n.xy,mean(x),mean(y),m.diff,s.diff,
@@ -579,7 +579,7 @@ hyp.diff.paired_unknown<-function(x,y,mdiff0=0,names.xy,
   se.diff<-s.diff/sqrt(n.xy)
   if(n.xy<n.or){
     my.p.list(paste0("\n Warning: ",(n.or-n.xy),
-                     " obs with NA on 'x' removed"),
+                     " obs with NA on 'x,y' removed"),
               type.print=type.print)
   }
   z <- (m.diff - mdiff0) / se.diff
@@ -1185,4 +1185,3 @@ hyp.diff.prop<-function(x,y,names.xy,pdiff0=0,success.x=NULL,
   print(data.frame(out,check.names=FALSE),row.names = F)
   output=data.frame(out,check.names=FALSE)
 }#ok
-
