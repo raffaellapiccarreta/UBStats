@@ -7,7 +7,7 @@
 distr.table.xy(
   x,
   y,
-  freq = "Counts",
+  freq = "counts",
   freq.type = "joint",
   total = TRUE,
   breaks.x,
@@ -29,11 +29,11 @@ the columns in the data frame specified in the \code{data} argument.
 Note that in the table \code{x} is displayed on the \emph{rows} and
 \code{y} on the \emph{columns}.}
 
-\item{freq}{A string providing the frequencies to be displayed. Allowed
-values (possibly abbreviated) are \code{"counts"},
+\item{freq}{A single character providing the frequencies to be displayed.
+Allowed values (possibly abbreviated) are \code{"counts"},
 \code{"percentages"} and \code{"proportions"}.}
 
-\item{freq.type}{A length-one character vector providing the type of
+\item{freq.type}{A single character providing the type of
 frequencies to be displayed. Allowed options are \code{joint} (default)
 for joint frequencies, \code{x|y} (or \code{column}) for the distributions
 of \code{x} conditioned to \code{y}, and \code{y|x} (or \code{row}) for

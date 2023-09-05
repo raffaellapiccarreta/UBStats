@@ -465,11 +465,11 @@ plt.x.cum<-function(xlist,color=NULL,name.x,freq,adj.breaks){
     if(max(nchar(as.character(use.max.y)))<=5){mylas=1} else{mylas=0}
     par(las=mylas)
     if(adj.breaks==F){
-      plot(x=x.values,y=Cum.freq,type="l",main=paste0("Ogiva: ",name.x),
+      plot(x=x.values,y=Cum.freq,type="l",main=paste0("Ogive: ",name.x),
            xlab="",ylab="",lwd=2,ylim=c(0,use.max.y),col=use.color)
       points(x=x.values,y=Cum.freq,pch=16,col=use.color)}
     if(adj.breaks==T){
-      plot(x=x.values,y=Cum.freq,type="l",main=paste0("Ogiva: ",name.x),
+      plot(x=x.values,y=Cum.freq,type="l",main=paste0("Ogive: ",name.x),
            xlab="",ylab="",lwd=2,ylim=c(0,use.max.y),col=use.color,axes=F)
       points(x=x.values,y=Cum.freq,pch=16,col=use.color)
       p.yaxp<-par("yaxp")
@@ -563,11 +563,11 @@ plt.x.cum<-function(xlist,color=NULL,name.x,freq,adj.breaks){
     if(max(nchar(as.character(use.max.y)))<=5){mylas=1} else{mylas=0}
     par(las=mylas)
     if(adj.breaks==F){
-      plot(x=x.values,y=Cum.freq,type="l",main=paste0("Ogiva: ",name.x),
+      plot(x=x.values,y=Cum.freq,type="l",main=paste0("Ogive: ",name.x),
            xlab="",ylab="",lwd=2,ylim=c(0,use.max.y),col=use.color)
       points(x=x.values,y=Cum.freq,pch=16,col=use.color)}
     if(adj.breaks==T){
-      plot(x=x.values,y=Cum.freq,type="l",main=paste0("Ogiva: ",name.x),
+      plot(x=x.values,y=Cum.freq,type="l",main=paste0("Ogive: ",name.x),
            xlab="",ylab="",lwd=2,ylim=c(0,use.max.y),col=use.color,axes=F)
       points(x=x.values,y=Cum.freq,pch=16,col=use.color)
       p.yaxp<-par("yaxp")
@@ -823,26 +823,6 @@ plt.xy.crossbars<-function(tab,bw=T,color=NULL,name.x,name.y,freq,legend,
           mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis) 
       barplot(tab,col=use.color,main=tit.use,
               ylim=c(0,use.max.y),beside=beside)
-      # qq<-barplot(tab,main=tit.use,col="transparent", border="transparent",
-      #             axisnames=FALSE,beside=beside,axes=F,ylim=c(0,max(use.max.y)))
-      # axis(side=2)
-      # oldn.tab<-ncol(tab)*(nrow(tab)+1)
-      # n.tab<-max(qq)+((bar.width)/2)+bar.space[length(bar.space)]
-      # lgd <- legend(x = "topright",rownames(tab), pch = c(20),plot=F)
-      # par.usr.old<-par("usr")
-      # tot.plot<-par.usr.old[2]+lgd$rect$w
-      # frac.plot<-par.usr.old[2]/tot.plot
-      # qq<-barplot(tab,add=T,axes=F,axisnames=FALSE,names.arg=NULL,
-      #             width=bar.width*frac.plot,space=bar.space*frac.plot,
-      #             legend.text = T,
-      #             args.legend=list(x=(n.tab)*frac.plot,
-      #                              cex=(frac.plot),xjust=0),
-      #             beside=beside,col=use.color[1:length(use.color)])
-      # if(beside==T){means.qq<-apply(qq,2,mean)}
-      # if(beside==F){means.qq<-qq}
-      # 
-      # axis(side = 1, lwd = 0, line = -.1,at=means.qq,
-      #      labels=colnames(tab))
       mtext(side = 1, name.x, line = 2)
       mtext(side = 2, freq, line = 2.5, las=0)
       
@@ -896,30 +876,6 @@ plt.xy.crossbars<-function(tab,bw=T,color=NULL,name.x,name.y,freq,legend,
              pch=21,pt.bg=use.color,pt.cex=1,bty="n",x.intersp = 0.5,
              cex=use.par$cex.axis,title=name.x,xjust=0,title.adj=0)    
     }
-    # if(max(nchar(as.character(use.max.y)))<=5){mylas=1} else{mylas=0}
-    # par(las=mylas)
-    # tit.use<-paste0("Bars: ",name.y,symb.in.tit,name.x)  
-    # qq<-barplot(tab,main=tit.use,col="transparent", border="transparent",
-    #             axisnames=FALSE,beside=beside,axes=F,ylim=c(0,max(use.max.y)))
-    # axis(side=2)
-    # oldn.tab<-ncol(tab)*(nrow(tab)+1)
-    # n.tab<-max(qq)+((bar.width)/2)+bar.space[length(bar.space)]
-    # lgd <- legend(x = "topright",rownames(tab), pch = c(20),plot=F)
-    # par.usr.old<-par("usr")
-    # tot.plot<-par.usr.old[2]+lgd$rect$w
-    # frac.plot<-par.usr.old[2]/tot.plot
-    # qq<-barplot(tab,add=T,axes=F,axisnames=FALSE,names.arg=NULL,
-    #             width=bar.width*frac.plot,space=bar.space*frac.plot,
-    #             legend.text = T,
-    #             args.legend=list(x=(n.tab)*frac.plot,cex=(frac.plot),xjust=0),
-    #             beside=beside,col=use.color[1:length(use.color)])
-    # if(beside==T){means.qq<-apply(qq,2,mean)}
-    # if(beside==F){means.qq<-qq}
-    # 
-    # axis(side = 1, lwd = 0, line = -.1,at=means.qq,
-    #      labels=colnames(tab))
-    # mtext(side = 1, name.x, line = 2,at=mean(qq))
-    # mtext(side = 2, freq, line = 2.5, las=0)
   }
 }
 

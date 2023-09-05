@@ -58,21 +58,6 @@ CI.mean<-function(x,sigma = NULL,conf.level = 0.95, digits = 2,
   Err.list.para<-chkpar.conf(value=conf.level,err.list=Err.list.para)
   
   # If there are errors, print errors and stop
-  # if(length(Err.list.input)>1 | length(Err.list.para)>1){
-  #   if(length(Warn.list)>1){
-  #     invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))   }
-  #   if(length(Err.list.input)>1){
-  #     invisible(lapply(Err.list.input[duplicated(Err.list.input)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))   }
-  #   if(length(Err.list.para)>1){
-  #     cat("\nErrors found in the definition of parameters:",file=stderr())  
-  #     invisible(lapply(Err.list.para[duplicated(Err.list.para)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))   }
-  #   cat("\nThe procedure is interrupted",file=stderr())  
-  #   stop_quietly()}
-  
-  # If there are errors, print errors and stop
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
     if(msg.p$err==T){
       if(length(Warn.list)>1){
@@ -90,10 +75,6 @@ CI.mean<-function(x,sigma = NULL,conf.level = 0.95, digits = 2,
   }
   
   # Ready for intervals
-  # if(length(Warn.list)>1){ # not needed, leave in case added warnings
-  #   invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                    function(x) cat(paste0("\n   ",x),file=stderr()))) 
-  #   cat("\n")}
   if(length(Warn.list)>1){ # not needed, leave in case added warnings
     if(msg.p$warn==T){
       if(length(Warn.list)>1){
@@ -196,20 +177,6 @@ CI.prop<-function(x, success=NULL,conf.level = 0.95, digits = 2,
   Err.list.para<-chkpar.conf(value=conf.level,err.list=Err.list.para)
   
   # If there are errors, print errors and stop
-  # if(length(Err.list.input)>1 | length(Err.list.para)>1){
-  #   if(length(Warn.list)>1){
-  #     invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))   }
-  #   if(length(Err.list.input)>1){
-  #     invisible(lapply(Err.list.input[duplicated(Err.list.input)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr()))) }
-  #   if(length(Err.list.para)>1){
-  #     invisible(lapply(Err.list.para[duplicated(Err.list.para)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr()))) }
-  #   cat("\nThe procedure is interrupted",file=stderr())  
-  #   stop_quietly()}
-
-  # If there are errors, print errors and stop
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
     if(msg.p$err==T){
       if(length(Warn.list)>1){
@@ -227,10 +194,6 @@ CI.prop<-function(x, success=NULL,conf.level = 0.95, digits = 2,
   }
   
   # Ready for intervals
-  # if(length(Warn.list)>1){ # not needed, leave in case added warnings
-  #   invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                    function(x) cat(paste0("\n   ",x),file=stderr()))) 
-  #   cat("\n")}
   if(length(Warn.list)>1){ # not needed, leave in case added warnings
     if(msg.p$warn==T){
       if(length(Warn.list)>1){
@@ -371,20 +334,6 @@ CI.diffmean<-function(x,y,type="independent",sigma.x=NULL,sigma.y=NULL,sigma.by=
   Err.list.para<-chkpar.conf(value=conf.level,err.list=Err.list.para)
 
   # If there are errors, print errors and stop
-  # if(length(Err.list.input)>1 | length(Err.list.para)>1){
-  #   if(length(Warn.list)>1){
-  #     invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))  }
-  #   if(length(Err.list.input)>1){
-  #     invisible(lapply(Err.list.input[duplicated(Err.list.input)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))  }
-  #   if(length(Err.list.para)>1){
-  #     invisible(lapply(Err.list.para[duplicated(Err.list.para)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))}
-  #   cat("\nThe procedure is interrupted",file=stderr())  
-  #   stop_quietly()}
-
-  # If there are errors, print errors and stop
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
     if(msg.p$err==T){
       if(length(Warn.list)>1){
@@ -447,11 +396,6 @@ CI.diffmean<-function(x,y,type="independent",sigma.x=NULL,sigma.y=NULL,sigma.by=
       sigma.x<-sigma.y<-sigma.by
     }
   }
-  # if(length(Warn.list)>1){
-  #   invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                    function(x) cat(paste0("\n   ",x),file=stderr())))  
-  #   cat("\n")
-  # }
   
   if(length(Warn.list)>1){ # not needed, leave in case added warnings
     if(msg.p$warn==T){
@@ -605,19 +549,6 @@ CI.diffprop<-function(x,y,success.x=NULL,success.y=NULL,
   Err.list.para<-chkpar.conf(value=conf.level,err.list=Err.list.para)
   
   # If there are errors, print errors and stop
-  # if(length(Err.list.input)>1 | length(Err.list.para)>1){
-  #   if(length(Warn.list)>1){
-  #     invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))   }
-  #   if(length(Err.list.input)>1){
-  #     invisible(lapply(Err.list.input[duplicated(Err.list.input)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))   }
-  #   if(length(Err.list.para)>1){
-  #     invisible(lapply(Err.list.para[duplicated(Err.list.para)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))}
-  #   cat("\nThe procedure is interrupted",file=stderr())  
-  #   stop_quietly()}
-  # If there are errors, print errors and stop
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
     if(msg.p$err==T){
       if(length(Warn.list)>1){
@@ -656,11 +587,6 @@ CI.diffprop<-function(x,y,success.x=NULL,success.y=NULL,
     if(!is.null(success.x)){success.y<-success.x}
   }
   
-  # if(length(Warn.list)>1){
-  #   invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                    function(x) cat(paste0("\n   ",x),file=stderr())))  
-  #   cat("\n")}
-
   if(length(Warn.list)>1){ # not needed, leave in case added warnings
     if(msg.p$warn==T){
       if(length(Warn.list)>1){
@@ -755,18 +681,6 @@ TEST.mean<-function(x,sigma = NULL,mu0=0,alternative="two.sided",
   exist.a<-check.alternative$exist
   alternative<-check.alternative$value
   
-  # If there are errors, print errors and stop
-  # if(length(Err.list.input)>1 | length(Err.list.para)>1){
-  #   if(length(Err.list.input)>1){
-  #     invisible(lapply(Err.list.input[duplicated(Err.list.input)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))  
-  #   }
-  #   if(length(Err.list.para)>1){
-  #     invisible(lapply(Err.list.para[duplicated(Err.list.para)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))
-  #   }
-  #   cat("\nThe procedure is interrupted",file=stderr())  
-  #   stop_quietly()}
   # If there are errors, print errors and stop
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
     if(msg.p$err==T){
@@ -908,16 +822,6 @@ TEST.prop<-function(x, success=NULL,p0=0.5,
   alternative<-check.alternative$value
   
   # If there are errors, print errors and stop
-  # if(length(Err.list.input)>1 | length(Err.list.para)>1){
-  #   if(length(Err.list.input)>1){
-  #     invisible(lapply(Err.list.input[duplicated(Err.list.input)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr()))) }
-  #   if(length(Err.list.para)>1){
-  #     invisible(lapply(Err.list.para[duplicated(Err.list.para)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))}
-  #   
-  #   cat("\nThe procedure is interrupted",file=stderr())  
-  #   stop_quietly()}
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
     if(msg.p$err==T){
       if(length(Warn.list)>1){
@@ -1098,18 +1002,6 @@ TEST.diffmean<-function(x,y,type="independent",mdiff0=0,sigma.x=NULL,
   alternative<-check.alternative$value
   
   # If there are errors, print errors and stop
-  # if(length(Err.list.input)>1 | length(Err.list.para)>1){
-  #   if(length(Warn.list)>1){
-  #     invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr()))) }
-  #   if(length(Err.list.input)>1){
-  #     invisible(lapply(Err.list.input[duplicated(Err.list.input)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr()))) }
-  #   if(length(Err.list.para)>1){
-  #     invisible(lapply(Err.list.para[duplicated(Err.list.para)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))}
-  #   cat("\nThe procedure is interrupted",file=stderr())  
-  #   stop_quietly()}
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
     if(msg.p$err==T){
       if(length(Warn.list)>1){
@@ -1186,7 +1078,7 @@ TEST.diffmean<-function(x,y,type="independent",mdiff0=0,sigma.x=NULL,
     }
   }
   
-  # Ready for MODIFICARE IN TESTS
+  # Ready for tests
   if(type=="paired" & !is.null(sigma.d)){
     output<-hyp.diff.paired_known(x=use.x,y=use.y,names.xy=names.xy,
                                   mdiff0=mdiff0,sigma.d=sigma.d,
@@ -1352,18 +1244,6 @@ TEST.diffprop<-function(x,y,success.x=NULL,success.y=NULL,pdiff0=0,
   alternative<-check.alternative$value
   
   # If there are errors, print errors and stop
-  # if(length(Err.list.input)>1 | length(Err.list.para)>1){
-  #   if(length(Warn.list)>1){
-  #     invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))  }
-  #   if(length(Err.list.input)>1){
-  #     invisible(lapply(Err.list.input[duplicated(Err.list.input)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
-  #   if(length(Err.list.para)>1){
-  #     invisible(lapply(Err.list.para[duplicated(Err.list.para)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))}
-  #   cat("\nThe procedure is interrupted",file=stderr())  
-  #   stop_quietly()}
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
     if(msg.p$err==T){
       if(length(Warn.list)>1){
@@ -1547,7 +1427,7 @@ TEST.diffvar<-function(x,y,by,digits=2,data,...){
                 "y"=paste0(name.x,"|",name.by,"=",levels(use.by)[2]))
   }
   
-  # Ready for MODIFICARE IN TESTS
+  # Ready for tests
   my.p.list(paste0("Test hypotheses on variances", 
                    "\n   x=",names.xy["x"],
                    "\n   y=",names.xy["y"]),type.print=type.print)
