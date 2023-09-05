@@ -8,7 +8,7 @@ distr.summary.x(
   x,
   by1,
   by2,
-  stats = "summary",
+  stats = c("summary"),
   digits = 2,
   f.digits = 4,
   data,
@@ -25,7 +25,8 @@ data frame specified in the \code{data} argument.}
 (typically taking few values/levels) used to build conditional summaries,
 that can be defined same way as x.}
 
-\item{stats}{String vector providing the summary statistics to compute.
+\item{stats}{A character vector providing the summary statistics to compute
+(more summaries can be specified).
 The following options are available:
 \itemize{
 \item \code{"summary"} returns min, q1 , median, mean, q3, max, sd, var,

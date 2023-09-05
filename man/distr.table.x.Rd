@@ -24,14 +24,14 @@ distribution has to be analysed. \code{x} can be the name of a vector
 or a factor in the workspace or the name of one of the columns in the
 data frame specified in the \code{data} argument.}
 
-\item{freq}{A string providing the type of frequencies to be displayed.
-Allowed values (possibly abbreviated) are \code{"counts"},
-\code{"percentages"}, \code{"proportions"}, \code{"densities"}
-(only for variables classified into intervals), and \code{"cumulative"}.
-If no frequency is specified, \code{"counts"} and \code{"proportions"}
-are displayed by default if only \code{"cumulative"} is requested,
-counts and proportions will also be displayed, with their respective
-cumulative frequencies.}
+\item{freq}{A character vector providing the type of frequencies to be
+displayed (more types are allowed). Allowed values (possibly abbreviated)
+are \code{"counts"}, \code{"percentages"}, \code{"proportions"},
+\code{"densities"} (only for variables classified into intervals),
+and \code{"cumulative"}. If no frequency is specified, \code{"counts"}
+and \code{"proportions"} are displayed by default if only \code{"cumulative"}
+is requested, counts and proportions will also be displayed, with their
+respective cumulative frequencies.}
 
 \item{total}{Logical value indicating whether the sum of the requested
 frequencies should be added to the table; default to \code{TRUE}.}

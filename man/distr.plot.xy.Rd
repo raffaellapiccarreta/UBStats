@@ -7,7 +7,7 @@
 distr.plot.xy(
   x,
   y,
-  freq = "Counts",
+  freq = "counts",
   freq.type = "joint",
   plot.type,
   bar.type = "stacked",
@@ -32,21 +32,21 @@ the columns in the data frame specified in the \code{data} argument.
 Note that in the output \code{x} represents the \emph{row} variable
 while \code{y} corresponds to the \emph{column} variable.}
 
-\item{freq}{A string providing the frequencies to be displayed. Allowed
+\item{freq}{A single character providing the frequencies to be displayed. Allowed
 values (possibly abbreviated) are \code{"counts"},
 \code{"percentages"} and \code{"proportions"}.}
 
-\item{freq.type}{A length-one character vector providing the type of
+\item{freq.type}{A single character providing the type of
 frequencies to be displayed. Allowed options are \code{joint} (default)
 for joint frequencies, \code{x|y} (or \code{column}) for the distributions
 of \code{x} conditioned to \code{y}, and \code{y|x} (or \code{row}) for
 the distributions of \code{y} conditioned to \code{x}.}
 
-\item{plot.type}{A length-one character vector providing the plot to generate.
+\item{plot.type}{A single character providing the plot to generate.
 Allowed values are \code{"bars"}, \code{"scatter"}, and
 \code{"boxplot"}.}
 
-\item{bar.type}{A length-one character vector indicating whether in a bar plot,
+\item{bar.type}{A single character indicating whether in a bar plot,
 stacked (\code{bar.type = "stacked"}, default) or side-by-side
 (\code{bar.type = "beside"}) bars should be displayed.}
 

@@ -1,5 +1,5 @@
 # Functions specific for inference ------
-
+ 
 chkpar.conf<-function(value,err.list=NULL){
   if(is.list(err.list)==F){err.list<-list()}
   ok.value<-(complete.cases(value))
@@ -201,7 +201,7 @@ ci.mean.known<-function(x,sigma,conf.level = 0.95,
   }
   z.q<-qnorm(0.5+conf.level/2)
   out<-t(as.matrix(c(n.x,m.x,s.x,se.m,m.x+(c(-1,1)*(se.m*z.q)))))
-  colnames(out)<-c("n","xbar","sigma","SE","Lower","Upper")
+  colnames(out)<-c("n","xbar","sigma_X","SE","Lower","Upper")
   out[2:length(out)]<-round(out[2:length(out)],digits)
   print(data.frame(out,check.names=FALSE),row.names = F)
   output=data.frame(out,check.names=FALSE)
@@ -250,8 +250,8 @@ hyp.mean.known<-function(x,sigma=1,mu0=0,alternative="two.sided",
   my.p.list(c(paste0(" Null hypothesis        H0: ",tit.null),
       paste0(" Alternative hypothesis H1: ",tit.alt)),
       type.print=type.print)
-  out<-data.frame(n=n.x,xbar=round(m.x,digits),sigma=round(s.x,digits),SE=round(se.m,digits),
-                  Stat=round(z,digits),
+  out<-data.frame(n=n.x,xbar=round(m.x,digits),sigma_X=round(s.x,digits),SE=round(se.m,digits),
+                  stat=round(z,digits),
                   "p.value"=round(p.z,4),"p-value"=as.character(round(p.z,4)),
                   check.names=FALSE)
   out[["p-value"]][out[["p.value"]]<0.0001]<-"<0.0001"
@@ -279,7 +279,7 @@ ci.mean.unknown<-function(x,conf.level = 0.95,digits=2,
   t.q<-qt((0.5+conf.level/2),df=(n.x-1))
   out<-rbind(c(n.x,m.x,s.x,se.m,m.x+(c(-1,1)*(se.m*z.q))),
              c(n.x,m.x,s.x,se.m,m.x+(c(-1,1)*(se.m*t.q))))
-  colnames(out)<-c("n","xbar","sd","SE","Lower","Upper")
+  colnames(out)<-c("n","xbar","s_X","se","Lower","Upper")
   rownames(out)<-c("Normal.Approx","Student-t")
   out[,2:ncol(out)]<-round(out[,2:ncol(out)],digits)
   print(data.frame(out,check.names=FALSE))
@@ -334,9 +334,9 @@ hyp.mean.unknown<-function(x,mu0=0,alternative="two.sided",
               paste0(" Alternative hypothesis H1: ",tit.alt)),
             type.print=type.print)
   
-  out<-data.frame(n=c(n.x,n.x),xbar=round(c(m.x,m.x),digits),sd=round(c(s.x,s.x),digits),
-                  SE=round(c(se.m,se.m),digits),
-                  Stat=round(c(z,z),digits),"p.value"=round(c(p.z,p.t),4),
+  out<-data.frame(n=c(n.x,n.x),xbar=round(c(m.x,m.x),digits),s_X=round(c(s.x,s.x),digits),
+                  se=round(c(se.m,se.m),digits),
+                  stat=round(c(z,z),digits),"p.value"=round(c(p.z,p.t),4),
                   "p-value"=as.character(round(c(p.z,p.t),4)),
                   check.names=FALSE)
   out[["p-value"]][out[["p.value"]]<0.0001]<-"<0.0001"
@@ -349,7 +349,7 @@ hyp.mean.unknown<-function(x,mu0=0,alternative="two.sided",
 ci.prop<-function(x,success,conf.level = 0.95, 
                   digits = 2,type.print="cat"){
   my.p.list(paste0("Confidence interval for the proportion",
-             "\nConfidence level: ",conf.level))
+             "\nConfidence level: ",conf.level),type.print=type.print)
   n.or<-length(x)
   x<-na.omit(x)
   n.x<-length(x)
@@ -365,7 +365,7 @@ ci.prop<-function(x,success,conf.level = 0.95,
   }
   #tochk<-n.x*p.x*(1-p.x)
   out<-t(as.matrix(c(n.x,p.x,s.x,se.p,p.x+(c(-1,1)*(se.p*z.q)))))
-  colnames(out)<-c("n","pbar","sd","SE","Lower","Upper")
+  colnames(out)<-c("n","phat","s_X","se","Lower","Upper")
   out[2:length(out)]<-round(out[2:length(out)],digits)
   print(data.frame(out,check.names=FALSE),row.names = F)
   output=data.frame(out,check.names=FALSE)
@@ -416,8 +416,8 @@ hyp.prop<-function(x,success,p0=0.5,alternative="two.sided",
               paste0(" Alternative hypothesis H1: ",tit.alt)),
             type.print=type.print)
   
-  out<-data.frame(n=n.x,pbar=round(p.x,digits),SE=round(se.p,digits),
-                  Stat=round(z,digits),"p.value"=round(p.z,4),
+  out<-data.frame(n=n.x,phat=round(p.x,digits),s_X=round(s.x,digits),se=round(se.p,digits),
+                  stat=round(z,digits),"p.value"=round(p.z,4),
                   "p-value"=as.character(round(p.z,4)),
                   check.names=FALSE)
   out[["p-value"]][out[["p.value"]]<0.0001]<-"<0.0001"
@@ -451,7 +451,7 @@ ci.diff.paired_known<-function(x,y,names.xy,sigma.d,
   }
   out<-t(as.matrix(c(n.xy,mean(x),mean(y),
                      m.diff,s.diff,se.diff,m.diff+(c(-1,1)*(se.diff*z.q)))))
-  colnames(out)<-c("n","xbar","ybar","d=xbar-ybar","sigma_d","SE",
+  colnames(out)<-c("n","xbar","ybar","dbar=xbar-ybar","sigma_D","SE",
                    "Lower","Upper")
   out[2:length(out)]<-round(out[2:length(out)],digits)
   print(data.frame(out,check.names=FALSE),row.names = F)
@@ -515,9 +515,9 @@ hyp.diff.paired_known<-function(x,y,mdiff0=0,names.xy,sigma.d,
             type.print=type.print)
   out<-data.frame(n=n.xy,xbar=round(mean(x),digits),
                   ybar=round(mean(y),digits),
-                  "d=xbar-ybar"=round(m.diff,digits),
-                  "sigma_d"=round(s.diff,digits),
-                  "SE"=round(se.diff,digits),Stat=round(z,digits),
+                  "dbar=xbar-ybar"=round(m.diff,digits),
+                  "sigma_D"=round(s.diff,digits),
+                  "SE"=round(se.diff,digits),stat=round(z,digits),
                   "p.value"=round(p.z,4),"p-value"=as.character(round(p.z,4)),
                   check.names=FALSE)
   out[["p-value"]][out[["p.value"]]<0.0001]<-"<0.0001"
@@ -554,7 +554,7 @@ ci.diff.paired_unknown<-function(x,y,names.xy,conf.level = 0.95,
                se.diff,m.diff+(c(-1,1)*(se.diff*z.q))),
              c(n.xy,mean(x),mean(y),m.diff,s.diff,
                se.diff,m.diff+(c(-1,1)*(se.diff*t.q))))
-  colnames(out)<-c("n","xbar","ybar","d=xbar-ybar","sd_d","SE",
+  colnames(out)<-c("n","xbar","ybar","dbar=xbar-ybar","s_D","se",
                    "Lower","Upper")
   rownames(out)<-c("Normal.Approx","Student-t")
   out[,2:ncol(out)]<-round(out[,2:ncol(out)],digits)
@@ -623,10 +623,10 @@ hyp.diff.paired_unknown<-function(x,y,mdiff0=0,names.xy,
   out<-data.frame(n=c(n.xy,n.xy),
                   "xbar"=round(c(mean(x),mean(x)),digits),
                   "ybar"=round(c(mean(y),mean(y)),digits),
-                  "d=xbar-ybar"=round(c(m.diff,m.diff),digits),
-                  "sd_d"=round(c(s.diff,s.diff),digits),
-                  SE=round(c(se.diff,se.diff),digits),
-                  Stat=round(c(z,z),digits),
+                  "dbar=xbar-ybar"=round(c(m.diff,m.diff),digits),
+                  "s_D"=round(c(s.diff,s.diff),digits),
+                  "se"=round(c(se.diff,se.diff),digits),
+                  stat=round(c(z,z),digits),
                   "p.value"=round(c(p.z,p.t),4),
                   "p-value"=as.character(round(c(p.z,p.t),4)),
                   check.names=FALSE)
@@ -671,8 +671,8 @@ ci.diff.indep_known<-function(x,y,names.xy,sigma.x,sigma.y,
 
   out<-rbind(c(n.x,n.y,mean(x),mean(y),m.diff,sigma.x,sigma.y,
                se.diff,m.diff+(c(-1,1)*(se.diff*z.q))))
-  colnames(out)<-c("n_x","n_y","xbar","ybar","d=xbar-ybar",
-                   "sigma_x","sigma_y","SE","Lower","Upper")
+  colnames(out)<-c("n_x","n_y","xbar","ybar","xbar-ybar",
+                   "sigma_X","sigma_Y","SE","Lower","Upper")
   out[3:length(out)]<-round(out[3:length(out)],digits)
   print(data.frame(out,check.names=FALSE),row.names = F)
   output=data.frame(out,check.names=FALSE)
@@ -742,11 +742,11 @@ hyp.diff.indep_known<-function(x,y,mdiff0=0,names.xy,sigma.x,sigma.y,
   out<-data.frame(n_x=n.x,n_y=n.y,
                   xbar=round(mean(x),digits),
                   ybar=round(mean(y),digits),
-                  "d=xbar-ybar"=round(m.diff,digits),
-                  "sigma_x"=round(sigma.x,digits),
-                  "sigma_y"=round(sigma.y,digits),
+                  "xbar-ybar"=round(m.diff,digits),
+                  "sigma_X"=round(sigma.x,digits),
+                  "sigma_Y"=round(sigma.y,digits),
                   "SE"=round(se.diff,digits),
-                  Stat=round(z,digits),
+                  stat=round(z,digits),
                   "p.value"=round(p.z,4),"p-value"=as.character(round(p.z,4)),
                   check.names=FALSE)
   out[["p-value"]][out[["p.value"]]<0.0001]<-"<0.0001"
@@ -810,8 +810,8 @@ ci.diff.indep_unknown<-function(x,y,names.xy,conf.level = 0.95,
                     m.diff+(c(-1,1)*(se.unequal*tdiff.q))))
   out.eq[3:length(out.eq)]<-round(out.eq[3:length(out.eq)],digits)
   out.diff[3:length(out.diff)]<-round(out.diff[3:length(out.diff)],digits)
-  colnames(out.eq)<-c("n_x","n_y","xbar","ybar","d=xbar-ybar",
-                      "sd_x","sd_y","SE",
+  colnames(out.eq)<-c("n_x","n_y","xbar","ybar","xbar-ybar",
+                      "s_X","s_Y","se",
                       "Lower","Upper")
   colnames(out.diff)<-colnames(out.eq)
   rownames(out.eq)<-rownames(out.diff)<-c("Normal.Approx","Student-t")
@@ -850,9 +850,9 @@ hyp.diff.var<-function(x,y,type="levene",digits=2,
     den.stat<-(length(x)-1)*var(z_x) + (length(y)-1)*var(z_y)
     stat<-(length(x)+length(y)-2)*num.stat/den.stat
     p.stat<-1-pf(stat,df1=1,df2=(length(x)+length(y)-2))
-    out.var<-data.frame("var_x"=round(s2.x,digits),
-                        "var_y"=round(s2.y,digits),
-                        "F-Stat"=round(stat,digits),
+    out.var<-data.frame("s2_x"=round(s2.x,digits),
+                        "s2_y"=round(s2.y,digits),
+                        "F-stat"=round(stat,digits),
                         "df1"=1,"df2"=(length(x)+length(y)-2),
                         "p.value"=round(p.stat,4),
                         "p-value"=as.character(round(p.stat,4)),
@@ -963,22 +963,22 @@ hyp.diff.indep_unknown<-function(x,y,mdiff0=0,names.xy,
   out.eq<-data.frame(n_x=c(n.x,n.x),n_y=c(n.y,n.y),
                      "xbar"=round(c(mean(x),mean(x)),digits),
                      "ybar"=round(c(mean(y),mean(y)),digits),
-                     "d=xbar-ybar"=round(c(m.diff,m.diff),digits),
-                     "sd_x"=round(c(sqrt(s2.x),sqrt(s2.x)),digits),
-                     "sd_y"=round(c(sqrt(s2.y),sqrt(s2.y)),digits),
-                     SE=round(c(se.equal,se.equal),digits),
-                     Stat=round(c(z.eq,z.eq),digits),
+                     "xbar-ybar"=round(c(m.diff,m.diff),digits),
+                     "s_X"=round(c(sqrt(s2.x),sqrt(s2.x)),digits),
+                     "s_Y"=round(c(sqrt(s2.y),sqrt(s2.y)),digits),
+                     "se"=round(c(se.equal,se.equal),digits),
+                     stat=round(c(z.eq,z.eq),digits),
                      "p.value"=round(c(p.zeq,p.teq),4),
                      "p-value"=as.character(round(c(p.zeq,p.teq),4)),
                      check.names=FALSE)
   out.diff<-data.frame(n_x=c(n.x,n.x),n_y=c(n.y,n.y),
                        "xbar"=round(c(mean(x),mean(x)),digits),
                        "ybar"=round(c(mean(y),mean(y)),digits),
-                       "d=xbar-ybar"=round(c(m.diff,m.diff),digits),
-                       "sd_x"=round(c(sqrt(s2.x),sqrt(s2.x)),digits),
-                       "sd_y"=round(c(sqrt(s2.y),sqrt(s2.y)),digits),
-                       SE=round(c(se.unequal,se.unequal),digits),
-                       Stat=round(c(z.uneq,z.uneq),digits),
+                       "xbar-ybar"=round(c(m.diff,m.diff),digits),
+                       "s_X"=round(c(sqrt(s2.x),sqrt(s2.x)),digits),
+                       "s_Y"=round(c(sqrt(s2.y),sqrt(s2.y)),digits),
+                       "se"=round(c(se.unequal,se.unequal),digits),
+                       stat=round(c(z.uneq,z.uneq),digits),
                        "p.value"=round(c(p.zuneq,p.tuneq),4),
                        "p-value"=as.character(round(c(p.zuneq,p.tuneq),4)),
                        check.names=FALSE)
@@ -1070,8 +1070,8 @@ ci.diff.prop<-function(x,y,names.xy,success.x=NULL,success.y=NULL,
   out<-t(as.matrix(c(n.x,n.y,p.x,p.y,
                      p.diff,s.x,s.y,se.xy,
                      p.diff+(c(-1,1)*(se.xy*z.q)))))
-  colnames(out)<-c("n_x","n_y","pbar_x","pbar_y","d=pbar_x-pbar_y",
-                   "sd_x","sd_y","SE",
+  colnames(out)<-c("n_x","n_y","phat_x","phat_y","phat_x-phat_y",
+                   "s_X","s_Y","se",
                    "Lower","Upper")
   out[3:length(out)]<-round(out[3:length(out)],digits)
   print(data.frame(out,check.names=FALSE),row.names = F)
@@ -1125,6 +1125,11 @@ hyp.diff.prop<-function(x,y,names.xy,pdiff0=0,success.x=NULL,
   s.y<-sqrt(p.y*(1-p.y))
   se.xy<-sqrt((p.x*(1-p.x)/n.x)+(p.y*(1-p.y)/n.y))
   
+  if(pdiff0==0){
+    p_xy<-(x.success+y.success)/(n.x+n.y)
+    se.xy<-sqrt((p_xy*(1-p_xy)/n.x)+(p_xy*(1-p_xy)/n.y))
+  }
+  
   msg.warn<-NULL
   if(n.x<n.or.x){
     msg.warn<-paste0((n.or.x-n.x),
@@ -1169,19 +1174,24 @@ hyp.diff.prop<-function(x,y,names.xy,pdiff0=0,success.x=NULL,
   my.p.list(c(paste0(" Null hypothesis        H0: ",tit.null),
               paste0(" Alternative hypothesis H1: ",tit.alt)),
             type.print=type.print)
-  
-  out<-data.frame("n_x"=n.x,"n_y"=n.y,
-                  "pbar_x"=round(p.x,digits),
-                  "pbar_y"=round(p.y,digits),
-                  "d=pbar_x-pbar_y"=round(p.diff,digits),
-                  "sd_y"=round(s.y,digits),
-                  "sd_x"=round(s.x,digits),
-                  "SE"=round(se.xy,digits),
-                  Stat=round(z,digits),"p.value"=round(p.z,4),
+  out<-data.frame("n_x"=n.x,
+                  "n_y"=n.y,
+                  "phat_x"=round(p.x,digits),
+                  "phat_y"=round(p.y,digits),
+                  "phat_x-phat_y"=round(p.diff,digits),
+                  "s_X"=round(s.x,digits),
+                  "s_Y"=round(s.y,digits),
+                  "se"=round(se.xy,digits),
+                  stat=round(z,digits),
+                  "p.value"=round(p.z,4),
                   "p-value"=as.character(round(p.z,4)),
                   check.names=FALSE)
+  if(pdiff0==0){
+    colnames(out)[8]<-"se_0"
+  }
   out[["p-value"]][out[["p.value"]]<0.0001]<-"<0.0001"
   out[["p.value"]]<-NULL
   print(data.frame(out,check.names=FALSE),row.names = F)
   output=data.frame(out,check.names=FALSE)
 }#ok
+

@@ -6,14 +6,14 @@
 #'   distribution has to be analysed. \code{x} can be the name of a vector
 #'   or a factor in the workspace or the name of one of the columns in the
 #'   data frame specified in the \code{data} argument.
-#' @param freq A string providing the type of frequencies to be displayed.
-#'   Allowed values (possibly abbreviated) are \code{"counts"},
-#'   \code{"percentages"}, \code{"proportions"}, \code{"densities"}
-#'   (only for variables classified into intervals), and \code{"cumulative"}.
-#'   If no frequency is specified, \code{"counts"} and \code{"proportions"}
-#'   are displayed by default if only \code{"cumulative"} is requested,
-#'   counts and proportions will also be displayed, with their respective
-#'   cumulative frequencies.
+#' @param freq A character vector providing the type of frequencies to be 
+#'   displayed (more types are allowed). Allowed values (possibly abbreviated)
+#'   are \code{"counts"}, \code{"percentages"}, \code{"proportions"},
+#'   \code{"densities"} (only for variables classified into intervals),
+#'   and \code{"cumulative"}. If no frequency is specified, \code{"counts"}
+#'   and \code{"proportions"} are displayed by default if only \code{"cumulative"}
+#'   is requested, counts and proportions will also be displayed, with their
+#'   respective cumulative frequencies.
 #' @param total Logical value indicating whether the sum of the requested
 #'   frequencies should be added to the table; default to \code{TRUE}.
 #' @param breaks Allows to classify a \emph{numerical} variable \code{x} into
@@ -142,18 +142,6 @@ distr.table.x<-function(x,freq=c("counts","proportions"),total=TRUE,
   }
   # Print all the warnings
   if(length(Warn.list)>1 | length(List.print)>0){
-    # if(msg.p==T & markd==F){
-    #   if(length(Warn.list)>1){
-    #   invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-    #                    function(x) cat(paste0("\n   ",x),file=stderr())))  }
-    # if(length(List.print)>0){
-    #   invisible(lapply(List.print,
-    #                    function(x) if(is.character(x)){cat(paste0("\n   ",x),file=stderr())
-    #                    } else if(is.data.frame(x)){print(x)}))
-    # }
-    # cat("\n")
-    # }
-
     if(msg.p$warn==T){
       if(length(Warn.list)>1){
         my.p.list(Warn.list[duplicated(Warn.list)==F],type.print=type.print)
@@ -234,10 +222,10 @@ distr.table.x<-function(x,freq=c("counts","proportions"),total=TRUE,
 #'   the columns in the data frame specified in the \code{data} argument.
 #'   Note that in the table \code{x} is displayed on the \emph{rows} and
 #'   \code{y} on the \emph{columns}.
-#' @param freq A string providing the frequencies to be displayed. Allowed
-#'   values (possibly abbreviated) are \code{"counts"},
+#' @param freq A single character providing the frequencies to be displayed. 
+#'   Allowed values (possibly abbreviated) are \code{"counts"},
 #'   \code{"percentages"} and \code{"proportions"}.
-#' @param freq.type A length-one character vector providing the type of
+#' @param freq.type A single character providing the type of
 #'   frequencies to be displayed. Allowed options are \code{joint} (default) 
 #'   for joint frequencies, \code{x|y} (or \code{column}) for the distributions
 #'   of \code{x} conditioned to \code{y}, and \code{y|x} (or \code{row}) for
@@ -329,7 +317,7 @@ distr.table.x<-function(x,freq=c("counts","proportions"),total=TRUE,
 #'   msg.control = list(err = FALSE, warn = FALSE, msg = TRUE))
 #'
 #' @export
-distr.table.xy<-function(x,y,freq="Counts",freq.type="joint",total=TRUE,
+distr.table.xy<-function(x,y,freq="counts",freq.type="joint",total=TRUE,
                          breaks.x,breaks.y,adj.breaks=TRUE,interval.x=FALSE,
                          interval.y=FALSE,f.digits=2,p.digits=0,data,...){
   type.print<-"cat"
@@ -410,26 +398,6 @@ distr.table.xy<-function(x,y,freq="Counts",freq.type="joint",total=TRUE,
     Ylist<-all.infoY$Vlist
   }
 
-  ## Interrupt the procedure if there are errors
-  # if(length(Err.list.input)>1 | length(Err.list.para)>1 |
-  #    length(Err.list.options)>1){
-  #   if(length(Warn.list)>1){
-  #     invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
-  #   if(length(Err.list.input)>1){
-  #     invisible(lapply(Err.list.input[duplicated(Err.list.input)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
-  #   if(length(Err.list.para)>1){
-  #     invisible(lapply(Err.list.para[duplicated(Err.list.para)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
-  #   if(length(Err.list.options)>1){
-  #     invisible(lapply(Err.list.options,
-  #                      function(x) if(is.character(x)){cat(paste0("\n   ",x),file=stderr())
-  #                      } else if(is.data.frame(x)){print(x)}))
-  #   }
-  #   cat("\nThe procedure is interrupted",file=stderr())
-  #   stop_quietly()}
-
   if(length(Err.list.input)>1 | length(Err.list.para)>1 |
      length(Err.list.options)>1){
     if(msg.p$err==T){
@@ -451,18 +419,6 @@ distr.table.xy<-function(x,y,freq="Counts",freq.type="joint",total=TRUE,
   }
 
   # Ready for tables!
-  # Print all the warnings
-  # if(length(Warn.list)>1 | length(List.print)>0){
-  #   if(length(Warn.list)>1){
-  #     invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))  }
-  #   if(length(List.print)>0){
-  #     invisible(lapply(List.print,
-  #                      function(x) if(is.character(x)){cat(paste0("\n   ",x),file=stderr())
-  #                      } else if(is.data.frame(x)){print(x)}))
-  #   }
-  #   cat("\n") }
-
   if(length(Warn.list)>1 | length(List.print)>0){
     if(msg.p$warn==T){
       if(length(Warn.list)>1){
@@ -537,11 +493,11 @@ Proportions=prop.table(tab.c,margin=use.m[1]),
 #'   distribution has to be analysed. \code{x} can be the name of a vector
 #'   or a factor in the workspace or the name of one of the columns in the
 #'   data frame specified in the \code{data} argument.
-#' @param freq A length-one character vector providing the frequencies to be
+#' @param freq A single character providing the frequencies to be
 #'   displayed. Allowed values (possibly abbreviated) are \code{"counts"},
 #'   \code{"percentages"}, \code{"proportions"}, \code{"densities"}
 #'   (for histograms and density plots).
-#' @param plot.type A length-one character vector providing the plot to generate.
+#' @param plot.type A single character providing the type of plot to build.
 #'   Allowed values are \code{"pie"}, \code{"bars"}, \code{"spike"},
 #'   \code{"histogram"}, \code{"density"}, \code{"boxplot"}, and
 #'   \code{"cumulative"}.
@@ -614,7 +570,7 @@ Proportions=prop.table(tab.c,margin=use.m[1]),
 #' distr.plot.x(Income, plot.type = "cum", interval = TRUE, data = MktDATA)
 #'
 #' @export
-distr.plot.x<-function(x,freq="Counts",plot.type,ord.freq="none",
+distr.plot.x<-function(x,freq="counts",plot.type,ord.freq="none",
                        breaks,adj.breaks=TRUE,interval=FALSE,
                        bw=FALSE,color=NULL,data,...){
   type.print<-"cat"
@@ -708,26 +664,6 @@ distr.plot.x<-function(x,freq="Counts",plot.type,ord.freq="none",
     }
   }
 
-  ## Interrupt the procedure if there are errors
-  # if(length(Err.list.input)>1 | length(Err.list.para)>1 |
-  #    length(Err.list.options)>1){
-  #   if(length(Warn.list)>1){
-  #     invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
-  #   if(length(Err.list.input)>1){
-  #     invisible(lapply(Err.list.input[duplicated(Err.list.input)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
-  #   if(length(Err.list.para)>1){
-  #     invisible(lapply(Err.list.para[duplicated(Err.list.para)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
-  #   if(length(Err.list.options)>1){
-  #     invisible(lapply(Err.list.options,
-  #                      function(x) if(is.character(x)){cat(paste0("\n   ",x),file=stderr())
-  #                      } else if(is.data.frame(x)){print(x)}))
-  #   }
-  #   cat("\nThe procedure is interrupted",file=stderr())
-  #   stop_quietly()}
-
   if(length(Err.list.input)>1 | length(Err.list.para)>1 |
      length(Err.list.options)>1){
     if(msg.p$err==T){
@@ -753,17 +689,6 @@ distr.plot.x<-function(x,freq="Counts",plot.type,ord.freq="none",
   if(type.plt=="density" & Xlist$class=="breaks"){
     Warn.list<-c(Warn.list,"'breaks' ignored in density plots")
   }
-
-  # if(length(Warn.list)>1 | length(List.print)>0){
-  #   if(length(Warn.list)>1){
-  #     invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))  }
-  #   if(length(List.print)>0){
-  #     invisible(lapply(List.print,
-  #                      function(x) if(is.character(x)){cat(paste0("\n   ",x))
-  #                      } else if(is.data.frame(x)){print(x)}))
-  #   }
-  #   cat("\n") }
 
   if(length(Warn.list)>1 | length(List.print)>0){
     if(msg.p$warn==T){
@@ -824,18 +749,18 @@ distr.plot.x<-function(x,freq="Counts",plot.type,ord.freq="none",
 #'   the columns in the data frame specified in the \code{data} argument.
 #'   Note that in the output \code{x} represents the \emph{row} variable
 #'   while \code{y} corresponds to the \emph{column} variable.
-#' @param freq A string providing the frequencies to be displayed. Allowed
+#' @param freq A single character providing the frequencies to be displayed. Allowed
 #'   values (possibly abbreviated) are \code{"counts"},
 #'   \code{"percentages"} and \code{"proportions"}.
-#' @param freq.type A length-one character vector providing the type of
+#' @param freq.type A single character providing the type of
 #'   frequencies to be displayed. Allowed options are \code{joint} (default) 
 #'   for joint frequencies, \code{x|y} (or \code{column}) for the distributions
 #'   of \code{x} conditioned to \code{y}, and \code{y|x} (or \code{row}) for
 #'   the distributions of \code{y} conditioned to \code{x}.
-#' @param plot.type A length-one character vector providing the plot to generate.
+#' @param plot.type A single character providing the plot to generate.
 #'   Allowed values are \code{"bars"}, \code{"scatter"}, and
 #'   \code{"boxplot"}.
-#' @param bar.type A length-one character vector indicating whether in a bar plot,
+#' @param bar.type A single character indicating whether in a bar plot,
 #'   stacked (\code{bar.type = "stacked"}, default) or side-by-side
 #'   (\code{bar.type = "beside"}) bars should be displayed.
 #' @param breaks.x Allows to classify a \emph{numerical} variable \code{x} into
@@ -912,7 +837,7 @@ distr.plot.x<-function(x,freq="Counts",plot.type,ord.freq="none",
 #'   breaks.y = c(0, 5, 10, 15, 20, 35), plot.type = "scatter", data = MktDATA)
 #'
 #' @export
-distr.plot.xy<-function(x,y,freq="Counts",freq.type="joint",plot.type,
+distr.plot.xy<-function(x,y,freq="counts",freq.type="joint",plot.type,
                         bar.type="stacked",fitline=FALSE,legend=TRUE,
                         breaks.x,breaks.y,adj.breaks=TRUE,
                         interval.x=FALSE,interval.y=FALSE,
@@ -1059,25 +984,6 @@ distr.plot.xy<-function(x,y,freq="Counts",freq.type="joint",plot.type,
                                "\n   "," -> to force the procedure transform the variable/s into factor/s"))
     }
   }
-  ## Interrupt the procedure if there are errors
-  # if(length(Err.list.input)>1 | length(Err.list.para)>1 |
-  #    length(Err.list.options)>1){
-  #   if(length(Warn.list)>1){
-  #     invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
-  #   if(length(Err.list.input)>1){
-  #     invisible(lapply(Err.list.input[duplicated(Err.list.input)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
-  #   if(length(Err.list.para)>1){
-  #     invisible(lapply(Err.list.para[duplicated(Err.list.para)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
-  #   if(length(Err.list.options)>1){
-  #     invisible(lapply(Err.list.options,
-  #                      function(x) if(is.character(x)){cat(paste0("\n   ",x),file=stderr())
-  #                      } else if(is.data.frame(x)){print(x)}))
-  #   }
-  #   cat("\nThe procedure is interrupted",file=stderr())
-  #   stop_quietly()}
 
   if(length(Err.list.input)>1 | length(Err.list.para)>1 |
      length(Err.list.options)>1){
@@ -1099,20 +1005,7 @@ distr.plot.xy<-function(x,y,freq="Counts",freq.type="joint",plot.type,
     stop_quietly()
   }
 
-
   # Ready for plots!
-  # Print all the warnings
-  # if(length(Warn.list)>1 | length(List.print)>0){
-  #   if(length(Warn.list)>1){
-  #     invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))  }
-  #   if(length(List.print)>0){
-  #     invisible(lapply(List.print,
-  #                      function(x) if(is.character(x)){cat(paste0("\n   ",x))
-  #                      } else if(is.data.frame(x)){print(x)}))
-  #   }
-  #   cat("\n") }
-
   if(length(Warn.list)>1 | length(List.print)>0){
     if(msg.p$warn==T){
       if(length(Warn.list)>1){
@@ -1313,25 +1206,6 @@ distr.plot.xby<-function(x,by,plot.type,overlay=FALSE,legend=TRUE,
     }
   }
 
-  ## Interrupt the procedure if there are errors
-  # if(length(Err.list.input)>1 | length(Err.list.para)>1 |
-  #    length(Err.list.options)>1){
-  #   if(length(Warn.list)>1){
-  #     invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
-  #   if(length(Err.list.input)>1){
-  #     invisible(lapply(Err.list.input[duplicated(Err.list.input)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
-  #   if(length(Err.list.para)>1){
-  #     invisible(lapply(Err.list.para[duplicated(Err.list.para)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
-  #   if(length(Err.list.options)>1){
-  #     invisible(lapply(Err.list.options,
-  #                      function(x) if(is.character(x)){cat(paste0("\n   ",x),file=stderr())
-  #                      } else if(is.data.frame(x)){print(x)}))
-  #   }
-  #   cat("\nThe procedure is interrupted",file=stderr())
-  #   stop_quietly()}
 
   if(length(Err.list.input)>1 | length(Err.list.para)>1 |
      length(Err.list.options)>1){
@@ -1353,20 +1227,7 @@ distr.plot.xby<-function(x,by,plot.type,overlay=FALSE,legend=TRUE,
     stop_quietly()
   }
 
-
   # Ready for plots!
-  # Print all the warnings
-  # if(length(Warn.list)>1 | length(List.print)>0){
-  #   if(length(Warn.list)>1){
-  #     invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))  }
-  #   if(length(List.print)>0){
-  #     invisible(lapply(List.print,
-  #                      function(x) if(is.character(x)){cat(paste0("\n   ",x))
-  #                      } else if(is.data.frame(x)){print(x)}))
-  #   }
-  #   cat("\n") }
-
   if(length(Warn.list)>1 | length(List.print)>0){
     if(msg.p$warn==T){
       if(length(Warn.list)>1){
@@ -1483,7 +1344,7 @@ build.summaries<-function(x,by1=NULL,by2=NULL,name.1=NULL,name.2=NULL,
     if(k %in% colnames(out)){
       out[,k]<-round(as.numeric(out[,k]),f.digits)}
   }
-  if(is.numeric(x)){
+  if(is.numeric(x) | is.logical(x)){
     for(k in stats[!(stats %in% c("n","n.a","n.modes","mode%"))]){
       if(k %in% colnames(out)){
         out[,k]<-round(as.numeric(out[,k]),digits)} }
@@ -1503,7 +1364,8 @@ build.summaries<-function(x,by1=NULL,by2=NULL,name.1=NULL,name.2=NULL,
 #' @param by1,by2 Unquoted strings identifying optional variables
 #'   (typically taking few values/levels) used to build conditional summaries,
 #'   that can be defined same way as x.
-#' @param stats String vector providing the summary statistics to compute.
+#' @param stats A character vector providing the summary statistics to compute
+#'   (more summaries can be specified).
 #'   The following options are available:
 #'   * \code{"summary"} returns min, q1 , median, mean, q3, max, sd, var,
 #'   * \code{"central"} returns central tendency measures only,
@@ -1553,7 +1415,7 @@ build.summaries<-function(x,by1=NULL,by2=NULL,name.1=NULL,name.2=NULL,
 #'   stats = "fivenumbers", data = MktDATA)
 #'
 #' @export
-distr.summary.x<-function(x,by1,by2,stats="summary",digits=2,
+distr.summary.x<-function(x,by1,by2,stats=c("summary"),digits=2,
                           f.digits=4,data,...){
   type.print<-"cat"
   msg.p<-list(err=T,warn=T,msg=T)
@@ -1674,19 +1536,6 @@ distr.summary.x<-function(x,by1,by2,stats="summary",digits=2,
     if(length(to.rem)>0){list.stats<-list.stats[-to.rem]; list.tit<-list.tit[-to.rem] }
   }
 
-  # if(length(Err.list.input)>1 | length(Err.list.para)>1){
-  #   if(length(Warn.list)>1){
-  #     invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
-  #   if(length(Err.list.input)>1){
-  #     invisible(lapply(Err.list.input[duplicated(Err.list.input)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
-  #   if(length(Err.list.para)>1){
-  #     invisible(lapply(Err.list.para[duplicated(Err.list.para)==F],
-  #                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
-  #   cat("\nThe procedure is interrupted",file=stderr())
-  #   stop_quietly()}
-
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
     if(msg.p$err==T){
       if(length(Warn.list)>1){
@@ -1713,11 +1562,6 @@ distr.summary.x<-function(x,by1,by2,stats="summary",digits=2,
                                   " using the actual order of 'x' levels",
                                   "\n   ","  -> ",paste0(levels(x),collapse=" < ")))
   }
-
-  # if(length(Warn.list)>1){
-  #   invisible(lapply(Warn.list[duplicated(Warn.list)==F],
-  #                    function(x) cat(paste0("\n   ",x),file=stderr())))
-  #   cat("\n")}
 
   if(length(Warn.list)>1){
     if(msg.p$warn==T){

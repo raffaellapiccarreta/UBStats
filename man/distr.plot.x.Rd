@@ -6,7 +6,7 @@
 \usage{
 distr.plot.x(
   x,
-  freq = "Counts",
+  freq = "counts",
   plot.type,
   ord.freq = "none",
   breaks,
@@ -24,12 +24,12 @@ distribution has to be analysed. \code{x} can be the name of a vector
 or a factor in the workspace or the name of one of the columns in the
 data frame specified in the \code{data} argument.}
 
-\item{freq}{A length-one character vector providing the frequencies to be
+\item{freq}{A single character providing the frequencies to be
 displayed. Allowed values (possibly abbreviated) are \code{"counts"},
 \code{"percentages"}, \code{"proportions"}, \code{"densities"}
 (for histograms and density plots).}
 
-\item{plot.type}{A length-one character vector providing the plot to generate.
+\item{plot.type}{A single character providing the type of plot to build.
 Allowed values are \code{"pie"}, \code{"bars"}, \code{"spike"},
 \code{"histogram"}, \code{"density"}, \code{"boxplot"}, and
 \code{"cumulative"}.}

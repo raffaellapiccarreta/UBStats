@@ -195,11 +195,6 @@ chk.data<-function(x,data,name.data,name.x,num=F,missing=F,
   if(isFALSE(missing(x))){x.solo<-check.x(); check.solo=T}
   if(isFALSE(missing(data))){x.data<-check.data(); check.indata=T}
   
-  # print("solo")
-  # print(str(x.solo))
-  # print("data")
-  # print(str(x.data))
-  
   # only x given
   if(check.solo==T & check.indata==F){
     exist.x<-x.solo$exist.x; vec.x<-x.solo$vec.x;  
