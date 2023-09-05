@@ -501,12 +501,11 @@ Proportions=prop.table(tab.c,margin=use.m[1]),
 #'   Allowed values are \code{"pie"}, \code{"bars"}, \code{"spike"},
 #'   \code{"histogram"}, \code{"density"}, \code{"boxplot"}, and
 #'   \code{"cumulative"}.
-#' @param ord.freq A length-one character vector that is allowed only when
+#' @param ord.freq A single character vector that is allowed only when
 #'   \code{plot.type = "pie"} or \code{plot.type = "bars"}. It specifies
 #'   whether the levels of \code{x} should be displayed in a standard order
 #'   (\code{ord.freq = "none"}) or in an increasing or decreasing order
-#'   of the levels (\code{ord.freq = "increasing"} or
-#'   \code{ord.freq = "decreasing"}).
+#'   (\code{ord.freq = "increasing"} or \code{ord.freq = "decreasing"}).
 #' @param breaks Allows to classify a \emph{numerical} variable \code{x} into
 #'   intervals. It can be an integer specifying the number of intervals of
 #'   equal width used to classify \code{x}, or a vector of increasing numeric
