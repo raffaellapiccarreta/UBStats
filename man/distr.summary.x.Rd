@@ -63,7 +63,7 @@ order (logical, alphabetical or numerical order for vectors, order of levels
 for factors), and the frequencies requested.
 }
 \description{
-\code{distr.summary.x()} computes the frequency table of a vector or a factor.
+\code{distr.summary.x()} computes summary statistics of a vector or a factor.
 }
 \examples{
 data(MktDATA, package = "UBStats")

@@ -1354,7 +1354,7 @@ build.summaries<-function(x,by1=NULL,by2=NULL,name.1=NULL,name.2=NULL,
 
 #' Summary statistics for a single variable
 #'
-#' \code{distr.summary.x()} computes the frequency table of a vector or a factor.
+#' \code{distr.summary.x()} computes summary statistics of a vector or a factor.
 #'
 #' @param x An unquoted string identifying the variable whose
 #'   distribution has to be analysed. \code{x} can be the name of a vector
