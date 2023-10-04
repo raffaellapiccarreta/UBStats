@@ -34,7 +34,7 @@
 CI.mean<-function(x,sigma = NULL,conf.level = 0.95, digits = 2,
                   data,...){
   type.print<-"cat"
-  msg.p<-list(err=T,warn=T,msg=T)
+  msg.p<-list(err = TRUE,warn = TRUE,msg = TRUE)
   add.dots<-list(...)
   if(length(add.dots)>0){
     if("markd" %in% names(add.dots)){type.print<-"print"}
@@ -49,7 +49,7 @@ CI.mean<-function(x,sigma = NULL,conf.level = 0.95, digits = 2,
   # Check if 'x' exists and if it is coherent (not missing)
   name.x<-deparse1(substitute(x))
   check.x<-chk.data(x,data,deparse1(substitute(data)),
-                    name.x,num=T,missing=T,err.list=Err.list.input)
+                    name.x,num = TRUE,missing = TRUE,err.list=Err.list.input)
   exist.x<-check.x$exist.x ; Err.list.input<-check.x$err.list
   x<-check.x$vec.x
   
@@ -59,15 +59,15 @@ CI.mean<-function(x,sigma = NULL,conf.level = 0.95, digits = 2,
   
   # If there are errors, print errors and stop
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
-    if(msg.p$err==T){
+    if(msg.p$err){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],
+        my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       if(length(Err.list.input)>1){
-        my.p.list(Err.list.input[duplicated(Err.list.input)==F],
+        my.p.list(Err.list.input[!duplicated(Err.list.input)],
                   type.print=type.print)  }
       if(length(Err.list.para)>1){
-        my.p.list(Err.list.para[duplicated(Err.list.para)==F],
+        my.p.list(Err.list.para[!duplicated(Err.list.para)],
                   type.print=type.print)  }
     }
     my.p.list("\nThe procedure is interrupted",type.print=type.print)
@@ -76,9 +76,9 @@ CI.mean<-function(x,sigma = NULL,conf.level = 0.95, digits = 2,
   
   # Ready for intervals
   if(length(Warn.list)>1){ # not needed, leave in case added warnings
-    if(msg.p$warn==T){
+    if(msg.p$warn){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],type.print=type.print)  
+        my.p.list(Warn.list[!duplicated(Warn.list)],type.print=type.print)  
       }
       cat("\n") 
     }
@@ -145,7 +145,7 @@ CI.mean<-function(x,sigma = NULL,conf.level = 0.95, digits = 2,
 CI.prop<-function(x, success=NULL,conf.level = 0.95, digits = 2,
                   data,...){
   type.print<-"cat"
-  msg.p<-list(err=T,warn=T,msg=T)
+  msg.p<-list(err = TRUE,warn = TRUE,msg = TRUE)
   add.dots<-list(...)
   if(length(add.dots)>0){
     if("markd" %in% names(add.dots)){type.print<-"print"}
@@ -159,12 +159,12 @@ CI.prop<-function(x, success=NULL,conf.level = 0.95, digits = 2,
   # Check if 'x' exists and if it is coherent (not missing)
   name.x<-deparse1(substitute(x))
   check.x<-chk.data(x,data,deparse1(substitute(data)),
-                    name.x,missing=T,err.list=Err.list.input)
+                    name.x,missing = TRUE,err.list=Err.list.input)
   Err.list.input<-check.x$err.list
   x<-check.x$vec.x ; exist.x<-check.x$exist.x 
   
   # check x consistency
-  if(is.null(success) && exist.x==T && 
+  if(is.null(success) && exist.x && 
       #(!is.numeric(x) |
       # !all(unique(na.omit(x)) %in% c(0,1)))){
      (is.character(x) |
@@ -178,15 +178,15 @@ CI.prop<-function(x, success=NULL,conf.level = 0.95, digits = 2,
   
   # If there are errors, print errors and stop
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
-    if(msg.p$err==T){
+    if(msg.p$err){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],
+        my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       if(length(Err.list.input)>1){
-        my.p.list(Err.list.input[duplicated(Err.list.input)==F],
+        my.p.list(Err.list.input[!duplicated(Err.list.input)],
                   type.print=type.print)  }
       if(length(Err.list.para)>1){
-        my.p.list(Err.list.para[duplicated(Err.list.para)==F],
+        my.p.list(Err.list.para[!duplicated(Err.list.para)],
                   type.print=type.print)  }
     }
     my.p.list("\nThe procedure is interrupted",type.print=type.print)
@@ -195,9 +195,9 @@ CI.prop<-function(x, success=NULL,conf.level = 0.95, digits = 2,
   
   # Ready for intervals
   if(length(Warn.list)>1){ # not needed, leave in case added warnings
-    if(msg.p$warn==T){
+    if(msg.p$warn){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],type.print=type.print)  
+        my.p.list(Warn.list[!duplicated(Warn.list)],type.print=type.print)  
       }
       cat("\n") 
     }
@@ -276,9 +276,9 @@ CI.prop<-function(x, success=NULL,conf.level = 0.95, digits = 2,
 #' @export
 CI.diffmean<-function(x,y,type="independent",sigma.x=NULL,sigma.y=NULL,sigma.by=NULL,
                       sigma.d=NULL,conf.level=0.95,digits=2,by,
-                      var.test=FALSE,data,...){
+                      var.test = FALSE,data,...){
   type.print<-"cat"
-  msg.p<-list(err=T,warn=T,msg=T)
+  msg.p<-list(err = TRUE,warn = TRUE,msg = TRUE)
   add.dots<-list(...)
   if(length(add.dots)>0){
     if("markd" %in% names(add.dots)){type.print<-"print"}
@@ -291,13 +291,13 @@ CI.diffmean<-function(x,y,type="independent",sigma.x=NULL,sigma.y=NULL,sigma.by=
   # All requests checked for coherency before stopping if one is not ok
   name.x<-deparse1(substitute(x))
   check.x<-chk.data(x,data,deparse1(substitute(data)),
-                    name.x,num=T,missing=T,err.list=Err.list.input)
+                    name.x,num = TRUE,missing = TRUE,err.list=Err.list.input)
   exist.x<-check.x$exist.x
   Err.list.input<-check.x$err.list; 
   x<-check.x$vec.x
 
   # Check required type
-  check.type<-chkpar.option(value=type,allowed=c("paired","independent"),onlyone=T,
+  check.type<-chkpar.option(value=type,allowed=c("paired","independent"),onlyone = TRUE,
                             err.list=Err.list.input,warn.list=Warn.list)
   Err.list.input<-check.type$err.list
   Warn.list<-check.type$warn.list
@@ -319,31 +319,31 @@ CI.diffmean<-function(x,y,type="independent",sigma.x=NULL,sigma.y=NULL,sigma.by=
   Err.list.input<-check.yby$err.list
   
   # check only properly stated variances
-  if(exist.t==T && type=="paired"){
+  if(exist.t && type=="paired"){
     Err.list.para<-chkpar.sigma(value=sigma.d,err.list=Err.list.para)
   }
-  if(exist.t==T && type=="independent"){
-    if(exist.by==F){
+  if(exist.t && type=="independent"){
+    if(!exist.by){
       Err.list.para<-chkpar.sigma(value=sigma.x,err.list=Err.list.para)
       Err.list.para<-chkpar.sigma(value=sigma.y,err.list=Err.list.para)
     }
-    if(exist.by==T){
-      Err.list.para<-chkpar.sigma(value=sigma.by,onlyone=F,err.list=Err.list.para)
+    if(exist.by){
+      Err.list.para<-chkpar.sigma(value=sigma.by,onlyone = FALSE,err.list=Err.list.para)
     }
   }
   Err.list.para<-chkpar.conf(value=conf.level,err.list=Err.list.para)
 
   # If there are errors, print errors and stop
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
-    if(msg.p$err==T){
+    if(msg.p$err){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],
+        my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       if(length(Err.list.input)>1){
-        my.p.list(Err.list.input[duplicated(Err.list.input)==F],
+        my.p.list(Err.list.input[!duplicated(Err.list.input)],
                   type.print=type.print)  }
       if(length(Err.list.para)>1){
-        my.p.list(Err.list.para[duplicated(Err.list.para)==F],
+        my.p.list(Err.list.para[!duplicated(Err.list.para)],
                   type.print=type.print)  }
     }
 
@@ -352,7 +352,7 @@ CI.diffmean<-function(x,y,type="independent",sigma.x=NULL,sigma.y=NULL,sigma.by=
   }
   
   # last.check
-  if(exist.x==F | (exist.y==F & exist.by==F)){
+  if(!exist.x | (!exist.y & !exist.by)){
     cat("\nSomething is wrong: please check the syntax",file=stderr())  
     cat("\nThe procedure is interrupted",file=stderr())  
     stop_quietly()}
@@ -363,44 +363,44 @@ CI.diffmean<-function(x,y,type="independent",sigma.x=NULL,sigma.y=NULL,sigma.by=
     stop_quietly()}
   
   # Final steps for building ci
-  known.var<-F
-  if(exist.y==T){
+  known.var <- FALSE
+  if(exist.y){
     use.x<-x; use.y<-y
     names.xy<-c("x"=name.x,"y"=name.y)
-    if(!is.null(sigma.x) & !is.null(sigma.y)){known.var<-T}
+    if(!is.null(sigma.x) & !is.null(sigma.y)){known.var <- TRUE}
     if(is.null(sigma.y) & !is.null(sigma.x)){
       Warn.list<-c(Warn.list,"Only 'sigma.x' is specified: 'sigma.y' set equal to 'sigma.x'")
-      sigma.y<-sigma.x ;  known.var<-T
+      sigma.y<-sigma.x ;  known.var <- TRUE
     }
 
     if(!is.null(sigma.y) & is.null(sigma.x)){
       Warn.list<-c(Warn.list,"Only 'sigma.y' is specified; 'sigma.x' set equal to 'sigma.y'")
-      sigma.x<-sigma.y ;  known.var<-T
+      sigma.x<-sigma.y ;  known.var <- TRUE
     }
   }
 
-  if(exist.by==T){
+  if(exist.by){
     use.by<-factor(by)
     use.x<-x[use.by==levels(use.by)[1]]
     use.y<-x[use.by==levels(use.by)[2]]
     names.xy<-c("x"=paste0(name.x,"|",name.by,"=",levels(use.by)[1]),
                 "y"=paste0(name.x,"|",name.by,"=",levels(use.by)[2]))
     if(!is.null(sigma.by) && length(sigma.by)==2){
-      known.var<-T
+      known.var <- TRUE
       sigma.x<-sigma.by[levels(use.by)[1]] ; 
       sigma.y<-sigma.by[levels(use.by)[2]]
     }
     if(!is.null(sigma.by) && length(sigma.by)==1){
-      known.var<-T
+      known.var <- TRUE
       Warn.list<-c(Warn.list,"'sigma.by' has one element: equal variances assumed in 'by'-groups")
       sigma.x<-sigma.y<-sigma.by
     }
   }
   
   if(length(Warn.list)>1){ # not needed, leave in case added warnings
-    if(msg.p$warn==T){
+    if(msg.p$warn){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],type.print=type.print)  
+        my.p.list(Warn.list[!duplicated(Warn.list)],type.print=type.print)  
       }
       cat("\n") 
     }
@@ -415,12 +415,12 @@ CI.diffmean<-function(x,y,type="independent",sigma.x=NULL,sigma.y=NULL,sigma.by=
     output<-ci.diff.paired_unknown(x=use.x,y=use.y,names.xy=names.xy,
                                    conf.level = conf.level,
                                    digits=digits,type.print=type.print) }
-  if(type=="independent" & known.var==T){
+  if(type=="independent" & known.var){
     output<-ci.diff.indep_known(x=use.x,y=use.y,names.xy=names.xy,
                                 sigma.x=sigma.x,sigma.y=sigma.y,
                                 conf.level = conf.level,
                                 digits=digits,type.print=type.print) }
-  if(type=="independent" & known.var==F){
+  if(type=="independent" & !known.var){
     output<-ci.diff.indep_unknown(x=use.x,y=use.y,names.xy=names.xy,
                                   conf.level = conf.level,
                                   digits=digits,var.test=var.test,
@@ -481,8 +481,8 @@ CI.diffmean<-function(x,y,type="independent",sigma.x=NULL,sigma.y=NULL,sigma.by=
 #' 
 #' # CI for difference between proportion based on logical variable
 #' NoChildren <- (MktDATA$Children == 0)
-#' Deals_w_child <- MktDATA$Deals.ge50[NoChildren == FALSE]
-#' Deals_no_child <- MktDATA$Deals.ge50[NoChildren == TRUE]
+#' Deals_w_child <- MktDATA$Deals.ge50[!NoChildren]
+#' Deals_no_child <- MktDATA$Deals.ge50[NoChildren]
 #' CI.diffprop(x = Deals_w_child, y = Deals_no_child, conf.level = 0.9,
 #'   digits = 3)
 #'
@@ -491,7 +491,7 @@ CI.diffprop<-function(x,y,success.x=NULL,success.y=NULL,
                       conf.level=0.95,digits=2,by,
                       data,...){
   type.print<-"cat"
-  msg.p<-list(err=T,warn=T,msg=T)
+  msg.p<-list(err = TRUE,warn = TRUE,msg = TRUE)
   add.dots<-list(...)
   if(length(add.dots)>0){
     if("markd" %in% names(add.dots)){type.print<-"print"}
@@ -504,7 +504,7 @@ CI.diffprop<-function(x,y,success.x=NULL,success.y=NULL,
   # All requests checked for coherency before stopping if one is not ok
   name.x<-deparse1(substitute(x))
   check.x<-chk.data(x,data,deparse1(substitute(data)),
-                    name.x,missing=T,err.list=Err.list.input)
+                    name.x,missing = TRUE,err.list=Err.list.input)
   exist.x<-check.x$exist.x
   Err.list.input<-check.x$err.list; 
   x<-check.x$vec.x
@@ -522,25 +522,25 @@ CI.diffprop<-function(x,y,success.x=NULL,success.y=NULL,
   
   
   # check x consistency
-  if(is.null(success.x) && exist.x==T && 
+  if(is.null(success.x) && exist.x && 
      (is.character(x) |
       (is.numeric(x) & !all(unique(na.omit(x)) %in% c(0,1))))){
     Err.list.input<-c(Err.list.input,paste0("When no 'success.x' is specified, ",
                                             "'x' should be logical or a binary (0/1) vector!"))
   }
-  if(is.null(success.y) && is.null(success.x) && exist.y==T && 
+  if(is.null(success.y) && is.null(success.x) && exist.y && 
      (is.character(y) |
       (is.numeric(y) & !all(unique(na.omit(y)) %in% c(0,1))))){
     Err.list.input<-c(Err.list.input,paste0("When no 'success.y' or 'success.x' is specified, ",
                                             "'y' should be logical or a binary (0/1) vector!"))
   }
-  if(!is.null(success.y) && exist.y==F && exist.by==T){
+  if(!is.null(success.y) && !exist.y && exist.by){
     Err.list.input<-c(Err.list.input,"'success.y' not allowed with 'by'!")
   }
   
   # Check specifications para
   Err.list.para<-chkpar.success(value=success.x,x=x,err.list=Err.list.para)
-  if(is.null(success.y) && !is.null(success.x) && exist.y==T && 
+  if(is.null(success.y) && !is.null(success.x) && exist.y && 
      (!is.numeric(y) | !all(unique(y) %in% c(0,1)))){
     Warn.list<-c(Warn.list,"Only 'success.x' is specified; 'success.y' set equal to 'success.x'")
     Err.list.para<-chkpar.success(value=success.x,x=y,err.list=Err.list.para)
@@ -550,15 +550,15 @@ CI.diffprop<-function(x,y,success.x=NULL,success.y=NULL,
   
   # If there are errors, print errors and stop
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
-    if(msg.p$err==T){
+    if(msg.p$err){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],
+        my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       if(length(Err.list.input)>1){
-        my.p.list(Err.list.input[duplicated(Err.list.input)==F],
+        my.p.list(Err.list.input[!duplicated(Err.list.input)],
                   type.print=type.print)  }
       if(length(Err.list.para)>1){
-        my.p.list(Err.list.para[duplicated(Err.list.para)==F],
+        my.p.list(Err.list.para[!duplicated(Err.list.para)],
                   type.print=type.print)  }
     }
     my.p.list("\nThe procedure is interrupted",type.print=type.print)
@@ -566,19 +566,19 @@ CI.diffprop<-function(x,y,success.x=NULL,success.y=NULL,
   }
   
   # last.check
-  if(exist.x==F | (exist.y==F & exist.by==F)){
+  if(!exist.x | (!exist.y & !exist.by)){
     cat("\nSomething is wrong: please check the syntax",file=stderr())  
     cat("\nThe procedure is interrupted",file=stderr())  
     stop_quietly()}
   
   # Final steps for building ci
-  if(exist.y==T){
+  if(exist.y){
     use.x<-x; use.y<-y
     names.xy<-c("x"=name.x,"y"=name.y,"name.by"="NONE")
     if(is.null(success.y) & !is.null(success.x) && 
        (!is.numeric(y) | !all(unique(y) %in% c(0,1)))){success.y<-success.x}
   }
-  if(exist.by==T){
+  if(exist.by){
     use.by<-factor(by)
     use.x<-x[use.by==levels(use.by)[1]]
     use.y<-x[use.by==levels(use.by)[2]]
@@ -588,9 +588,9 @@ CI.diffprop<-function(x,y,success.x=NULL,success.y=NULL,
   }
   
   if(length(Warn.list)>1){ # not needed, leave in case added warnings
-    if(msg.p$warn==T){
+    if(msg.p$warn){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],type.print=type.print)  
+        my.p.list(Warn.list[!duplicated(Warn.list)],type.print=type.print)  
       }
       cat("\n") 
     }
@@ -645,7 +645,7 @@ TEST.mean<-function(x,sigma = NULL,mu0=0,alternative="two.sided",
                     digits = 2,
                     data,...){
   type.print<-"cat"
-  msg.p<-list(err=T,warn=T,msg=T)
+  msg.p<-list(err = TRUE,warn = TRUE,msg = TRUE)
   add.dots<-list(...)
   if(length(add.dots)>0){
     if("markd" %in% names(add.dots)){type.print<-"print"}
@@ -664,7 +664,7 @@ TEST.mean<-function(x,sigma = NULL,mu0=0,alternative="two.sided",
   # Check if 'x' exists and if it is coherent (not missing)
   name.x<-deparse1(substitute(x))
   check.x<-chk.data(x,data,deparse1(substitute(data)),
-                    name.x,num=T,missing=T,err.list=Err.list.input)
+                    name.x,num = TRUE,missing = TRUE,err.list=Err.list.input)
   exist.x<-check.x$exist.x ; Err.list.input<-check.x$err.list
   x<-check.x$vec.x
   
@@ -674,7 +674,7 @@ TEST.mean<-function(x,sigma = NULL,mu0=0,alternative="two.sided",
   Err.list.para<-chkpar.sigma(value=sigma,err.list=Err.list.para)
   check.alternative<-chkpar.option(value=alternative,
                                    allowed=c("two.sided","less","greater"),
-                                   onlyone=T,err.list=Err.list.para,
+                                   onlyone = TRUE,err.list=Err.list.para,
                                    warn.list=Warn.list)
   Err.list.para<-check.alternative$err.list
   Warn.list<-check.alternative$warn.list
@@ -683,15 +683,15 @@ TEST.mean<-function(x,sigma = NULL,mu0=0,alternative="two.sided",
   
   # If there are errors, print errors and stop
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
-    if(msg.p$err==T){
+    if(msg.p$err){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],
+        my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       if(length(Err.list.input)>1){
-        my.p.list(Err.list.input[duplicated(Err.list.input)==F],
+        my.p.list(Err.list.input[!duplicated(Err.list.input)],
                   type.print=type.print)  }
       if(length(Err.list.para)>1){
-        my.p.list(Err.list.para[duplicated(Err.list.para)==F],
+        my.p.list(Err.list.para[!duplicated(Err.list.para)],
                   type.print=type.print)  }
     }
     my.p.list("\nThe procedure is interrupted",type.print=type.print)
@@ -700,9 +700,9 @@ TEST.mean<-function(x,sigma = NULL,mu0=0,alternative="two.sided",
   
   # Ready for test
   if(length(Warn.list)>1){ # not needed, leave in case added warnings
-    if(msg.p$warn==T){
+    if(msg.p$warn){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],type.print=type.print)  
+        my.p.list(Warn.list[!duplicated(Warn.list)],type.print=type.print)  
       }
       cat("\n") 
     }
@@ -769,7 +769,7 @@ TEST.prop<-function(x, success=NULL,p0=0.5,
                     alternative = "two.sided", digits = 2,
                     data,...){
   type.print<-"cat"
-  msg.p<-list(err=T,warn=T,msg=T)
+  msg.p<-list(err = TRUE,warn = TRUE,msg = TRUE)
   add.dots<-list(...)
   if(length(add.dots)>0){
     if("markd" %in% names(add.dots)){type.print<-"print"}
@@ -788,18 +788,18 @@ TEST.prop<-function(x, success=NULL,p0=0.5,
   # Check if 'x' exists and if it is coherent (not missing)
   name.x<-deparse1(substitute(x))
   check.x<-chk.data(x,data,deparse1(substitute(data)),
-                    name.x,missing=T,err.list=Err.list.input)
+                    name.x,missing = TRUE,err.list=Err.list.input)
   Err.list.input<-check.x$err.list
   x<-check.x$vec.x ; exist.x<-check.x$exist.x 
   
   # check x consistency
-  # if(is.null(success) && exist.x==T && 
+  # if(is.null(success) && exist.x && 
   #    (!is.numeric(x) | !all(unique(na.omit(x)) %in% c(0,1)))){
   #   Err.list.input<-c(Err.list.input,paste0("When no 'success' is specified, ",
   #                                           "'x' should be a vector of 0s and 1s!"))
   # }
 
-  if(is.null(success) && exist.x==T && 
+  if(is.null(success) && exist.x && 
      (is.character(x) |
       (is.numeric(x) & !all(unique(na.omit(x)) %in% c(0,1))))){
     Err.list.input<-c(Err.list.input,paste0("When no 'success' is specified, ",
@@ -814,7 +814,7 @@ TEST.prop<-function(x, success=NULL,p0=0.5,
   Err.list.para<-chkpar.success(value=success,x=x,err.list=Err.list.para)
   check.alternative<-chkpar.option(value=alternative,
                                    allowed=c("two.sided","less","greater"),
-                                   onlyone=T,
+                                   onlyone = TRUE,
                                    err.list=Err.list.para,warn.list=Warn.list)
   Err.list.para<-check.alternative$err.list
   Warn.list<-check.alternative$warn.list
@@ -823,15 +823,15 @@ TEST.prop<-function(x, success=NULL,p0=0.5,
   
   # If there are errors, print errors and stop
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
-    if(msg.p$err==T){
+    if(msg.p$err){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],
+        my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       if(length(Err.list.input)>1){
-        my.p.list(Err.list.input[duplicated(Err.list.input)==F],
+        my.p.list(Err.list.input[!duplicated(Err.list.input)],
                   type.print=type.print)  }
       if(length(Err.list.para)>1){
-        my.p.list(Err.list.para[duplicated(Err.list.para)==F],
+        my.p.list(Err.list.para[!duplicated(Err.list.para)],
                   type.print=type.print)  }
     }
     my.p.list("\nThe procedure is interrupted",type.print=type.print)
@@ -841,9 +841,9 @@ TEST.prop<-function(x, success=NULL,p0=0.5,
   # Ready for intervals
   
   if(length(Warn.list)>1){ # not needed, leave in case added warnings
-    if(msg.p$warn==T){
+    if(msg.p$warn){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],type.print=type.print)  
+        my.p.list(Warn.list[!duplicated(Warn.list)],type.print=type.print)  
       }
       cat("\n") 
     }
@@ -928,9 +928,9 @@ TEST.prop<-function(x, success=NULL,p0=0.5,
 TEST.diffmean<-function(x,y,type="independent",mdiff0=0,sigma.x=NULL,
                         sigma.y=NULL,sigma.by=NULL,sigma.d=NULL,
                         alternative="two.sided",digits=2,by,
-                        var.test=FALSE,data,...){
+                        var.test = FALSE,data,...){
   type.print<-"cat"
-  msg.p<-list(err=T,warn=T,msg=T)
+  msg.p<-list(err = TRUE,warn = TRUE,msg = TRUE)
   add.dots<-list(...)
   if(length(add.dots)>0){
     if("markd" %in% names(add.dots)){type.print<-"print"}
@@ -948,13 +948,13 @@ TEST.diffmean<-function(x,y,type="independent",mdiff0=0,sigma.x=NULL,
   # All requests checked for coherency before stopping if one is not ok
   name.x<-deparse1(substitute(x))
   check.x<-chk.data(x,data,deparse1(substitute(data)),
-                    name.x,num=T,missing=T,err.list=Err.list.input)
+                    name.x,num = TRUE,missing = TRUE,err.list=Err.list.input)
   exist.x<-check.x$exist.x
   Err.list.input<-check.x$err.list; 
   x<-check.x$vec.x
   
   # Check required type
-  check.type<-chkpar.option(value=type,allowed=c("paired","independent"),onlyone=T,
+  check.type<-chkpar.option(value=type,allowed=c("paired","independent"),onlyone = TRUE,
                             err.list=Err.list.input,warn.list=Warn.list)
   Err.list.input<-check.type$err.list
   Warn.list<-check.type$warn.list
@@ -980,21 +980,21 @@ TEST.diffmean<-function(x,y,type="independent",mdiff0=0,sigma.x=NULL,
   if(!is.numeric(mdiff0)){
     Err.list.para<-c(Err.list.para,"'mdiff0' should be a number")
   }
-  if(exist.t==T && type=="paired"){
+  if(exist.t && type=="paired"){
     Err.list.para<-chkpar.sigma(value=sigma.d,err.list=Err.list.para)
   }
-  if(exist.t==T && type=="independent"){
-    if(exist.by==F){
+  if(exist.t && type=="independent"){
+    if(!exist.by){
       Err.list.para<-chkpar.sigma(value=sigma.x,err.list=Err.list.para)
       Err.list.para<-chkpar.sigma(value=sigma.y,err.list=Err.list.para)
     }
-    if(exist.by==T){
-      Err.list.para<-chkpar.sigma(value=sigma.by,onlyone=F,err.list=Err.list.para)
+    if(exist.by){
+      Err.list.para<-chkpar.sigma(value=sigma.by,onlyone = FALSE,err.list=Err.list.para)
     }
   }
   check.alternative<-chkpar.option(value=alternative,
                                    allowed=c("two.sided","less","greater"),
-                                   onlyone=T,err.list=Err.list.para,
+                                   onlyone = TRUE,err.list=Err.list.para,
                                    warn.list=Warn.list)
   Err.list.para<-check.alternative$err.list
   Warn.list<-check.alternative$warn.list
@@ -1003,15 +1003,15 @@ TEST.diffmean<-function(x,y,type="independent",mdiff0=0,sigma.x=NULL,
   
   # If there are errors, print errors and stop
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
-    if(msg.p$err==T){
+    if(msg.p$err){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],
+        my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       if(length(Err.list.input)>1){
-        my.p.list(Err.list.input[duplicated(Err.list.input)==F],
+        my.p.list(Err.list.input[!duplicated(Err.list.input)],
                   type.print=type.print)  }
       if(length(Err.list.para)>1){
-        my.p.list(Err.list.para[duplicated(Err.list.para)==F],
+        my.p.list(Err.list.para[!duplicated(Err.list.para)],
                   type.print=type.print)  }
     }
     my.p.list("\nThe procedure is interrupted",type.print=type.print)
@@ -1019,7 +1019,7 @@ TEST.diffmean<-function(x,y,type="independent",mdiff0=0,sigma.x=NULL,
   }
   
   # last.check
-  if(exist.x==F | (exist.y==F & exist.by==F)){
+  if(!exist.x | (!exist.y & !exist.by)){
     cat("\nSomething is wrong: please check the syntax",file=stderr())  
     cat("\nThe procedure is interrupted",file=stderr())  
     stop_quietly()}
@@ -1030,49 +1030,49 @@ TEST.diffmean<-function(x,y,type="independent",mdiff0=0,sigma.x=NULL,
     stop_quietly()}
   
   # Final steps for building ci
-  known.var<-F
-  if(exist.y==T){
+  known.var <- FALSE
+  if(exist.y){
     use.x<-x; use.y<-y
     names.xy<-c("x"=name.x,"y"=name.y)
-    if(!is.null(sigma.x) & !is.null(sigma.y)){known.var<-T}
+    if(!is.null(sigma.x) & !is.null(sigma.y)){known.var <- TRUE}
     if(is.null(sigma.y) & !is.null(sigma.x)){
       Warn.list<-c(Warn.list,"Only 'sigma.x' is specified: 'sigma.y' set equal to 'sigma.x'")
       sigma.y<-sigma.x
-      known.var<-T
+      known.var <- TRUE
     }
     if(!is.null(sigma.y) & is.null(sigma.x)){
       Warn.list<-c(Warn.list,"Only 'sigma.y' is specified; 'sigma.x' set equal to 'sigma.y'")
       sigma.x<-sigma.y
-      known.var<-T
+      known.var <- TRUE
     }
   }
-  if(exist.by==T){
+  if(exist.by){
     use.by<-factor(by)
     use.x<-x[use.by==levels(use.by)[1]]
     use.y<-x[use.by==levels(use.by)[2]]
     names.xy<-c("x"=paste0(name.x,"|",name.by,"=",levels(use.by)[1]),
                 "y"=paste0(name.x,"|",name.by,"=",levels(use.by)[2]))
     if(!is.null(sigma.by) && length(sigma.by)==2){
-      known.var<-T
+      known.var <- TRUE
       sigma.x<-sigma.by[levels(use.by)[1]] ; 
       sigma.y<-sigma.by[levels(use.by)[2]]
     }
     if(!is.null(sigma.by) && length(sigma.by)==1){
-      known.var<-T
+      known.var <- TRUE
       Warn.list<-c(Warn.list,"'sigma.by' has one element: equal variances assumed in 'by'-groups")
       sigma.x<-sigma.y<-sigma.by
     }
   }
   
   # if(length(Warn.list)>1){
-  #   invisible(lapply(Warn.list[duplicated(Warn.list)==F],
+  #   invisible(lapply(Warn.list[!duplicated(Warn.list)],
   #                    function(x) cat(paste0("\n   ",x),file=stderr())))  
   #   cat("\n")
   # }
   if(length(Warn.list)>1){ # not needed, leave in case added warnings
-    if(msg.p$warn==T){
+    if(msg.p$warn){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],type.print=type.print)  
+        my.p.list(Warn.list[!duplicated(Warn.list)],type.print=type.print)  
       }
       cat("\n") 
     }
@@ -1089,13 +1089,13 @@ TEST.diffmean<-function(x,y,type="independent",mdiff0=0,sigma.x=NULL,
                                     mdiff0=mdiff0,
                                     alternative=alternative,
                                     digits=digits,type.print=type.print) }
-  if(type=="independent" & known.var==T){
+  if(type=="independent" & known.var){
     output<-hyp.diff.indep_known(x=use.x,y=use.y,names.xy=names.xy,
                                  mdiff0=mdiff0,sigma.x=sigma.x,
                                  sigma.y=sigma.y,
                                  alternative = alternative,
                                  digits=digits,type.print=type.print) }
-  if(type=="independent" & known.var==F){
+  if(type=="independent" & !known.var){
     output<-hyp.diff.indep_unknown(x=use.x,y=use.y,names.xy=names.xy,
                                    mdiff0=mdiff0,var.test=var.test,
                                    alternative = alternative,
@@ -1160,8 +1160,8 @@ TEST.diffmean<-function(x,y,type="independent",mdiff0=0,sigma.x=NULL,
 #' 
 #' # Test for the proportion difference based on logical variables
 #' NoChildren <- (MktDATA$Children == 0)
-#' Deals_w_child <- MktDATA$Deals.ge50[NoChildren == FALSE]
-#' Deals_no_child <- MktDATA$Deals.ge50[NoChildren == TRUE]
+#' Deals_w_child <- MktDATA$Deals.ge50[!NoChildren]
+#' Deals_no_child <- MktDATA$Deals.ge50[NoChildren]
 #' TEST.diffprop(x = Deals_w_child, y = Deals_no_child, pdiff0 = 0.2,
 #'   alternative = "less", digits = 3)
 #'
@@ -1170,7 +1170,7 @@ TEST.diffprop<-function(x,y,success.x=NULL,success.y=NULL,pdiff0=0,
                         alternative="two.sided",digits=2,by,
                         data,...){
   type.print<-"cat"
-  msg.p<-list(err=T,warn=T,msg=T)
+  msg.p<-list(err = TRUE,warn = TRUE,msg = TRUE)
   add.dots<-list(...)
   if(length(add.dots)>0){
     if("markd" %in% names(add.dots)){type.print<-"print"}
@@ -1188,7 +1188,7 @@ TEST.diffprop<-function(x,y,success.x=NULL,success.y=NULL,pdiff0=0,
   # All requests checked for coherency before stopping if one is not ok
   name.x<-deparse1(substitute(x))
   check.x<-chk.data(x,data,deparse1(substitute(data)),
-                    name.x,missing=T,err.list=Err.list.input)
+                    name.x,missing = TRUE,err.list=Err.list.input)
   exist.x<-check.x$exist.x
   Err.list.input<-check.x$err.list; 
   x<-check.x$vec.x
@@ -1205,19 +1205,19 @@ TEST.diffprop<-function(x,y,success.x=NULL,success.y=NULL,pdiff0=0,
   Err.list.input<-check.yby$err.list
   
   # check x consistency
-  if(is.null(success.x) && exist.x==T && 
+  if(is.null(success.x) && exist.x && 
     (is.character(x) |
        (is.numeric(x) & !all(unique(na.omit(x)) %in% c(0,1))))){
     Err.list.input<-c(Err.list.input,paste0("When no 'success.x' is specified, ",
                                             "'x' should be logical or a binary (0/1) vector!"))
   }
-  if(is.null(success.y) && is.null(success.x) && exist.y==T && 
+  if(is.null(success.y) && is.null(success.x) && exist.y && 
      (is.character(y) |
       (is.numeric(y) & !all(unique(na.omit(y)) %in% c(0,1))))){
     Err.list.input<-c(Err.list.input,paste0("When no 'success.y' or 'success.x' is specified, ",
                                             "'y' should be logical or a binary (0/1) vector!"))
   }
-  if(!is.null(success.y) && exist.y==F && exist.by==T){
+  if(!is.null(success.y) && !exist.y && exist.by){
     Err.list.input<-c(Err.list.input,"'success.y' not allowed with 'by'!")
   }
   
@@ -1228,7 +1228,7 @@ TEST.diffprop<-function(x,y,success.x=NULL,success.y=NULL,pdiff0=0,
     Err.list.para<-c(Err.list.para,"'pdiff0' should be a number between -1 and 1")
   }
   Err.list.para<-chkpar.success(value=success.x,x=x,err.list=Err.list.para)
-  if(is.null(success.y) && !is.null(success.x) && exist.y==T && 
+  if(is.null(success.y) && !is.null(success.x) && exist.y && 
      (!is.numeric(y) | !all(unique(y) %in% c(0,1)))){
     Warn.list<-c(Warn.list,"Only 'success.x' is specified; 'success.y' set equal to 'success.x'")
     Err.list.para<-chkpar.success(value=success.x,x=y,err.list=Err.list.para)
@@ -1236,7 +1236,7 @@ TEST.diffprop<-function(x,y,success.x=NULL,success.y=NULL,pdiff0=0,
   Err.list.para<-chkpar.success(value=success.y,x=y,err.list=Err.list.para)
   check.alternative<-chkpar.option(value=alternative,
                                    allowed=c("two.sided","less","greater"),
-                                   onlyone=T,
+                                   onlyone = TRUE,
                                    err.list=Err.list.para,warn.list=Warn.list)
   Err.list.para<-check.alternative$err.list
   Warn.list<-check.alternative$warn.list
@@ -1245,15 +1245,15 @@ TEST.diffprop<-function(x,y,success.x=NULL,success.y=NULL,pdiff0=0,
   
   # If there are errors, print errors and stop
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
-    if(msg.p$err==T){
+    if(msg.p$err){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],
+        my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       if(length(Err.list.input)>1){
-        my.p.list(Err.list.input[duplicated(Err.list.input)==F],
+        my.p.list(Err.list.input[!duplicated(Err.list.input)],
                   type.print=type.print)  }
       if(length(Err.list.para)>1){
-        my.p.list(Err.list.para[duplicated(Err.list.para)==F],
+        my.p.list(Err.list.para[!duplicated(Err.list.para)],
                   type.print=type.print)  }
     }
     my.p.list("\nThe procedure is interrupted",type.print=type.print)
@@ -1261,19 +1261,19 @@ TEST.diffprop<-function(x,y,success.x=NULL,success.y=NULL,pdiff0=0,
   }
   
   # last.check
-  if(exist.x==F | (exist.y==F & exist.by==F)){
+  if(!exist.x | (!exist.y & !exist.by)){
     cat("\nSomething is wrong: please check the syntax",file=stderr())  
     cat("\nThe procedure is interrupted",file=stderr())  
     stop_quietly()}
   
   # Final steps for building ci
-  if(exist.y==T){
+  if(exist.y){
     use.x<-x; use.y<-y
     names.xy<-c("x"=name.x,"y"=name.y,"name.by"="NONE")
     if(is.null(success.y) & !is.null(success.x) && 
        (!is.numeric(y) | !all(unique(y) %in% c(0,1)))){success.y<-success.x}
   }
-  if(exist.by==T){
+  if(exist.by){
     use.by<-factor(by)
     use.x<-x[use.by==levels(use.by)[1]]
     use.y<-x[use.by==levels(use.by)[2]]
@@ -1283,14 +1283,14 @@ TEST.diffprop<-function(x,y,success.x=NULL,success.y=NULL,pdiff0=0,
   }
   
   # if(length(Warn.list)>1){
-  #   invisible(lapply(Warn.list[duplicated(Warn.list)==F],
+  #   invisible(lapply(Warn.list[!duplicated(Warn.list)],
   #                    function(x) cat(paste0("\n   ",x),file=stderr())))  
   #   cat("\n")
   # }
   if(length(Warn.list)>1){ # not needed, leave in case added warnings
-    if(msg.p$warn==T){
+    if(msg.p$warn){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],type.print=type.print)  
+        my.p.list(Warn.list[!duplicated(Warn.list)],type.print=type.print)  
       }
       cat("\n") 
     }
@@ -1347,7 +1347,7 @@ TEST.diffprop<-function(x,y,success.x=NULL,success.y=NULL,pdiff0=0,
 TEST.diffvar<-function(x,y,by,digits=2,data,...){
   type="independent"
   type.print<-"cat"
-  msg.p<-list(err=T,warn=T,msg=T)
+  msg.p<-list(err = TRUE,warn = TRUE,msg = TRUE)
   add.dots<-list(...)
   if(length(add.dots)>0){
     if("markd" %in% names(add.dots)){type.print<-"print"}
@@ -1365,13 +1365,13 @@ TEST.diffvar<-function(x,y,by,digits=2,data,...){
   # All requests checked for coherency before stopping if one is not ok
   name.x<-deparse1(substitute(x))
   check.x<-chk.data(x,data,deparse1(substitute(data)),
-                    name.x,num=T,missing=T,err.list=Err.list.input)
+                    name.x,num = TRUE,missing = TRUE,err.list=Err.list.input)
   exist.x<-check.x$exist.x
   Err.list.input<-check.x$err.list; 
   x<-check.x$vec.x
   
   # Check required type
-  check.type<-chkpar.option(value=type,allowed=c("paired","independent"),onlyone=T,
+  check.type<-chkpar.option(value=type,allowed=c("paired","independent"),onlyone = TRUE,
                             err.list=Err.list.input,warn.list=Warn.list)
   Err.list.input<-check.type$err.list
   Warn.list<-check.type$warn.list
@@ -1395,15 +1395,15 @@ TEST.diffvar<-function(x,y,by,digits=2,data,...){
   # Check specifications para
   # check only properly stated variances
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
-    if(msg.p$err==T){
+    if(msg.p$err){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],
+        my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       if(length(Err.list.input)>1){
-        my.p.list(Err.list.input[duplicated(Err.list.input)==F],
+        my.p.list(Err.list.input[!duplicated(Err.list.input)],
                   type.print=type.print)  }
       if(length(Err.list.para)>1){
-        my.p.list(Err.list.para[duplicated(Err.list.para)==F],
+        my.p.list(Err.list.para[!duplicated(Err.list.para)],
                   type.print=type.print)  }
     }
     my.p.list("\nThe procedure is interrupted",type.print=type.print)
@@ -1413,13 +1413,13 @@ TEST.diffvar<-function(x,y,by,digits=2,data,...){
   # last.check
 
   # Final steps for building ci
-  known.var<-F
+  known.var <- FALSE
   
-  if(exist.y==T){
+  if(exist.y){
     use.x<-x; use.y<-y
     names.xy<-c("x"=name.x,"y"=name.y)
   }
-  if(exist.by==T){
+  if(exist.by){
     use.by<-factor(by)
     use.x<-x[use.by==levels(use.by)[1]]
     use.y<-x[use.by==levels(use.by)[2]]

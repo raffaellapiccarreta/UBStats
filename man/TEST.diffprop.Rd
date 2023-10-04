@@ -84,8 +84,8 @@ TEST.diffprop(x = PastCampaigns_F, y = PastCampaigns_M, success.x = 0,
 
 # Test for the proportion difference based on logical variables
 NoChildren <- (MktDATA$Children == 0)
-Deals_w_child <- MktDATA$Deals.ge50[NoChildren == FALSE]
-Deals_no_child <- MktDATA$Deals.ge50[NoChildren == TRUE]
+Deals_w_child <- MktDATA$Deals.ge50[!NoChildren]
+Deals_no_child <- MktDATA$Deals.ge50[NoChildren]
 TEST.diffprop(x = Deals_w_child, y = Deals_no_child, pdiff0 = 0.2,
   alternative = "less", digits = 3)
 

@@ -1,7 +1,7 @@
 # Functions specific for inference ------
  
 chkpar.conf<-function(value,err.list=NULL){
-  if(is.list(err.list)==F){err.list<-list()}
+  if(!is.list(err.list)){err.list<-list()}
   ok.value<-(complete.cases(value))
   if(sum(ok.value)==0){
     err.list<-c(err.list,paste0("All elements of 'conf.level' are missing!"))
@@ -9,7 +9,7 @@ chkpar.conf<-function(value,err.list=NULL){
     if(class(value)[1] != "numeric"){
       err.list<-c(err.list,paste0("'conf.level' cannot be a ",class(value)[1]))
     } else {
-      value<-value[ok.value==T]
+      value<-value[ok.value]
       if(length(value)>1){
         err.list<-c(err.list,paste0("'conf.level' should be a single numeric value, and not a vector"))
       } else if(length(value)==1){
@@ -21,8 +21,8 @@ chkpar.conf<-function(value,err.list=NULL){
   out<-err.list
 }
 
-chkpar.sigma<-function(value,err.list=NULL,onlyone=T){
-  if(is.list(err.list)==F){err.list<-list()}
+chkpar.sigma<-function(value,err.list=NULL,onlyone = TRUE){
+  if(!is.list(err.list)){err.list<-list()}
   if(!is.null(value)){
     what<-deparse1(substitute(value))
     ok.value<-(complete.cases(value))
@@ -32,15 +32,15 @@ chkpar.sigma<-function(value,err.list=NULL,onlyone=T){
       if(class(value)[1] != "numeric"){
         err.list<-c(err.list,paste0("'",what,"' cannot be a ",class(value)[1]))
       } else {
-        value<-value[ok.value==T]
-        if(onlyone==T){
+        value<-value[ok.value]
+        if(onlyone){
           if(length(value)>1){ 
             err.list<-c(err.list,paste0("'",what,"' should be a single numeric value, and not a vector"))
           } else {
             if(value<=0){err.list<-c(err.list,paste0("'",what,"' must be greater than 0!"))}
           }
         }
-        if(onlyone==F){
+        if(!onlyone){
           if(length(value)>2){ 
             err.list<-c(err.list,paste0("'",what,"' cannot have more than 2 values"))
           } else{
@@ -55,7 +55,7 @@ chkpar.sigma<-function(value,err.list=NULL,onlyone=T){
 }
 
 chkpar.success<-function(value,x,err.list=NULL){
-  if(is.list(err.list)==F){err.list<-list()}
+  if(!is.list(err.list)){err.list<-list()}
   if(!is.null(value)){
     what.x<-(deparse1(substitute(x)))
     what.s<-(deparse1(substitute(value)))
@@ -66,7 +66,7 @@ chkpar.success<-function(value,x,err.list=NULL){
       if(!(class(value)[1] %in% c("numeric","character","logical"))){
         err.list<-c(err.list,paste0("'",what.s,"' cannot be a ",class(value)[1]))
       } else {
-        value<-value[ok.value==T]
+        value<-value[ok.value]
         if(length(value)>1){
           err.list<-c(err.list,paste0("'",what.s,"' must be a single value, and not a vector"))
         } else if(length(value)==1){
@@ -85,10 +85,10 @@ chkpar.success<-function(value,x,err.list=NULL){
 chkcon.diff<-function(type,type.s=NULL,err.list=NULL,warn.list=NULL,x=NULL,
                       y,by,data,name.y,name.by,name.data,sigma.d=NULL,
                       sigma.x=NULL,sigma.y=NULL,sigma.by=NULL){
-  if(is.list(err.list)==F){err.list<-list()}
-  if(is.list(warn.list)==F){warn.list<-list()}
+  if(!is.list(err.list)){err.list<-list()}
+  if(!is.list(warn.list)){warn.list<-list()}
   if(type=="prop"){type.s<-"independent"}
-  exist.y<-exist.by<-F
+  exist.y<-exist.by <- FALSE
   vec.y<-vec.by<-NULL
   if(isTRUE(missing(y)) && isTRUE(missing(by))){
     if(type.s=="independent" | type.s=="none"){
@@ -101,10 +101,10 @@ chkcon.diff<-function(type,type.s=NULL,err.list=NULL,warn.list=NULL,x=NULL,
   } else if(isFALSE(missing(y)) & isTRUE(missing(by))){
     if(type=="mean"){
       check.y<-chk.data(y,data,name.data,name.y,
-                        num=T,missing=T,err.list=err.list)}
+                        num = TRUE,missing = TRUE,err.list=err.list)}
     if(type=="prop"){
       check.y<-chk.data(y,data,name.data,name.y,
-                        missing=T,err.list=err.list)}
+                        missing = TRUE,err.list=err.list)}
     err.list<-check.y$err.list
     exist.y<-check.y$exist.x; 
     vec.y<-check.y$vec.x
@@ -115,25 +115,25 @@ chkcon.diff<-function(type,type.s=NULL,err.list=NULL,warn.list=NULL,x=NULL,
     }
     if(type.s=="independent"){
       check.by<-chk.data(by,data,name.data,name.by,
-                         missing=T,err.list=err.list)
+                         missing = TRUE,err.list=err.list)
       err.list<-check.by$err.list
       exist.by<-check.by$exist.x
       vec.by<-check.by$vec.x
     }
   }
-  if(exist.by==T){
+  if(exist.by){
     n.by<-length(na.omit(unique(vec.by)))
     if(n.by>2){
       err.list<-c(err.list,"'by' should be a vector with 2 levels only!")
-      exist.by<-F} 
+      exist.by <- FALSE} 
     if(!is.null(x) && length(x) != length(vec.by)){
       err.list<-c(err.list,"'x' and 'by' should have the same length")
-      exist.by<-F}
+      exist.by <- FALSE}
   }
-  if(exist.y==T && !is.null(x)){
+  if(exist.y && !is.null(x)){
     if(type.s=="paired" & length(x) != length(vec.y)){
       err.list<-c(err.list,"'x' and 'y' should have the same length when samples are paired")
-      exist.y<-F}
+      exist.y <- FALSE}
     if(type.s=="paired" && length(x) == length(vec.y) && 
        sum(!(is.na(x)) & !(is.na(vec.y)))<2){
       err.list<-c(err.list,"Cases with non missing values in paired samples should be at least 2")
@@ -160,16 +160,16 @@ chkcon.diff<-function(type,type.s=NULL,err.list=NULL,warn.list=NULL,x=NULL,
       if(is.null(sigma.d) & length(c(sigma.y,sigma.x))>0 & !is.null(sigma.by)){
         err.list<-c(err.list,"Variances both for 'y' and for 'by' specified!")
       }
-      if(exist.by==T && is.null(sigma.d) &&
+      if(exist.by && is.null(sigma.d) &&
          is.null(sigma.by) && (!is.null(sigma.x) | !is.null(sigma.y))){
         err.list<-c(err.list,"With 'by', use 'sigma.by' to specify known variances")
       }
-      if(exist.by==T && length(c(sigma.d,sigma.x,sigma.y))==0 && 
+      if(exist.by && length(c(sigma.d,sigma.x,sigma.y))==0 && 
          !is.null(sigma.by) && length(sigma.by)==2 && 
          sum(names(sigma.by) %in% as.character(unique(na.omit(vec.by))))<2){
         err.list<-c(err.list,"Values in 'sigma.by' should have as names the two values of 'by'")
       }
-      if(exist.y==T && is.null(sigma.d) && !is.null(sigma.by) &&
+      if(exist.y && is.null(sigma.d) && !is.null(sigma.by) &&
          is.null(sigma.x) & is.null(sigma.y)){
         err.list<-c(err.list,"With 'y', use 'sigma.x' and 'sigma.y' to specify known variances")
       }
@@ -203,8 +203,8 @@ ci.mean.known<-function(x,sigma,conf.level = 0.95,
   out<-t(as.matrix(c(n.x,m.x,s.x,se.m,m.x+(c(-1,1)*(se.m*z.q)))))
   colnames(out)<-c("n","xbar","sigma_X","SE","Lower","Upper")
   out[2:length(out)]<-round(out[2:length(out)],digits)
-  print(data.frame(out,check.names=FALSE),row.names = F)
-  output=data.frame(out,check.names=FALSE)
+  print(data.frame(out,check.names = FALSE),row.names = F)
+  output=data.frame(out,check.names = FALSE)
 }
 
 hyp.mean.known<-function(x,sigma=1,mu0=0,alternative="two.sided",
@@ -253,11 +253,11 @@ hyp.mean.known<-function(x,sigma=1,mu0=0,alternative="two.sided",
   out<-data.frame(n=n.x,xbar=round(m.x,digits),sigma_X=round(s.x,digits),SE=round(se.m,digits),
                   stat=round(z,digits),
                   "p.value"=round(p.z,4),"p-value"=as.character(round(p.z,4)),
-                  check.names=FALSE)
+                  check.names = FALSE)
   out[["p-value"]][out[["p.value"]]<0.0001]<-"<0.0001"
   out[["p.value"]]<-NULL
-  print(data.frame(out,check.names=FALSE),row.names = F)
-  output=data.frame(out,check.names=FALSE)
+  print(data.frame(out,check.names = FALSE),row.names = F)
+  output=data.frame(out,check.names = FALSE)
 } 
 
 ci.mean.unknown<-function(x,conf.level = 0.95,digits=2,
@@ -282,8 +282,8 @@ ci.mean.unknown<-function(x,conf.level = 0.95,digits=2,
   colnames(out)<-c("n","xbar","s_X","se","Lower","Upper")
   rownames(out)<-c("Normal.Approx","Student-t")
   out[,2:ncol(out)]<-round(out[,2:ncol(out)],digits)
-  print(data.frame(out,check.names=FALSE))
-  output=data.frame(out,check.names=FALSE)
+  print(data.frame(out,check.names = FALSE))
+  output=data.frame(out,check.names = FALSE)
 }
 
 hyp.mean.unknown<-function(x,mu0=0,alternative="two.sided",
@@ -338,12 +338,12 @@ hyp.mean.unknown<-function(x,mu0=0,alternative="two.sided",
                   se=round(c(se.m,se.m),digits),
                   stat=round(c(z,z),digits),"p.value"=round(c(p.z,p.t),4),
                   "p-value"=as.character(round(c(p.z,p.t),4)),
-                  check.names=FALSE)
+                  check.names = FALSE)
   out[["p-value"]][out[["p.value"]]<0.0001]<-"<0.0001"
   out[["p.value"]]<-NULL
   rownames(out)<-c("Normal.Approx","Student-t")
-  print(data.frame(out,check.names=FALSE))
-  output=data.frame(out,check.names=FALSE)
+  print(data.frame(out,check.names = FALSE))
+  output=data.frame(out,check.names = FALSE)
 }
 
 ci.prop<-function(x,success,conf.level = 0.95, 
@@ -367,8 +367,8 @@ ci.prop<-function(x,success,conf.level = 0.95,
   out<-t(as.matrix(c(n.x,p.x,s.x,se.p,p.x+(c(-1,1)*(se.p*z.q)))))
   colnames(out)<-c("n","phat","s_X","se","Lower","Upper")
   out[2:length(out)]<-round(out[2:length(out)],digits)
-  print(data.frame(out,check.names=FALSE),row.names = F)
-  output=data.frame(out,check.names=FALSE)
+  print(data.frame(out,check.names = FALSE),row.names = F)
+  output=data.frame(out,check.names = FALSE)
 }
 
 hyp.prop<-function(x,success,p0=0.5,alternative="two.sided",
@@ -419,11 +419,11 @@ hyp.prop<-function(x,success,p0=0.5,alternative="two.sided",
   out<-data.frame(n=n.x,phat=round(p.x,digits),s_X=round(s.x,digits),se=round(se.p,digits),
                   stat=round(z,digits),"p.value"=round(p.z,4),
                   "p-value"=as.character(round(p.z,4)),
-                  check.names=FALSE)
+                  check.names = FALSE)
   out[["p-value"]][out[["p.value"]]<0.0001]<-"<0.0001"
   out[["p.value"]]<-NULL
-  print(data.frame(out,check.names=FALSE),row.names = F)
-  output=data.frame(out,check.names=FALSE)
+  print(data.frame(out,check.names = FALSE),row.names = F)
+  output=data.frame(out,check.names = FALSE)
 }
 
 #ok
@@ -454,8 +454,8 @@ ci.diff.paired_known<-function(x,y,names.xy,sigma.d,
   colnames(out)<-c("n","xbar","ybar","dbar=xbar-ybar","sigma_D","SE",
                    "Lower","Upper")
   out[2:length(out)]<-round(out[2:length(out)],digits)
-  print(data.frame(out,check.names=FALSE),row.names = F)
-  output=data.frame(out,check.names=FALSE)
+  print(data.frame(out,check.names = FALSE),row.names = F)
+  output=data.frame(out,check.names = FALSE)
 }
 
 #ok
@@ -519,11 +519,11 @@ hyp.diff.paired_known<-function(x,y,mdiff0=0,names.xy,sigma.d,
                   "sigma_D"=round(s.diff,digits),
                   "SE"=round(se.diff,digits),stat=round(z,digits),
                   "p.value"=round(p.z,4),"p-value"=as.character(round(p.z,4)),
-                  check.names=FALSE)
+                  check.names = FALSE)
   out[["p-value"]][out[["p.value"]]<0.0001]<-"<0.0001"
   out[["p.value"]]<-NULL
-  print(data.frame(out,check.names=FALSE),row.names = F)
-  output=data.frame(out,check.names=FALSE)
+  print(data.frame(out,check.names = FALSE),row.names = F)
+  output=data.frame(out,check.names = FALSE)
 }#ok
 
 #ok
@@ -558,8 +558,8 @@ ci.diff.paired_unknown<-function(x,y,names.xy,conf.level = 0.95,
                    "Lower","Upper")
   rownames(out)<-c("Normal.Approx","Student-t")
   out[,2:ncol(out)]<-round(out[,2:ncol(out)],digits)
-  print(data.frame(out,check.names=FALSE))
-  output=data.frame(out,check.names=FALSE)
+  print(data.frame(out,check.names = FALSE))
+  output=data.frame(out,check.names = FALSE)
 }#ok
 
 hyp.diff.paired_unknown<-function(x,y,mdiff0=0,names.xy,
@@ -629,12 +629,12 @@ hyp.diff.paired_unknown<-function(x,y,mdiff0=0,names.xy,
                   stat=round(c(z,z),digits),
                   "p.value"=round(c(p.z,p.t),4),
                   "p-value"=as.character(round(c(p.z,p.t),4)),
-                  check.names=FALSE)
+                  check.names = FALSE)
   out[["p-value"]][out[["p.value"]]<0.0001]<-"<0.0001"
   out[["p.value"]]<-NULL
   rownames(out)<-c("Normal.Approx","Student-t")
-  print(data.frame(out,check.names=FALSE))
-  output=data.frame(out,check.names=FALSE)
+  print(data.frame(out,check.names = FALSE))
+  output=data.frame(out,check.names = FALSE)
 }#ok
 
 
@@ -674,8 +674,8 @@ ci.diff.indep_known<-function(x,y,names.xy,sigma.x,sigma.y,
   colnames(out)<-c("n_x","n_y","xbar","ybar","xbar-ybar",
                    "sigma_X","sigma_Y","SE","Lower","Upper")
   out[3:length(out)]<-round(out[3:length(out)],digits)
-  print(data.frame(out,check.names=FALSE),row.names = F)
-  output=data.frame(out,check.names=FALSE)
+  print(data.frame(out,check.names = FALSE),row.names = F)
+  output=data.frame(out,check.names = FALSE)
 }#ok
 
 
@@ -748,17 +748,17 @@ hyp.diff.indep_known<-function(x,y,mdiff0=0,names.xy,sigma.x,sigma.y,
                   "SE"=round(se.diff,digits),
                   stat=round(z,digits),
                   "p.value"=round(p.z,4),"p-value"=as.character(round(p.z,4)),
-                  check.names=FALSE)
+                  check.names = FALSE)
   out[["p-value"]][out[["p.value"]]<0.0001]<-"<0.0001"
   out[["p.value"]]<-NULL
-  print(data.frame(out,check.names=FALSE),row.names = F)
-  output=data.frame(out,check.names=FALSE)
+  print(data.frame(out,check.names = FALSE),row.names = F)
+  output=data.frame(out,check.names = FALSE)
 }#ok
 
 #ok
 ci.diff.indep_unknown<-function(x,y,names.xy,conf.level = 0.95,
                                 digits = 2,type.print="cat",
-                                var.test=F){
+                                var.test = FALSE){
   my.p.list(paste0("Confidence interval for \u03BC_x-\u03BC_y",
              "\nSamples: independent", 
              "\nConfidence level: ",conf.level,
@@ -818,17 +818,17 @@ ci.diff.indep_unknown<-function(x,y,names.xy,conf.level = 0.95,
   
   my.p.list(paste0("\n Unknown variances assumed to be equal"),
             type.print=type.print)
-  print(data.frame(out.eq,check.names=FALSE))
+  print(data.frame(out.eq,check.names = FALSE))
   my.p.list(paste0("\n Unknown variances assumed to be different"),
             type.print=type.print)
-  print(data.frame(out.diff,check.names=FALSE))
+  print(data.frame(out.diff,check.names = FALSE))
   
   rownames(out.eq)<-rownames(out.diff)<-c()
   output=data.frame(Variances=c("Equal","Equal","Different","Different"),
                     Distrib=c("Normal.Approx","Student-t","Normal.Approx","Student-t"),
-                    rbind(out.eq,out.diff),check.names=FALSE)
-  if(var.test==F){return(output)}
-  if(var.test==T){
+                    rbind(out.eq,out.diff),check.names = FALSE)
+  if(!var.test){return(output)}
+  if(var.test){
     out.var<-hyp.diff.var(x,y,type="levene",
                           digits=digits,type.print=type.print)
     out<-list(test.means=output,test.vars=out.var)
@@ -856,7 +856,7 @@ hyp.diff.var<-function(x,y,type="levene",digits=2,
                         "df1"=1,"df2"=(length(x)+length(y)-2),
                         "p.value"=round(p.stat,4),
                         "p-value"=as.character(round(p.stat,4)),
-                        check.names=FALSE)
+                        check.names = FALSE)
     out.var[["p-value"]][out.var[["p.value"]]<0.0001]<-"<0.0001"
     out.var[["p.value"]]<-NULL
     
@@ -872,15 +872,15 @@ hyp.diff.var<-function(x,y,type="levene",digits=2,
                        "\n Alternative hypothesis H1: \u03C32_x != \u03C32_y"),
                 type.print=type.print)
     }
-    print(data.frame(out.var,check.names=FALSE))
-    output<-data.frame(out.var,check.names=FALSE)
+    print(data.frame(out.var,check.names = FALSE))
+    output<-data.frame(out.var,check.names = FALSE)
   }
 }#ok
 
 #ok
 hyp.diff.indep_unknown<-function(x,y,mdiff0=0,names.xy,
                                  alternative="two.sided",
-                                 digits = 2,var.test=F,
+                                 digits = 2,var.test = FALSE,
                                  type.print="cat" ){
   my.p.list(paste0("Test hypotheses on \u03BC_x-\u03BC_y", 
              "\nSamples: independent",
@@ -970,7 +970,7 @@ hyp.diff.indep_unknown<-function(x,y,mdiff0=0,names.xy,
                      stat=round(c(z.eq,z.eq),digits),
                      "p.value"=round(c(p.zeq,p.teq),4),
                      "p-value"=as.character(round(c(p.zeq,p.teq),4)),
-                     check.names=FALSE)
+                     check.names = FALSE)
   out.diff<-data.frame(n_x=c(n.x,n.x),n_y=c(n.y,n.y),
                        "xbar"=round(c(mean(x),mean(x)),digits),
                        "ybar"=round(c(mean(y),mean(y)),digits),
@@ -981,7 +981,7 @@ hyp.diff.indep_unknown<-function(x,y,mdiff0=0,names.xy,
                        stat=round(c(z.uneq,z.uneq),digits),
                        "p.value"=round(c(p.zuneq,p.tuneq),4),
                        "p-value"=as.character(round(c(p.zuneq,p.tuneq),4)),
-                       check.names=FALSE)
+                       check.names = FALSE)
   
   out.eq[["p-value"]][out.eq[["p.value"]]<0.0001]<-"<0.0001"
   out.eq[["p.value"]]<-NULL
@@ -991,17 +991,17 @@ hyp.diff.indep_unknown<-function(x,y,mdiff0=0,names.xy,
   
   my.p.list(paste0("\n Unknown variances assumed to be equal"),
             type.print=type.print)
-  print(data.frame(out.eq,check.names=FALSE))
+  print(data.frame(out.eq,check.names = FALSE))
   my.p.list(paste0("\n Unknown variances assumed to be different"),
             type.print=type.print)
-  print(data.frame(out.diff,check.names=FALSE))
+  print(data.frame(out.diff,check.names = FALSE))
   
   rownames(out.eq)<-rownames(out.diff)<-c()
   out.means=data.frame(Variances=c("Equal","Equal","Different","Different"),
                        Distrib=c("Normal.Approx","Student-t","Normal.Approx","Student-t"),
-                       rbind(out.eq,out.diff),check.names=FALSE)
-  if(var.test==F){return(out.means)}
-  if(var.test==T){
+                       rbind(out.eq,out.diff),check.names = FALSE)
+  if(!var.test){return(out.means)}
+  if(var.test){
     out.var<-hyp.diff.var(x,y,type="levene",
                           digits=digits,type.print=type.print)
     out<-list(test.means=out.means,test.vars=out.var)
@@ -1074,8 +1074,8 @@ ci.diff.prop<-function(x,y,names.xy,success.x=NULL,success.y=NULL,
                    "s_X","s_Y","se",
                    "Lower","Upper")
   out[3:length(out)]<-round(out[3:length(out)],digits)
-  print(data.frame(out,check.names=FALSE),row.names = F)
-  output=data.frame(out,check.names=FALSE)
+  print(data.frame(out,check.names = FALSE),row.names = F)
+  output=data.frame(out,check.names = FALSE)
 }#ok
 
 #ok
@@ -1185,13 +1185,13 @@ hyp.diff.prop<-function(x,y,names.xy,pdiff0=0,success.x=NULL,
                   stat=round(z,digits),
                   "p.value"=round(p.z,4),
                   "p-value"=as.character(round(p.z,4)),
-                  check.names=FALSE)
+                  check.names = FALSE)
   if(pdiff0==0){
     colnames(out)[8]<-"se_0"
   }
   out[["p-value"]][out[["p.value"]]<0.0001]<-"<0.0001"
   out[["p.value"]]<-NULL
-  print(data.frame(out,check.names=FALSE),row.names = F)
-  output=data.frame(out,check.names=FALSE)
+  print(data.frame(out,check.names = FALSE),row.names = F)
+  output=data.frame(out,check.names = FALSE)
 }#ok
 
