@@ -67,11 +67,11 @@
 #'   data = MktDATA)
 #'
 #' @export
-distr.table.x<-function(x,freq=c("counts","proportions"),total=TRUE,
-                        breaks,adj.breaks=TRUE,interval=FALSE,
+distr.table.x<-function(x,freq=c("counts","proportions"),total = TRUE,
+                        breaks,adj.breaks = TRUE,interval = FALSE,
                         f.digits=2,p.digits=0,d.digits=5,data,...){
   type.print<-"cat"
-  msg.p<-list(err=T,warn=T,msg=T)
+  msg.p<-list(err = TRUE,warn = TRUE,msg = TRUE)
   add.dots<-list(...)
   if(length(add.dots)>0){
     if("markd" %in% names(add.dots)){type.print<-"print"}
@@ -87,7 +87,7 @@ distr.table.x<-function(x,freq=c("counts","proportions"),total=TRUE,
   # Check if 'x' exists and if it is coherent (not missing)
   name.x<-deparse1(substitute(x))
   check.x<-chk.data(x,data,deparse1(substitute(data)),
-                    name.x,missing=T,err.list=Err.list.input,
+                    name.x,missing = TRUE,err.list=Err.list.input,
                     warn.list=Warn.list)
   exist.x<-check.x$exist.x ;
   Err.list.input<-check.x$err.list
@@ -97,15 +97,15 @@ distr.table.x<-function(x,freq=c("counts","proportions"),total=TRUE,
   # Check required frequencies
   check.freq<-chkpar.option(value=freq,
                             allowed=c("counts","proportions","percentages","cumulative","densities"),
-                            onlyone=F,listall=T,err.list=Err.list.para,
+                            onlyone = FALSE,listall = TRUE,err.list=Err.list.para,
                             warn.list=Warn.list)
   Err.list.para<-check.freq$err.list ; Warn.list<-check.freq$warn.list
   exist.f<-check.freq$exist;  freq<-unique(check.freq$value)
 
   # Create a list with all the info needed to build tables
-  if(exist.x==T){
+  if(exist.x){
     all.info<-build.Xlist(x,breaks,interval,
-                          adj.breaks=adj.breaks,consistency=F,
+                          adj.breaks=adj.breaks,consistency = FALSE,
                           err.list=Err.list.options,warn.list=Warn.list,
                           list.print=NULL)
     Err.list.options<-all.info$err.list
@@ -117,18 +117,18 @@ distr.table.x<-function(x,freq=c("counts","proportions"),total=TRUE,
   ## Interrupt the procedure if there are errors
   if(length(Err.list.input)>1 | length(Err.list.para)>1 |
      length(Err.list.options)>1){
-    if(msg.p$err==T){
+    if(msg.p$err){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],
+        my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       if(length(Err.list.input)>1){
-        my.p.list(Err.list.input[duplicated(Err.list.input)==F],
+        my.p.list(Err.list.input[!duplicated(Err.list.input)],
                   type.print=type.print)  }
       if(length(Err.list.para)>1){
-        my.p.list(Err.list.para[duplicated(Err.list.para)==F],
+        my.p.list(Err.list.para[!duplicated(Err.list.para)],
                   type.print=type.print)  }
       if(length(Err.list.options)>1){
-        my.p.list(Err.list.options[duplicated(Err.list.options)==F],
+        my.p.list(Err.list.options[!duplicated(Err.list.options)],
                   type.print=type.print)  }
     }
     my.p.list("\nThe procedure is interrupted",type.print=type.print)
@@ -142,9 +142,9 @@ distr.table.x<-function(x,freq=c("counts","proportions"),total=TRUE,
   }
   # Print all the warnings
   if(length(Warn.list)>1 | length(List.print)>0){
-    if(msg.p$warn==T){
+    if(msg.p$warn){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],type.print=type.print)
+        my.p.list(Warn.list[!duplicated(Warn.list)],type.print=type.print)
       }
       if(length(List.print)>0){
         my.p.list(List.print,type.print=type.print)
@@ -188,12 +188,12 @@ distr.table.x<-function(x,freq=c("counts","proportions"),total=TRUE,
   if(("Densities" %in% freq)){out$Cum.Density<-NULL}
 
   out[,1]<-as.character(out[,1])
-  if(total==T){
+  if(total){
     out[nrow(out)+1,]<-rep(NA,ncol(out))
     out[nrow(out),1]<-"TOTAL"
     no.cum<-!(substr(colnames(out),1,3) %in% c("Cum","Den") |
                 colnames(out)==name.x)
-    out[nrow(out),no.cum]<-apply(out[,no.cum,drop=F],2,"sum",na.rm=T)
+    out[nrow(out),no.cum]<-apply(out[,no.cum,drop = FALSE],2,"sum",na.rm = TRUE)
   }
   rownames(out)[nrow(out)]<-"Sum"
   out.print<-out
@@ -206,7 +206,7 @@ distr.table.x<-function(x,freq=c("counts","proportions"),total=TRUE,
   if(op.sci==0){options(scipen=10)}
   out.print.p<-as.matrix(out.print)
   out.print.p[is.na(out.print.p)]<-""
-  print(as.data.frame(out.print.p),row.names=F,quote=F,right=T)
+  print(as.data.frame(out.print.p),row.names = FALSE,quote = FALSE,right = TRUE)
   options(scipen=op.sci)
   output<-out
 }
@@ -317,11 +317,11 @@ distr.table.x<-function(x,freq=c("counts","proportions"),total=TRUE,
 #'   msg.control = list(err = FALSE, warn = FALSE, msg = TRUE))
 #'
 #' @export
-distr.table.xy<-function(x,y,freq="counts",freq.type="joint",total=TRUE,
-                         breaks.x,breaks.y,adj.breaks=TRUE,interval.x=FALSE,
-                         interval.y=FALSE,f.digits=2,p.digits=0,data,...){
+distr.table.xy<-function(x,y,freq="counts",freq.type="joint",total = TRUE,
+                         breaks.x,breaks.y,adj.breaks = TRUE,interval.x = FALSE,
+                         interval.y = FALSE,f.digits=2,p.digits=0,data,...){
   type.print<-"cat"
-  msg.p<-list(err=T,warn=T,msg=T)
+  msg.p<-list(err = TRUE,warn = TRUE,msg = TRUE)
   add.dots<-list(...)
   if(length(add.dots)>0){
     if("markd" %in% names(add.dots)){type.print<-"print"}
@@ -337,7 +337,7 @@ distr.table.xy<-function(x,y,freq="counts",freq.type="joint",total=TRUE,
   # Check if 'x' exists and if it is coherent (not missing)
   name.x<-deparse1(substitute(x))
   check.x<-chk.data(x,data,deparse1(substitute(data)),
-                    name.x,missing=T,err.list=Err.list.input,
+                    name.x,missing = TRUE,err.list=Err.list.input,
                     warn.list=Warn.list)
   exist.x<-check.x$exist.x ;
   Err.list.input<-check.x$err.list
@@ -347,7 +347,7 @@ distr.table.xy<-function(x,y,freq="counts",freq.type="joint",total=TRUE,
   # Check if 'y' exists and if it is coherent (not missing)
   name.y<-deparse1(substitute(y))
   check.y<-chk.data(y,data,deparse1(substitute(data)),
-                    name.y,missing=T,err.list=Err.list.input,
+                    name.y,missing = TRUE,err.list=Err.list.input,
                     warn.list=Warn.list)
   exist.y<-check.y$exist.x ;
   Err.list.input<-check.y$err.list
@@ -355,14 +355,14 @@ distr.table.xy<-function(x,y,freq="counts",freq.type="joint",total=TRUE,
   y<-check.y$vec.x
 
   # check if x and y have the same length
-  if(exist.x==T && exist.y==T && (length(x) != length(y))){
+  if(exist.x && exist.y && (length(x) != length(y))){
     Err.list.input<-c(Err.list.input,"'x' and 'y' should have the same length")
   }
 
   # Check required frequencies
   check.freq<-chkpar.option(value=freq,
                             allowed=c("counts","proportions","percentages"),
-                            onlyone=F,listall=T,
+                            onlyone = FALSE,listall = TRUE,
                             err.list=Err.list.para,warn.list=Warn.list)
   Err.list.para<-check.freq$err.list ; Warn.list<-check.freq$warn.list
   exist.f<-check.freq$exist;  freq<-unique(check.freq$value)
@@ -370,7 +370,7 @@ distr.table.xy<-function(x,y,freq="counts",freq.type="joint",total=TRUE,
   # Check required freq.type
   check.ftype<-chkpar.option(value=freq.type,
                              allowed=c("joint","x|y","y|x","rows","columns"),
-                             onlyone=F,listall=T,err.list=Err.list.para,warn.list=Warn.list)
+                             onlyone = FALSE,listall = TRUE,err.list=Err.list.para,warn.list=Warn.list)
   Err.list.para<-check.ftype$err.list ; Warn.list<-check.ftype$warn.list
   exist.t<-check.ftype$exist;  type.tab<-unique(check.ftype$value)
   type.tab<-as.character(factor(type.tab,levels=c("joint","x|y","y|x","rows","columns"),
@@ -378,20 +378,20 @@ distr.table.xy<-function(x,y,freq="counts",freq.type="joint",total=TRUE,
 
   # Create lists with all the info needed to build tables
   List.print<-NULL
-  if(exist.x==T){
-    all.infoX<-build.Xlist(x,breaks.x,interval.x,adj.breaks=adj.breaks,consistency=F,
+  if(exist.x){
+    all.infoX<-build.Xlist(x,breaks.x,interval.x,adj.breaks=adj.breaks,consistency = FALSE,
                            err.list=Err.list.options,warn.list=Warn.list,
-                           list.print=List.print,suffix=T)
+                           list.print=List.print,suffix = TRUE)
     Err.list.options<-all.infoX$err.list
     Warn.list<-all.infoX$warn.list
     List.print<-all.infoX$list.print
     Xlist<-all.infoX$Vlist
   }
-  if(exist.y==T){
-    all.infoY<-build.Xlist(y,breaks.y,interval.y,adj.breaks=adj.breaks,consistency=F,
+  if(exist.y){
+    all.infoY<-build.Xlist(y,breaks.y,interval.y,adj.breaks=adj.breaks,consistency = FALSE,
                            err.list=Err.list.options,warn.list=Warn.list,
                            list.print=List.print,
-                           suffix=T)
+                           suffix = TRUE)
     Err.list.options<-all.infoY$err.list
     Warn.list<-all.infoY$warn.list
     List.print<-all.infoY$list.print
@@ -400,18 +400,18 @@ distr.table.xy<-function(x,y,freq="counts",freq.type="joint",total=TRUE,
 
   if(length(Err.list.input)>1 | length(Err.list.para)>1 |
      length(Err.list.options)>1){
-    if(msg.p$err==T){
+    if(msg.p$err){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],
+        my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print) }
       if(length(Err.list.input)>1){
-        my.p.list(Err.list.input[duplicated(Err.list.input)==F],
+        my.p.list(Err.list.input[!duplicated(Err.list.input)],
                   type.print=type.print)  }
       if(length(Err.list.para)>1){
-        my.p.list(Err.list.para[duplicated(Err.list.para)==F],
+        my.p.list(Err.list.para[!duplicated(Err.list.para)],
                   type.print=type.print)  }
       if(length(Err.list.options)>1){
-        my.p.list(Err.list.options[duplicated(Err.list.options)==F],
+        my.p.list(Err.list.options[!duplicated(Err.list.options)],
                   type.print=type.print)  }
     }
     my.p.list("\nThe procedure is interrupted",type.print=type.print)
@@ -420,9 +420,9 @@ distr.table.xy<-function(x,y,freq="counts",freq.type="joint",total=TRUE,
 
   # Ready for tables!
   if(length(Warn.list)>1 | length(List.print)>0){
-    if(msg.p$warn==T){
+    if(msg.p$warn){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],type.print=type.print)
+        my.p.list(Warn.list[!duplicated(Warn.list)],type.print=type.print)
       }
       if(length(List.print)>0){
         my.p.list(List.print,type.print=type.print)
@@ -455,7 +455,7 @@ distr.table.xy<-function(x,y,freq="counts",freq.type="joint",total=TRUE,
         tit<-paste0("Joint ",tolower(freq.i))
         tab<-switch(freq.i,Counts=tab.c,Proportions=prop.table(tab.c),
                     Percentages=prop.table(tab.c)*100)
-        if(total==T){tab<-addmargins(tab)}
+        if(total){tab<-addmargins(tab)}
         out[[tit]]<-tab # save the table
         colnames(tab)[colnames(tab)=="Sum"]<-"TOTAL"
         rownames(tab)[rownames(tab)=="Sum"]<-"TOTAL"
@@ -470,7 +470,7 @@ distr.table.xy<-function(x,y,freq="counts",freq.type="joint",total=TRUE,
         tab<-switch(freq.i,Counts=tab.c,
 Proportions=prop.table(tab.c,margin=use.m[1]),
                     Percentages=prop.table(tab.c,margin=use.m[1])*100)
-        if(total==T){tab<-addmargins(tab,use.m[2])}
+        if(total){tab<-addmargins(tab,use.m[2])}
         out[[tit]]<-tab # save the table
         colnames(tab)[colnames(tab)=="Sum"]<-"TOTAL"
         rownames(tab)[rownames(tab)=="Sum"]<-"TOTAL"
@@ -570,10 +570,10 @@ Proportions=prop.table(tab.c,margin=use.m[1]),
 #'
 #' @export
 distr.plot.x<-function(x,freq="counts",plot.type,ord.freq="none",
-                       breaks,adj.breaks=TRUE,interval=FALSE,
-                       bw=FALSE,color=NULL,data,...){
+                       breaks,adj.breaks = TRUE,interval = FALSE,
+                       bw = FALSE,color=NULL,data,...){
   type.print<-"cat"
-  msg.p<-list(err=T,warn=T,msg=T)
+  msg.p<-list(err = TRUE,warn = TRUE,msg = TRUE)
   add.dots<-list(...)
   if(length(add.dots)>0){
     if("markd" %in% names(add.dots)){type.print<-"print"}
@@ -589,7 +589,7 @@ distr.plot.x<-function(x,freq="counts",plot.type,ord.freq="none",
   # Check if 'x' exists and if it is coherent (not missing)
   name.x<-deparse1(substitute(x))
   check.x<-chk.data(x,data,deparse1(substitute(data)),
-                    name.x,missing=T,err.list=Err.list.input,warn.list=Warn.list)
+                    name.x,missing = TRUE,err.list=Err.list.input,warn.list=Warn.list)
   exist.x<-check.x$exist.x ;
   Err.list.input<-check.x$err.list
   Warn.list<-check.x$warn.list
@@ -598,13 +598,13 @@ distr.plot.x<-function(x,freq="counts",plot.type,ord.freq="none",
   # Check required frequencies
   check.freq<-chkpar.option(value=freq,
                             allowed=c("counts","proportions","percentages","densities"),
-                            onlyone=T,listall=T,err.list=Err.list.para,warn.list=Warn.list)
+                            onlyone = TRUE,listall = TRUE,err.list=Err.list.para,warn.list=Warn.list)
   Err.list.para<-check.freq$err.list ; Warn.list<-check.freq$warn.list
   exist.f<-check.freq$exist;  freq<-unique(check.freq$value)
 
   check.order<-chkpar.option(value=ord.freq,
                              allowed=c("none","increasing","decreasing"),
-                             onlyone=T,listall=T,
+                             onlyone = TRUE,listall = TRUE,
                              err.list=Err.list.para,warn.list=Warn.list)
   Err.list.para<-check.order$err.list ; Warn.list<-check.order$warn.list
   exist.o<-check.order$exist;  ord.freq<-unique(check.order$value)
@@ -613,48 +613,48 @@ distr.plot.x<-function(x,freq="counts",plot.type,ord.freq="none",
   if(isTRUE(missing(plot.type))){
     print("passa da qui")
     Err.list.para<-c(Err.list.para,"'plot.type' must be specified")
-    exist.plt<-F} else {
+    exist.plt <- FALSE} else {
       if(!is.character(plot.type)){plot.type<-deparse1(substitute(plot.type))}
       check.plt<-chkpar.option(value=plot.type,
                                allowed=c("pie","bars","spike","cumulative",
                                          "histogram","boxplot","density"),
-                               onlyone=T,listall=T,err.list=Err.list.para,warn.list=Warn.list)
+                               onlyone = TRUE,listall = TRUE,err.list=Err.list.para,warn.list=Warn.list)
       Err.list.para<-check.plt$err.list ; Warn.list<-check.plt$warn.list
       exist.plt<-check.plt$exist;  type.plt<-unique(check.plt$value)
     }
   # Check coherency between plots and types of variables
-  if(exist.f==T && exist.plt==T && freq=="densities" &&
+  if(exist.f && exist.plt && freq=="densities" &&
      type.plt=="cumulative"){
     Err.list.options<-c(Err.list.options,"Cumulative plots cannot be built based on densities")
-    exist.plt<-F }
+    exist.plt <- FALSE }
 
-  if(exist.x==T && exist.plt==T){
+  if(exist.x && exist.plt){
     isnum<-is.numeric(x) # check x numeric
     isfac<-is.factor(x) # check x is a factor
-    if((isFALSE(missing(breaks)) | interval==T) && type.plt=="boxplot"){
+    if((isFALSE(missing(breaks)) | interval) && type.plt=="boxplot"){
       Err.list.para<-c(Err.list.para,"Boxplot cannot be built for a variable classified in intervals")
-      exist.plt<-F }
-    if(isTRUE(missing(breaks)) && interval==F && !is.numeric(x) &&
+      exist.plt <- FALSE }
+    if(isTRUE(missing(breaks)) && !interval && !is.numeric(x) &&
        type.plt %in% c("boxplot","histogram","density")){
       Err.list.para<-c(Err.list.para,paste0("'",name.x,"' is character or factor: the required plot cannot be built"))
-      exist.plt<-F }
+      exist.plt <- FALSE }
   }
   # Create a list with all the info needed to build plots
   # if plots for numerical vars, endpoints must be consistent
-  if(exist.plt==F & (isFALSE(missing(breaks)) | interval==T)){
+  if(!exist.plt & (isFALSE(missing(breaks)) | interval)){
     Warn.list<-c(Warn.list,paste0("Consistency of breaks and interval cannot be tested",
                                   "\n   "," because of mis-specified/missing 'plot.type'"))
   }
-  if(exist.x==T && exist.plt==T){
+  if(exist.x && exist.plt){
     if(type.plt %in% c("boxplot","histogram","density")){
-      all.infoX<-build.Xlist(x,breaks,interval,adj.breaks=adj.breaks,consistency=T,
+      all.infoX<-build.Xlist(x,breaks,interval,adj.breaks=adj.breaks,consistency = TRUE,
                              err.list=Err.list.options,warn.list=Warn.list,list.print=NULL)
       Err.list.options<-all.infoX$err.list
       Warn.list<-all.infoX$warn.list
       List.print<-all.infoX$list.print
       Xlist<-all.infoX$Vlist
     } else {
-      all.infoX<-build.Xlist(x,breaks,interval,adj.breaks=adj.breaks,consistency=F,
+      all.infoX<-build.Xlist(x,breaks,interval,adj.breaks=adj.breaks,consistency = FALSE,
                              err.list=Err.list.options,warn.list=Warn.list,list.print=NULL)
       Err.list.options<-all.infoX$err.list
       Warn.list<-all.infoX$warn.list
@@ -665,18 +665,18 @@ distr.plot.x<-function(x,freq="counts",plot.type,ord.freq="none",
 
   if(length(Err.list.input)>1 | length(Err.list.para)>1 |
      length(Err.list.options)>1){
-    if(msg.p$err==T){
+    if(msg.p$err){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],
+        my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       if(length(Err.list.input)>1){
-        my.p.list(Err.list.input[duplicated(Err.list.input)==F],
+        my.p.list(Err.list.input[!duplicated(Err.list.input)],
                   type.print=type.print)  }
       if(length(Err.list.para)>1){
-        my.p.list(Err.list.para[duplicated(Err.list.para)==F],
+        my.p.list(Err.list.para[!duplicated(Err.list.para)],
                   type.print=type.print)    }
       if(length(Err.list.options)>1){
-        my.p.list(Err.list.options[duplicated(Err.list.options)==F],
+        my.p.list(Err.list.options[!duplicated(Err.list.options)],
                   type.print=type.print)  }
     }
     my.p.list("\nThe procedure is interrupted",type.print=type.print)
@@ -690,9 +690,9 @@ distr.plot.x<-function(x,freq="counts",plot.type,ord.freq="none",
   }
 
   if(length(Warn.list)>1 | length(List.print)>0){
-    if(msg.p$warn==T){
+    if(msg.p$warn){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],type.print=type.print)
+        my.p.list(Warn.list[!duplicated(Warn.list)],type.print=type.print)
       }
       if(length(List.print)>0){
         my.p.list(List.print,type.print=type.print)
@@ -837,12 +837,12 @@ distr.plot.x<-function(x,freq="counts",plot.type,ord.freq="none",
 #'
 #' @export
 distr.plot.xy<-function(x,y,freq="counts",freq.type="joint",plot.type,
-                        bar.type="stacked",fitline=FALSE,legend=TRUE,
-                        breaks.x,breaks.y,adj.breaks=TRUE,
-                        interval.x=FALSE,interval.y=FALSE,
-                        bw=FALSE,color=NULL,data,...){
+                        bar.type="stacked",fitline = FALSE,legend = TRUE,
+                        breaks.x,breaks.y,adj.breaks = TRUE,
+                        interval.x = FALSE,interval.y = FALSE,
+                        bw = FALSE,color=NULL,data,...){
   type.print<-"cat"
-  msg.p<-list(err=T,warn=T,msg=T)
+  msg.p<-list(err = TRUE,warn = TRUE,msg = TRUE)
   add.dots<-list(...)
   if(length(add.dots)>0){
     if("markd" %in% names(add.dots)){type.print<-"print"}
@@ -858,7 +858,7 @@ distr.plot.xy<-function(x,y,freq="counts",freq.type="joint",plot.type,
   # Check if 'x' exists and if it is coherent (not missing)
   name.x<-deparse1(substitute(x))
   check.x<-chk.data(x,data,deparse1(substitute(data)),
-                    name.x,missing=T,err.list=Err.list.input,warn.list=Warn.list)
+                    name.x,missing = TRUE,err.list=Err.list.input,warn.list=Warn.list)
   exist.x<-check.x$exist.x ;
   Err.list.input<-check.x$err.list
   Warn.list<-check.x$warn.list
@@ -867,32 +867,32 @@ distr.plot.xy<-function(x,y,freq="counts",freq.type="joint",plot.type,
   # Check if 'y' exists and if it is coherent (not missing)
   name.y<-deparse1(substitute(y))
   check.y<-chk.data(y,data,deparse1(substitute(data)),
-                    name.y,missing=T,err.list=Err.list.input,warn.list=Warn.list)
+                    name.y,missing = TRUE,err.list=Err.list.input,warn.list=Warn.list)
   exist.y<-check.y$exist.x ;
   Err.list.input<-check.y$err.list
   Warn.list<-check.y$warn.list
   y<-check.y$vec.x
 
   # check if x and y have the same length
-  if(exist.x==T && exist.y==T && (length(x) != length(y))){
+  if(exist.x && exist.y && (length(x) != length(y))){
     Err.list.input<-c(Err.list.input,"'x' and 'y' should have the same length")
   }
 
   # Check required frequencies
   check.freq<-chkpar.option(value=freq,
                             allowed=c("counts","proportions","percentages"),
-                            onlyone=T,listall=T,err.list=Err.list.para,warn.list=Warn.list)
+                            onlyone = TRUE,listall = TRUE,err.list=Err.list.para,warn.list=Warn.list)
   Err.list.para<-check.freq$err.list ; Warn.list<-check.freq$warn.list
   exist.f<-check.freq$exist;  freq<-unique(check.freq$value)
 
   # Check plots are correctly specified / same procedure as before
   if(isTRUE(missing(plot.type))){
     Err.list.para<-c(Err.list.para,"'plot.type' must be specified")
-    exist.plt<-F} else {
+    exist.plt <- FALSE} else {
       if(!is.character(plot.type)){plot.type<-deparse1(substitute(plot.type))}
       check.plt<-chkpar.option(value=plot.type,
                                allowed=c("bars","scatter","boxplot"),
-                               onlyone=T,listall=T,err.list=Err.list.para,warn.list=Warn.list)
+                               onlyone = TRUE,listall = TRUE,err.list=Err.list.para,warn.list=Warn.list)
       Err.list.para<-check.plt$err.list ; Warn.list<-check.plt$warn.list
       exist.plt<-check.plt$exist;  type.plt<-unique(check.plt$value)
     }
@@ -900,83 +900,83 @@ distr.plot.xy<-function(x,y,freq="counts",freq.type="joint",plot.type,
   # Check required freq.type
   check.ftype<-chkpar.option(value=freq.type,
                              allowed=c("joint","x|y","y|x"),
-                             onlyone=T,listall=T,err.list=Err.list.para,warn.list=Warn.list)
+                             onlyone = TRUE,listall = TRUE,err.list=Err.list.para,warn.list=Warn.list)
   Err.list.para<-check.ftype$err.list ; Warn.list<-check.ftype$warn.list
   exist.t<-check.ftype$exist;  type.tab<-unique(check.ftype$value)
 
   # Check required freq.type
   check.bartype<-chkpar.option(value=bar.type,
                                allowed=c("stacked","beside"),
-                               onlyone=F,listall=T,
+                               onlyone = FALSE,listall = TRUE,
                                err.list=Err.list.para,warn.list=Warn.list)
   Err.list.para<-check.bartype$err.list ;
   Warn.list<-check.bartype$warn.list
   exist.bart<-check.bartype$exist;
   bar.type<-unique(check.bartype$value)
 
-  if(exist.x==T & exist.y==T && is.numeric(x)==F && is.numeric(y)==F
-     && exist.plt==T && type.plt=="boxplot"){
+  if(exist.x & exist.y && !is.numeric(x) && !is.numeric(y)
+     && exist.plt && type.plt=="boxplot"){
     Err.list.para<-c(Err.list.para,"To build boxplots at least one of 'x' and 'y' must be numeric")
   }
 
   # Create lists with all the info needed to build tables
-  if(exist.x==T & exist.y==T){
+  if(exist.x & exist.y){
     both.in<-complete.cases(data.frame(x,y))
     x<-x[both.in] ; y<-y[both.in]
   }
 
   List.print<-NULL
-  if(exist.x==T){
-    all.infoX<-build.Xlist(x,breaks.x,interval.x,adj.breaks=adj.breaks,consistency=F,
+  if(exist.x){
+    all.infoX<-build.Xlist(x,breaks.x,interval.x,adj.breaks=adj.breaks,consistency = FALSE,
                            err.list=Err.list.options,
-                           warn.list=Warn.list,list.print=List.print,suffix=T)
+                           warn.list=Warn.list,list.print=List.print,suffix = TRUE)
     Err.list.options<-all.infoX$err.list
     Warn.list<-all.infoX$warn.list
     List.print<-all.infoX$list.print
     Xlist<-all.infoX$Vlist
   }
-  if(exist.y==T){
-    all.infoY<-build.Xlist(y,breaks.y,interval.y,adj.breaks=adj.breaks,consistency=F,
+  if(exist.y){
+    all.infoY<-build.Xlist(y,breaks.y,interval.y,adj.breaks=adj.breaks,consistency = FALSE,
                            err.list=Err.list.options,warn.list=Warn.list,list.print=List.print,
-                           suffix=T)
+                           suffix = TRUE)
     Err.list.options<-all.infoY$err.list
     Warn.list<-all.infoY$warn.list
     List.print<-all.infoY$list.print
     Ylist<-all.infoY$Vlist
   }
-  if(exist.x==T && exist.y==T && exist.plt==T && type.plt=="boxplot"){
-    if(Xlist$class=="standard" & Xlist$isnum==F & (Ylist$class %in% c("interval","breaks"))){
+  if(exist.x && exist.y && exist.plt && type.plt=="boxplot"){
+    if(Xlist$class=="standard" & !Xlist$isnum & (Ylist$class %in% c("interval","breaks"))){
       Err.list.para<-c(Err.list.para,"Boxplot cannot be built for a variable classified in intervals")
     }
-    if(Ylist$class=="standard" & Ylist$isnum==F & (Xlist$class %in% c("interval","breaks"))){
+    if(Ylist$class=="standard" & !Ylist$isnum & (Xlist$class %in% c("interval","breaks"))){
       Err.list.para<-c(Err.list.para,"Boxplot cannot be built for a variable classified in intervals")
     }
   }
-  if(exist.x==T && exist.y==T && exist.plt==T && type.plt=="scatter"
-     & fitline==T){
-    if((Xlist$class=="standard" & Xlist$isnum==F) |
-       (Ylist$class=="standard" & Ylist$isnum==F)){
+  if(exist.x && exist.y && exist.plt && type.plt=="scatter"
+     & fitline){
+    if((Xlist$class=="standard" & !Xlist$isnum) |
+       (Ylist$class=="standard" & !Ylist$isnum)){
       Warn.list<-c(Warn.list,
                    "Fitline can be added only when x and y are both numeric")
-      fitline<-F
+      fitline <- FALSE
     }
     if(Xlist$class=="breaks" | Xlist$class=="interval" |
        Ylist$class=="breaks" | Ylist$class=="interval"){
       Warn.list<-c(Warn.list,
                    "Fitline can be added only when x and y are both numeric")
-      fitline<-F
+      fitline <- FALSE
     }
   }
-  if(exist.x==T && exist.y==T && exist.plt==T && type.plt!="scatter"
-     & fitline==T){
+  if(exist.x && exist.y && exist.plt && type.plt!="scatter"
+     & fitline){
     Warn.list<-c(Warn.list,
                  "Fitline can be added only to scatterplots")
-    fitline<-F
+    fitline <- FALSE
   }
-  if(exist.x==T && exist.y==T && exist.plt==T && type.plt=="bars"){
-    if((Xlist$class=="standard" & Xlist$isnum==T &
+  if(exist.x && exist.y && exist.plt && type.plt=="bars"){
+    if((Xlist$class=="standard" & Xlist$isnum &
         length(unique(Xlist$V.f))>20) |
-       (Ylist$class=="standard" & Ylist$isnum==T &
+       (Ylist$class=="standard" & Ylist$isnum &
         length(unique(Ylist$V.f))>20)){
       Err.list.input<-c(Err.list.input,
                         paste0("x and/or y are/is numeric with too many levels",
@@ -986,18 +986,18 @@ distr.plot.xy<-function(x,y,freq="counts",freq.type="joint",plot.type,
 
   if(length(Err.list.input)>1 | length(Err.list.para)>1 |
      length(Err.list.options)>1){
-    if(msg.p$err==T){
+    if(msg.p$err){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],
+        my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       if(length(Err.list.input)>1){
-        my.p.list(Err.list.input[duplicated(Err.list.input)==F],
+        my.p.list(Err.list.input[!duplicated(Err.list.input)],
                   type.print=type.print)  }
       if(length(Err.list.para)>1){
-        my.p.list(Err.list.para[duplicated(Err.list.para)==F],
+        my.p.list(Err.list.para[!duplicated(Err.list.para)],
                   type.print=type.print)    }
       if(length(Err.list.options)>1){
-        my.p.list(Err.list.options[duplicated(Err.list.options)==F],
+        my.p.list(Err.list.options[!duplicated(Err.list.options)],
                   type.print=type.print)  }
     }
     my.p.list("\nThe procedure is interrupted",type.print=type.print)
@@ -1006,9 +1006,9 @@ distr.plot.xy<-function(x,y,freq="counts",freq.type="joint",plot.type,
 
   # Ready for plots!
   if(length(Warn.list)>1 | length(List.print)>0){
-    if(msg.p$warn==T){
+    if(msg.p$warn){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],type.print=type.print)
+        my.p.list(Warn.list[!duplicated(Warn.list)],type.print=type.print)
       }
       if(length(List.print)>0){
         my.p.list(List.print,type.print=type.print)
@@ -1027,10 +1027,10 @@ distr.plot.xy<-function(x,y,freq="counts",freq.type="joint",plot.type,
   par.my<-list(mar=c(3.5,3.5,3,2.1),tck=(-0.01),tcl=NA,las=1,
                mgp=c(3, 0.3, 0),cex=0.88,cex.axis=0.88)
 
-  if(bar.type=="beside"){beside<-T} else{beside<-F}
+  if(bar.type=="beside"){beside <- TRUE} else{beside <- FALSE}
 
   if(type.plt=="bars"){
-    switch.xy<-F
+    switch.xy <- FALSE
     tab.ini<-table(Ylist$V.f,Xlist$V.f)
     use.nx<-name.x; use.ny<-name.y
     if(type.tab=="joint"){
@@ -1053,7 +1053,7 @@ distr.plot.xy<-function(x,y,freq="counts",freq.type="joint",plot.type,
                   Percentages=prop.table(t(tab.ini),margin=2)*100)
       # change the names of the variables too
       #use.nx<-name.y; use.ny<-name.x
-      switch.xy<-T
+      switch.xy <- TRUE
     }
     plt.xy.crossbars(tab,bw=bw,color=color,use.nx,use.ny,freq,
                      legend=legend,beside=beside,use.tit=use.tit,
@@ -1065,14 +1065,14 @@ distr.plot.xy<-function(x,y,freq="counts",freq.type="joint",plot.type,
                    use.par=par.my)
   }
   if(type.plt=="boxplot"){
-    # if(Xlist$isnum==F & Ylist$isnum==F){
+    # if(!Xlist$isnum & !Ylist$isnum){
     #   cat("\nErrors in the definition of options:",file=stderr())
     #   cat("\n  To build boxplots at least one of 'x' and 'y' must be numeric",file=stderr())
     #   cat("\n    -> It is not possible to proceed with the required analysis",file=stderr())
     #   stop_quietly()
     # }
-    switch.xy<-F
-    if(type.tab=="x|y"){switch.xy<-T}
+    switch.xy <- FALSE
+    if(type.tab=="x|y"){switch.xy <- TRUE}
     plt.xy.boxplot(Xlist,Ylist,bw=bw,color=color,name.x,name.y,
                    adj.breaks=adj.breaks,switch.xy=switch.xy,
                    use.par=par.my)
@@ -1082,12 +1082,12 @@ distr.plot.xy<-function(x,y,freq="counts",freq.type="joint",plot.type,
 
 ## Functions to plot by ------
 
-distr.plot.xby<-function(x,by,plot.type,overlay=FALSE,legend=TRUE,
-                         breaks.x,breaks.by,interval.x=FALSE,interval.by=FALSE,
-                         bw=TRUE,color=NULL,nrows=NULL,ncols=NULL,square=TRUE,
-                         adj.breaks=FALSE,data,...){
+distr.plot.xby<-function(x,by,plot.type,overlay = FALSE,legend = TRUE,
+                         breaks.x,breaks.by,interval.x = FALSE,interval.by = FALSE,
+                         bw = TRUE,color=NULL,nrows=NULL,ncols=NULL,square = TRUE,
+                         adj.breaks = FALSE,data,...){
   type.print<-"cat"
-  msg.p<-list(err=T,warn=T,msg=T)
+  msg.p<-list(err = TRUE,warn = TRUE,msg = TRUE)
   add.dots<-list(...)
   if(length(add.dots)>0){
     if("markd" %in% names(add.dots)){type.print<-"print"}
@@ -1103,7 +1103,7 @@ distr.plot.xby<-function(x,by,plot.type,overlay=FALSE,legend=TRUE,
   # Check if 'x' exists and if it is coherent (not missing)
   name.x<-deparse1(substitute(x))
   check.x<-chk.data(x,data,deparse1(substitute(data)),
-                    name.x,missing=T,err.list=Err.list.input,warn.list=Warn.list)
+                    name.x,missing = TRUE,err.list=Err.list.input,warn.list=Warn.list)
   exist.x<-check.x$exist.x ;
   Err.list.input<-check.x$err.list
   Warn.list<-check.x$warn.list
@@ -1112,61 +1112,61 @@ distr.plot.xby<-function(x,by,plot.type,overlay=FALSE,legend=TRUE,
   # Check if 'by' is specified and is coherent
   name.by<-deparse1(substitute(by))
   check.by<-chk.data(by,data,deparse1(substitute(data)),
-                     name.by,missing=T,err.list=Err.list.input,warn.list=Warn.list)
+                     name.by,missing = TRUE,err.list=Err.list.input,warn.list=Warn.list)
   exist.by<-check.by$exist.x ;
   Err.list.input<-check.by$err.list
   Warn.list<-check.by$warn.list
   by<-check.by$vec.x
 
   # check if x and by have the same length
-  if(exist.x==T && exist.by==T && (length(x) != length(by))){
+  if(exist.x && exist.by && (length(x) != length(by))){
     Err.list.input<-c(Err.list.input,"'x' and 'by' should have the same length")
   }
 
   # Check plots are correctly specified / same procedure as before
   if(isTRUE(missing(plot.type))){
     Err.list.para<-c(Err.list.para,"'plot.type' must be specified")
-    exist.plt<-F} else {
+    exist.plt <- FALSE} else {
       if(!is.character(plot.type)){plot.type<-deparse1(substitute(plot.type))}
       check.plt<-chkpar.option(value=plot.type,
                                allowed=c("histogram","density","boxplot"),
-                               onlyone=T,listall=T,err.list=Err.list.para,warn.list=Warn.list)
+                               onlyone = TRUE,listall = TRUE,err.list=Err.list.para,warn.list=Warn.list)
       Err.list.para<-check.plt$err.list ; Warn.list<-check.plt$warn.list
       exist.plt<-check.plt$exist;  type.plt<-unique(check.plt$value)
     }
   # Check coherency between plots and types of variables
-  if(exist.x==T && exist.plt==T){
+  if(exist.x && exist.plt){
     isnum<-is.numeric(x) # check x numeric
     isfac<-is.factor(x) # check x is a factor
-    if((isFALSE(missing(breaks.x)) | interval.x==T) && type.plt=="boxplot"){
+    if((isFALSE(missing(breaks.x)) | interval.x) && type.plt=="boxplot"){
       Err.list.para<-c(Err.list.para,"Boxplot cannot be built for a variable classified in intervals")
-      exist.plt<-F }
-    if(isTRUE(missing(breaks.x)) && interval.x==F && !is.numeric(x) &&
+      exist.plt <- FALSE }
+    if(isTRUE(missing(breaks.x)) && !interval.x && !is.numeric(x) &&
        type.plt %in% c("boxplot","histogram","density")){
       Err.list.para<-c(Err.list.para,paste0("'",name.x,"' is character or factor: the required plot cannot be built"))
-      exist.plt<-F }
+      exist.plt <- FALSE }
   }
 
   # Create lists with all the info needed to build tables
-  if(exist.x==T && exist.by==T){
+  if(exist.x && exist.by){
     both.in<-complete.cases(data.frame(x,by))
     x<-x[both.in] ; by<-by[both.in]
   }
 
   List.print<-NULL
-  if(exist.x==T){
-    all.infoX<-build.Xlist(x,breaks.x,interval.x,adj.breaks=adj.breaks,consistency=F,
+  if(exist.x){
+    all.infoX<-build.Xlist(x,breaks.x,interval.x,adj.breaks=adj.breaks,consistency = FALSE,
                            err.list=Err.list.options,warn.list=Warn.list,
-                           list.print=List.print,suffix=T)
+                           list.print=List.print,suffix = TRUE)
     Err.list.options<-all.infoX$err.list
     Warn.list<-all.infoX$warn.list
     List.print<-all.infoX$list.print
     Xlist<-all.infoX$Vlist
   }
-  if(exist.by==T){
-    all.infobY<-build.Xlist(by,breaks.by,interval.by,adj.breaks=adj.breaks,consistency=F,
+  if(exist.by){
+    all.infobY<-build.Xlist(by,breaks.by,interval.by,adj.breaks=adj.breaks,consistency = FALSE,
                             err.list=Err.list.options,warn.list=Warn.list,list.print=List.print,
-                            suffix=T)
+                            suffix = TRUE)
     Err.list.options<-all.infobY$err.list
     Warn.list<-all.infobY$warn.list
     List.print<-all.infobY$list.print
@@ -1174,7 +1174,7 @@ distr.plot.xby<-function(x,by,plot.type,overlay=FALSE,legend=TRUE,
   }
 
   # adjust the by variable if numeric -> factor
-  if(exist.by==T && bYlist$class=="standard" && bYlist$isnum==T){
+  if(exist.by && bYlist$class=="standard" && bYlist$isnum){
     num.levels<-unique(bYlist$V.f)
     num.levels<-num.levels[order(num.levels)]
     bYlist$V.f<-factor(bYlist$V.f,levels=num.levels)
@@ -1182,18 +1182,18 @@ distr.plot.xby<-function(x,by,plot.type,overlay=FALSE,legend=TRUE,
 
   # check consistency of required plots:
   if(exist.plt && (plot.type=="density" | plot.type=="histogram")){
-    # if(Xlist$class=="standard" & Xlist$isnum==F){
+    # if(Xlist$class=="standard" & !Xlist$isnum){
     #   Err.list.para<-c(Err.list.para,"To build the required plot 'x' must be numeric")
     # }
-    if(exist.by==T && bYlist$class=="standard" &&
-       bYlist$isnum==T && length(unique(bYlist$V.f))>20){
+    if(exist.by && bYlist$class=="standard" &&
+       bYlist$isnum && length(unique(bYlist$V.f))>20){
       Err.list.para<-c(Err.list.para,paste0("'by' is numeric and has too many levels",
                                             "\n   "," -> to force the procedure transform 'by' into a factor"))
     }
   }
 
   # define the grid layout
-  if(exist.by==T){
+  if(exist.by){
     dim.grid<-c(1,1)
     n.plots=length(levels(bYlist$V.f))
     if(n.plots>=2){
@@ -1208,18 +1208,18 @@ distr.plot.xby<-function(x,by,plot.type,overlay=FALSE,legend=TRUE,
 
   if(length(Err.list.input)>1 | length(Err.list.para)>1 |
      length(Err.list.options)>1){
-    if(msg.p$err==T){
+    if(msg.p$err){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],
+        my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       if(length(Err.list.input)>1){
-        my.p.list(Err.list.input[duplicated(Err.list.input)==F],
+        my.p.list(Err.list.input[!duplicated(Err.list.input)],
                   type.print=type.print)  }
       if(length(Err.list.para)>1){
-        my.p.list(Err.list.para[duplicated(Err.list.para)==F],
+        my.p.list(Err.list.para[!duplicated(Err.list.para)],
                   type.print=type.print)    }
       if(length(Err.list.options)>1){
-        my.p.list(Err.list.options[duplicated(Err.list.options)==F],
+        my.p.list(Err.list.options[!duplicated(Err.list.options)],
                   type.print=type.print)  }
     }
     my.p.list("\nThe procedure is interrupted",type.print=type.print)
@@ -1228,9 +1228,9 @@ distr.plot.xby<-function(x,by,plot.type,overlay=FALSE,legend=TRUE,
 
   # Ready for plots!
   if(length(Warn.list)>1 | length(List.print)>0){
-    if(msg.p$warn==T){
+    if(msg.p$warn){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],type.print=type.print)
+        my.p.list(Warn.list[!duplicated(Warn.list)],type.print=type.print)
       }
       if(length(List.print)>0){
         my.p.list(List.print,type.print=type.print)
@@ -1270,8 +1270,8 @@ build.summaries<-function(x,by1=NULL,by2=NULL,name.1=NULL,name.2=NULL,
 
   # build the function to calculate stats
   pip<-function(x,stats,digits=digits,f.digits=f.digits){
-    use.f<-F
-    if(is.factor(x)){use.f<-T}
+    use.f <- FALSE
+    if(is.factor(x)){use.f <- TRUE}
     x.na<-sum(is.na(x));  x<-na.omit(x)
     cs<-c("n"=length(x),"n.a"=x.na)
 
@@ -1279,21 +1279,21 @@ build.summaries<-function(x,by1=NULL,by2=NULL,name.1=NULL,name.2=NULL,
     f.mode <- function(x,use.f){
       tab.x<-tabulate(match(x, unique(x)))
       mode.s<-(unique(x)[which.max(tab.x)])
-      if(use.f==T){mode.s<-as.character(mode.s)}
+      if(use.f){mode.s<-as.character(mode.s)}
       return(mode.s)}
     f.n_mode <- function(x,use.f){
       tab.x<-tabulate(match(x, unique(x)))
       n.m<-sum(tab.x==max(tab.x))
-      #if(use.f==T){n.m<-as.character(n.m)}
+      #if(use.f){n.m<-as.character(n.m)}
       return(n.m)}
     f.p_mode <- function(x,use.f,f.digits=f.digits){
       p.m<-max(prop.table(tabulate(match(x, unique(x)))))
       p.m<-round(p.m,f.digits)
-      #if(use.f==T){p.m<-as.character(p.m)}
+      #if(use.f){p.m<-as.character(p.m)}
       return(p.m)}
     # functions for quartiles, adjusted for factors
-    f.q<-function(x,f=F,p){
-      if(f==F){qq<-quantile(x,p)} else {qq<-as.character(quantile(x,type=3,p))}
+    f.q<-function(x,f = FALSE,p){
+      if(!f){qq<-quantile(x,p)} else {qq<-as.character(quantile(x,type=3,p))}
       return(qq)}
 
     cso<-NULL
@@ -1417,7 +1417,7 @@ build.summaries<-function(x,by1=NULL,by2=NULL,name.1=NULL,name.2=NULL,
 distr.summary.x<-function(x,by1,by2,stats=c("summary"),digits=2,
                           f.digits=4,data,...){
   type.print<-"cat"
-  msg.p<-list(err=T,warn=T,msg=T)
+  msg.p<-list(err = TRUE,warn = TRUE,msg = TRUE)
   add.dots<-list(...)
   if(length(add.dots)>0){
     if("markd" %in% names(add.dots)){type.print<-"print"}
@@ -1432,7 +1432,7 @@ distr.summary.x<-function(x,by1,by2,stats=c("summary"),digits=2,
   # Check if 'x' exists and if it is coherent (not missing)
   name.x<-deparse1(substitute(x))
   check.x<-chk.data(x,data,deparse1(substitute(data)),
-                    name.x,missing=T,err.list=Err.list.input)
+                    name.x,missing = TRUE,err.list=Err.list.input)
   exist.x<-check.x$exist.x
   Err.list.input<-check.x$err.list;
   x<-check.x$vec.x
@@ -1458,7 +1458,7 @@ distr.summary.x<-function(x,by1,by2,stats=c("summary"),digits=2,
                                        "mean","median","mode","min",
                                        "max","sd","var","cv","range",
                                        "IQrange",paste0("p",1:100)),
-                             onlyone=F,listall=F,
+                             onlyone = FALSE,listall = FALSE,
                              err.list=Err.list.para,warn.list=Warn.list)
   Err.list.para<-check.stats$err.list
   Warn.list<-check.stats$warn.list
@@ -1536,15 +1536,15 @@ distr.summary.x<-function(x,by1,by2,stats=c("summary"),digits=2,
   }
 
   if(length(Err.list.input)>1 | length(Err.list.para)>1){
-    if(msg.p$err==T){
+    if(msg.p$err){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],
+        my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       if(length(Err.list.input)>1){
-        my.p.list(Err.list.input[duplicated(Err.list.input)==F],
+        my.p.list(Err.list.input[!duplicated(Err.list.input)],
                   type.print=type.print)  }
       if(length(Err.list.para)>1){
-        my.p.list(Err.list.para[duplicated(Err.list.para)==F],
+        my.p.list(Err.list.para[!duplicated(Err.list.para)],
                   type.print=type.print)    }
     }
     my.p.list("\nThe procedure is interrupted",type.print=type.print)
@@ -1563,9 +1563,9 @@ distr.summary.x<-function(x,by1,by2,stats=c("summary"),digits=2,
   }
 
   if(length(Warn.list)>1){
-    if(msg.p$warn==T){
+    if(msg.p$warn){
       if(length(Warn.list)>1){
-        my.p.list(Warn.list[duplicated(Warn.list)==F],
+        my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       cat("\n")
     }
@@ -1592,7 +1592,7 @@ distr.summary.x<-function(x,by1,by2,stats=c("summary"),digits=2,
 }
 
 summary.plot.x<-function(x,by1,by2,stats="mean",plot.type="bars",conf.level=0.95,
-                         bw=F,color=NULL,legend=T,data,print.stats=F){
+                         bw = FALSE,color=NULL,legend = TRUE,data,print.stats = FALSE){
   Err.list.input<-as.list("\nErrors found in the definition of inputs:")
   Err.list.para<-as.list("\nErrors found in the definition of parameters:")
   Warn.list<-as.list("\nWarning:") # list to collect warn msg
@@ -1601,7 +1601,7 @@ summary.plot.x<-function(x,by1,by2,stats="mean",plot.type="bars",conf.level=0.95
   # Check if 'x' exists and if it is coherent (not missing)
   name.x<-deparse1(substitute(x))
   check.x<-chk.data(x,data,deparse1(substitute(data)),
-                    name.x,num=T,missing=T,err.list=Err.list.input)
+                    name.x,num = TRUE,missing = TRUE,err.list=Err.list.input)
   exist.x<-check.x$exist.x
   Err.list.input<-check.x$err.list;
   x<-check.x$vec.x
@@ -1609,15 +1609,15 @@ summary.plot.x<-function(x,by1,by2,stats="mean",plot.type="bars",conf.level=0.95
   # Check specifications para
   check.stats<-chkpar.option(value=stats,
                              allowed=c("mean","median","ci.mean","quartiles",
-                                       "quintiles","deciles","percentiles"),onlyone=T,
-                             listall=F,err.list=Err.list.para,warn.list=Warn.list)
+                                       "quintiles","deciles","percentiles"),onlyone = TRUE,
+                             listall = FALSE,err.list=Err.list.para,warn.list=Warn.list)
   Err.list.para<-check.stats$err.list
   Warn.list<-check.stats$warn.list
   exist.s<-check.stats$exist;  stats<-unique(check.stats$value)
 
   check.plot<-chkpar.option(value=plot.type,
-                            allowed=c("bars","lines","points"),onlyone=T,
-                            listall=T,err.list=Err.list.para,warn.list=Warn.list)
+                            allowed=c("bars","lines","points"),onlyone = TRUE,
+                            listall = TRUE,err.list=Err.list.para,warn.list=Warn.list)
   Err.list.para<-check.plot$err.list
   Warn.list<-check.plot$warn.list
   exist.p<-check.plot$exist;  type<-check.plot$value
@@ -1628,13 +1628,13 @@ summary.plot.x<-function(x,by1,by2,stats="mean",plot.type="bars",conf.level=0.95
   if(isTRUE(missing(by1) & isTRUE(missing(by2)))){
     Err.list.input<-c(Err.list.input,"To obtain plots for summaries by1 or by2 should be specified")
     if(length(Warn.list)>1){
-      invisible(lapply(Warn.list[duplicated(Warn.list)==F],
+      invisible(lapply(Warn.list[!duplicated(Warn.list)],
                        function(x) cat(paste0("\n   ",x),file=stderr())))    }
     if(length(Err.list.input)>1){
-      invisible(lapply(Err.list.input[duplicated(Err.list.input)==F],
+      invisible(lapply(Err.list.input[!duplicated(Err.list.input)],
                        function(x) cat(paste0("\n   ",x),file=stderr())))    }
     if(length(Err.list.para)>1){
-      invisible(lapply(Err.list.para[duplicated(Err.list.para)==F],
+      invisible(lapply(Err.list.para[!duplicated(Err.list.para)],
                        function(x) cat(paste0("\n   ",x),file=stderr())))    }
     cat("\nThe procedure is interrupted",file=stderr())
     stop_quietly()}
@@ -1681,10 +1681,10 @@ summary.plot.x<-function(x,by1,by2,stats="mean",plot.type="bars",conf.level=0.95
 
   if(length(Err.list.para)>1){
     if(length(Warn.list)>1){
-      invisible(lapply(Warn.list[duplicated(Warn.list)==F],
+      invisible(lapply(Warn.list[!duplicated(Warn.list)],
                        function(x) cat(paste0("\n   ",x),file=stderr())))    }
     if(length(Err.list.para)>1){
-      invisible(lapply(Err.list.para[duplicated(Err.list.para)==F],
+      invisible(lapply(Err.list.para[!duplicated(Err.list.para)],
                        function(x) cat(paste0("\n   ",x),file=stderr())))    }
     cat("\nThe procedure is interrupted",file=stderr())
     stop_quietly()}
@@ -1710,7 +1710,7 @@ summary.plot.x<-function(x,by1,by2,stats="mean",plot.type="bars",conf.level=0.95
 
   # Ready for calculations
   if(length(Warn.list)>1){
-    invisible(lapply(Warn.list[duplicated(Warn.list)==F],
+    invisible(lapply(Warn.list[!duplicated(Warn.list)],
                      function(x) cat(paste0("\n   ",x),file=stderr())))    }
 
   out<-build.summaries(x=x,by1=by1,name.1=name.by1,by2=by2,name.2=name.by2,
@@ -1719,7 +1719,7 @@ summary.plot.x<-function(x,by1,by2,stats="mean",plot.type="bars",conf.level=0.95
   out<-build.summary.plt(out,name.x,list.stats,list.tit,by1=by1,by2=by2,
                          name.1=name.by1,name.2=name.by2,stats=stats,plot.type=type,
                          bw=bw,color=color,legend=legend,conf.level=conf.level)
-  if(print.stats==T){print(out)}
+  if(print.stats){print(out)}
   myout<-out
 }
 
@@ -1727,7 +1727,7 @@ summary.plot.x<-function(x,by1,by2,stats="mean",plot.type="bars",conf.level=0.95
 #' @importFrom grDevices gray.colors
 #' @importFrom grDevices rainbow
 build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,name.1=NULL,name.2=NULL,
-                            stats,plot.type,bw=F,color=NULL,legend=T,conf.level=0.95){
+                            stats,plot.type,bw = FALSE,color=NULL,legend = TRUE,conf.level=0.95){
   Warn.list<-as.list("\nWarning:") # list to collect warn msg
   pardef <- par(no.readonly = TRUE)
   on.exit(par(pardef))
@@ -1743,8 +1743,8 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
     par(las=mylas)
     tit.stats<-paste0(list.tit," of ",name.x," | ",names(list.by))
     if(plot.type=="bars"){
-      if(bw==T){use.color <- "grey"}
-      if(bw==F & is.null(color)){use.color <- "skyblue"}
+      if(bw){use.color <- "grey"}
+      if(!bw & is.null(color)){use.color <- "skyblue"}
       if(!(is.null(color))){use.color<-color[1]}
 
       if(is.numeric(out[[names(list.by)]])){
@@ -1763,7 +1763,7 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
         x.n<-as.numeric(x.c)}
 
       plot(y=out[[stats]],x=x.n,type="l",col=use.color,main=tit.stats,
-           axes=F,xlab="",ylab="",lwd=2)
+           axes = FALSE,xlab="",ylab="",lwd=2)
       points(y=out[[stats]],x=x.n,pch=16,col=use.color)
       box()
       axis(2)
@@ -1777,7 +1777,7 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
         x.c<-factor(out[[names(list.by)]],levels=out[[names(list.by)]])
         x.n<-as.numeric(x.c)}
       plot(y=out[[stats]],x=x.n,pch=16,col=use.color,main=tit.stats,
-           axes=F,xlab="",ylab="",lwd=2)
+           axes = FALSE,xlab="",ylab="",lwd=2)
       box()
       axis(2)
       axis(1,at=x.n,labels=x.c)}
@@ -1785,7 +1785,7 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
     mtext(side = 1, names(list.by), line = 2)
     mtext(side = 2, list.tit, line = 2.3,las=0)
     if(length(Warn.list)>1){
-      invisible(lapply(Warn.list[duplicated(Warn.list)==F],
+      invisible(lapply(Warn.list[!duplicated(Warn.list)],
                        function(x) cat(paste0("\n   ",x),file=stderr())))
       cat("\n")}
     par(pardef)
@@ -1797,8 +1797,8 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
     tit.stats<-paste0(name.x," | ",names(list.by)[1]," by ",names(list.by)[2])
     use.by2<-unique(out[[names(list.by)[2]]])
 
-    if(bw==T){use.color <- grDevices::gray.colors(length(use.by2))}
-    if(bw==F & is.null(color)){use.color <- grDevices::rainbow(length(use.by2))}
+    if(bw){use.color <- grDevices::gray.colors(length(use.by2))}
+    if(!bw & is.null(color)){use.color <- grDevices::rainbow(length(use.by2))}
     if(!(is.null(color))){use.color<-color
     if(length(use.color)<length(use.by2)){
       use.color <- grDevices::rainbow(length(use.by2))}}
@@ -1809,28 +1809,28 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
       x.c<-factor(out[[names(list.by)[1]]],levels=out[[names(list.by)[1]]])
       x.n<-as.numeric(x.c)}
 
-    mymin.y<-min(out[[stats]],na.rm=T);  mymax.y<-max(out[[stats]],na.rm=T)
-    mymin.x<-min(x.n,na.rm=T); mymax.x<-max(x.n,na.rm=T)
+    mymin.y<-min(out[[stats]],na.rm = TRUE);  mymax.y<-max(out[[stats]],na.rm = TRUE)
+    mymin.x<-min(x.n,na.rm = TRUE); mymax.x<-max(x.n,na.rm = TRUE)
 
     if(nchar(as.character(round(mymax.y,0)))<5){mylas=1} else{mylas=0}
     par(las=mylas)
 
-    if(legend==T){
+    if(legend){
       by2.legend<-use.by2
       col.legend<-use.color
       #length.leg<-0.98+0.1735453*max((nchar(as.character(by2.legend)))-1)
       length.leg<-0.3+0.1735453*max((nchar(as.character(by2.legend)))-1)
       prop.leg<-min(length.leg/10.36,0.5)
 
-      layout(matrix(c(1,2), nrow=1, byrow=TRUE),widths = c(1-prop.leg,prop.leg))
+      layout(matrix(c(1,2), nrow=1, byrow = TRUE),widths = c(1-prop.leg,prop.leg))
       par(mar=c(3.5,3.5,3,0),tck=(-0.01),tcl=NA,las=1,mgp=c(3, 0.3, 0),
           cex=0.88,cex.axis=0.88,las=mylas)
     }
     if(is.numeric(out[[names(list.by)[1]]])){
-      plot(c(mymin.x,mymax.x),c(mymin.y,mymax.y),#axes=F,
+      plot(c(mymin.x,mymax.x),c(mymin.y,mymax.y),#axes = FALSE,
            type="n",xlim=c(mymin.x,mymax.x),ylab="",xlab="",main=tit.stats)
     } else if(!is.numeric(out[[names(list.by)[1]]])){
-      plot(c(mymin.x,mymax.x),c(mymin.y,mymax.y),axes=F,
+      plot(c(mymin.x,mymax.x),c(mymin.y,mymax.y),axes = FALSE,
            type="n",xlim=c(mymin.x,mymax.x),ylab="",xlab="",main=tit.stats)
     }
     for(k in use.by2){
@@ -1845,15 +1845,15 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
     mtext(side = 1, names(list.by)[1], line = 2)
     mtext(side = 2, list.tit, line = 2.3,las=0)
 
-    if(legend==T){
+    if(legend){
       par(mar=c(0,0,3,0))
-      plot(1:10,1:10,type="n",axes=F)
+      plot(1:10,1:10,type="n",axes = FALSE)
       legend("topleft", legend=by2.legend,
              pch=21,pt.bg=col.legend,pt.cex=1,bty="n",x.intersp = 0.5,
              cex=0.9)    }
 
     if(length(Warn.list)>1){
-      invisible(lapply(Warn.list[duplicated(Warn.list)==F],
+      invisible(lapply(Warn.list[!duplicated(Warn.list)],
                        function(x) cat(paste0("\n   ",x),file=stderr())))
       cat("\n")}
     par(pardef)
@@ -1869,7 +1869,7 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
     out$marg.err<-t.q*(out$sd/sqrt(out$n))
     out$marg.err[is.na(out$marg.err)]<-0
     sel<-out$marg.err>0
-    if(any(sel==F)){
+    if(!any(sel)){
       Warn.list<-c(Warn.list,"CI could not be calculated for by-groups with one case only")}
     mymax<-max(out$mean+out$marg.err)
     if(max(nchar(mymax))<5){mylas=1} else{mylas=0}
@@ -1879,11 +1879,11 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
       if(is.numeric(out[[names(list.by)]])){
         Warn.list<-c(Warn.list,"With 'bars' the by-var is treated as a factor")}
       mymin=min(0,min(out$mean-out$marg.err))
-      if(bw==T){use.color <- "grey"}
-      if(bw==F & is.null(color)){use.color <- "skyblue"}
+      if(bw){use.color <- "grey"}
+      if(!bw & is.null(color)){use.color <- "skyblue"}
       if(!(is.null(color))){use.color<-color[1]}
       orig.plt<-barplot(out$mean,names.arg=out[[names(list.by)]],
-                        col=use.color,main=tit.stats,ylim=c(mymin,mymax),plot=F)
+                        col=use.color,main=tit.stats,ylim=c(mymin,mymax),plot = FALSE)
       barplot(out$mean,names.arg=out[[names(list.by)]],
               col=use.color,main=tit.stats,ylim=c(mymin,mymax))
       points(y=out$mean[sel],x=orig.plt[sel],pch=16,col="black")
@@ -1891,7 +1891,7 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
              x1=orig.plt[sel], y1=(out$mean[sel]+out$marg.err[sel]),
              code=3, angle=90, col="black",lwd=1.5,
              length=min(0.1,(0.05*15/length(out$mean))))
-      if(min(out$mean,na.rm=T)<0){
+      if(min(out$mean,na.rm = TRUE)<0){
         segments(x0=0,y0=0,x1=max(orig.plt),y1=0)}
     }
     if(plot.type=="lines"){
@@ -1902,12 +1902,12 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
       if(!is.numeric(out[[names(list.by)]])){
         x.c<-factor(out[[names(list.by)]],levels=out[[names(list.by)]])
         x.n<-as.numeric(x.c)}
-      mymin=min(out$mean-out$marg.err,na.rm=T)
+      mymin=min(out$mean-out$marg.err,na.rm = TRUE)
 
       plot(y=out$mean,x=x.n,type="l",col=use.color,main=tit.stats,
-           axes=F,xlab="",ylab="",lwd=2,ylim=c(mymin,mymax))
+           axes = FALSE,xlab="",ylab="",lwd=2,ylim=c(mymin,mymax))
       points(y=out$mean[sel],x=x.n[sel],pch=16,col=use.color)
-      points(y=out$mean[sel==F],x=x.n[sel==F],pch=8,col=use.color)
+      points(y=out$mean[!sel],x=x.n[!sel],pch=8,col=use.color)
       box()
       axis(2)
       axis(1,at=x.n,labels=x.c)
@@ -1924,12 +1924,12 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
       if(!is.numeric(out[[names(list.by)]])){
         x.c<-factor(out[[names(list.by)]],levels=out[[names(list.by)]])
         x.n<-as.numeric(x.c)}
-      mymin=min(out$mean-out$marg.err,na.rm=T)
+      mymin=min(out$mean-out$marg.err,na.rm = TRUE)
 
       plot(y=out$mean,x=x.n,type="n",col=use.color,main=tit.stats,
-           axes=F,xlab="",ylab="",lwd=2,ylim=c(mymin,mymax))
+           axes = FALSE,xlab="",ylab="",lwd=2,ylim=c(mymin,mymax))
       points(y=out$mean[sel],x=x.n[sel],pch=16,col=use.color)
-      points(y=out$mean[sel==F],x=x.n[sel==F],pch=8,col=use.color)
+      points(y=out$mean[!sel],x=x.n[!sel],pch=8,col=use.color)
       box()
       axis(2)
       axis(1,at=x.n,labels=x.c)
@@ -1942,7 +1942,7 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
     mtext(side = 1, names(list.by), line = 2)
     mtext(side = 2, list.tit, line = 2.3,las=0)
     if(length(Warn.list)>1){
-      invisible(lapply(Warn.list[duplicated(Warn.list)==F],
+      invisible(lapply(Warn.list[!duplicated(Warn.list)],
                        function(x) cat(paste0("\n   ",x),file=stderr())))
       cat("\n")
     }
@@ -1970,14 +1970,14 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
 
     colramp.pct <- grDevices::colorRampPalette(c("red", "darkorange","gold",
                                            "green","darkgreen"))
-                                           if(bw==T){use.color <- grDevices::gray.colors(length(pctiles))}
-    if(bw==F & is.null(color)){use.color <- colramp.pct(length(pctiles))}
+                                           if(bw){use.color <- grDevices::gray.colors(length(pctiles))}
+    if(!bw & is.null(color)){use.color <- colramp.pct(length(pctiles))}
     if(!(is.null(color))){use.color<-color
     if(length(use.color)<length(pctiles)){
       use.color <- colramp.pct(length(pctiles))}}
     names(use.color)[1:length(pctiles)]<-pctiles
 
-    if(legend==T){
+    if(legend){
       pct.legend<-pctiles
       col.legend<-use.color
       if(stats=="percentiles"){
@@ -1988,11 +1988,11 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
       length.leg<-0.8+0.1735453*max((nchar(as.character(pct.legend)))-1)
       prop.leg<-min(length.leg/10.36,0.5)
 
-      layout(matrix(c(1,2), nrow=1, byrow=TRUE),widths = c(1-prop.leg,prop.leg))
+      layout(matrix(c(1,2), nrow=1, byrow = TRUE),widths = c(1-prop.leg,prop.leg))
       par(mar=c(3.5,3.5,3,0),tck=(-0.01),tcl=NA,las=1,mgp=c(3, 0.3, 0),cex=0.88,
           cex.axis=0.88,las=mylas)
     }
-    plot(c(mymin.x,mymax.x),c(mymin.y,mymax.y),#axes=F,
+    plot(c(mymin.x,mymax.x),c(mymin.y,mymax.y),#axes = FALSE,
          type="n",xlim=c(mymin.x,mymax.x),ylab="",xlab="",main=tit.stats)
     for(k in pctiles){
       points(x.n,out[[k]],type="l",col=use.color[k],lwd=2)
@@ -2000,15 +2000,15 @@ build.summary.plt<-function(out,name.x,list.stats,list.tit,by1=NULL,by2=NULL,nam
     }
     mtext(side = 1, names(list.by), line = 2)
     mtext(side = 2, list.tit, line = 2.3,las=0)
-    if(legend==T){
+    if(legend){
       par(mar=c(0,0,3,0))
-      plot(1:10,1:10,type="n",axes=F)
+      plot(1:10,1:10,type="n",axes = FALSE)
       legend("topleft", legend=pct.legend,
              pch=21,pt.bg=col.legend,pt.cex=1,bty="n",x.intersp = 0.5,
              cex=0.9)    }
 
     if(length(Warn.list)>1){
-      invisible(lapply(Warn.list[duplicated(Warn.list)==F],
+      invisible(lapply(Warn.list[!duplicated(Warn.list)],
                        function(x) cat(paste0("\n   ",x),file=stderr())))
       cat("\n")    }
     par(pardef)

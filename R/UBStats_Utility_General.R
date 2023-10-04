@@ -13,7 +13,7 @@ stop_quietly <- function() {
 #' @importFrom utils write.table
 my.p.err <- function(m){
   utils::write.table(format(m, justify="left"),
-              row.names=F, col.names=F, quote=F)}
+              row.names = FALSE, col.names = FALSE, quote = FALSE)}
 
 # Function to printout list with messages and df
 my.p.list<-function(use.xx,type.print="print"){
@@ -39,10 +39,10 @@ my.p.list<-function(use.xx,type.print="print"){
 }
 
 # Function to verify whether an input exists or not
-chk.data.old<-function(x,data,name.data,name.x,num=F,missing=F,
+chk.data.old<-function(x,data,name.data,name.x,num = FALSE,missing = FALSE,
                    err.list=NULL,warn.list=NULL,required="vector"){
-  exist.x<-F; vec.x<-NULL;  class.x<-"none"; bad.request<-F
-  if(is.list(err.list)==F){err.list<-list()}
+  exist.x <- FALSE; vec.x<-NULL;  class.x<-"none"; bad.request <- FALSE
+  if(!is.list(err.list)){err.list<-list()}
   ini.err<-length(err.list)
   which<-deparse1(substitute(x))
   if(isTRUE(missing(x))){
@@ -52,20 +52,20 @@ chk.data.old<-function(x,data,name.data,name.x,num=F,missing=F,
     check.x<-tryCatch(y<-x, error=function(e){chk<-"Error" })
     check.dim<-dim(check.x) ; check.len<-length(check.x)
     if(is.null(check.dim) && check.len>1){
-      if(is.atomic(x)==T){
-        exist.x<-T ;  vec.x<-x; class.x<-"vector"
+      if(is.atomic(x)){
+        exist.x <- TRUE ;  vec.x<-x; class.x<-"vector"
       } else {
         err.list<-c(err.list,paste0("'",which,"' should be vector, not ",class(x))) } 
     }
     if(!is.null(check.dim) & required=="vector"){
       err.list<-c(err.list,paste0("'",which,"' should be vector, not ",class(x))) } 
     if(!is.null(check.dim) & required=="data" && (inherits(x,"matrix") | inherits(x,"data.frame"))){
-      exist.x<-T; vec.x<-x; class.x<-"data"
+      exist.x <- TRUE; vec.x<-x; class.x<-"data"
     }
-    # if(exist.x==T && isFALSE(missing(data))){
+    # if(exist.x && isFALSE(missing(data))){
     #   warn.list<-c(warn.list,"'data' ignored because the input/s exist")
     # }
-    if(exist.x==F & length(err.list)==ini.err){
+    if(!exist.x & length(err.list)==ini.err){
       if(isTRUE(missing(data))){
         if(is.null(check.dim) & check.len<2){
           err.list<-c(err.list,paste0(name.x," does not exist or is not consistent")) } 
@@ -80,11 +80,11 @@ chk.data.old<-function(x,data,name.data,name.x,num=F,missing=F,
             err.list<-c(err.list,paste0(name.data," is not a dataframe or a matrix"))}
           if(is.data.frame(data) | is.matrix(data)){
             if(name.x %in% colnames(data)){
-              vec.x<-data[[name.x]]; exist.x<-T; class.x<-"vector"} 
+              vec.x<-data[[name.x]]; exist.x <- TRUE; class.x<-"vector"} 
             if(!(name.x %in% colnames(data))){
               n.name.x<-gsub("\"", "", name.x)
               if(n.name.x %in% colnames(data)){
-                vec.x<-data[,n.name.x]; exist.x<-T; class.x<-"vector"} 
+                vec.x<-data[,n.name.x]; exist.x <- TRUE; class.x<-"vector"} 
               if(!(n.name.x %in% colnames(data))){
                 err.list<-c(err.list,paste0("Variable ",name.x," is not included in ",name.data))
               }
@@ -94,24 +94,24 @@ chk.data.old<-function(x,data,name.data,name.x,num=F,missing=F,
       }
     }
   }
-  if(exist.x==T && class.x=="vector" && missing==T){
+  if(exist.x && class.x=="vector" && missing){
     if(sum(is.na(vec.x))==length(vec.x)){
       err.list<-c(err.list,paste0("All the elements in '",which,"' are missing!"))
-      exist.x<-F}
-    if(exist.x==T && sum(!is.na(vec.x))<2){
+      exist.x <- FALSE}
+    if(exist.x && sum(!is.na(vec.x))<2){
       err.list<-c(err.list,paste0("Cases with non missing values in '",which,"' should be at least 2!"))
-      exist.x<-F}
-    if(exist.x==T && length(unique(vec.x))==1){
+      exist.x <- FALSE}
+    if(exist.x && length(unique(vec.x))==1){
       err.list<-c(err.list,paste0("'",which,"' is constant (takes only one value)!"))
-      exist.x<-F}
+      exist.x <- FALSE}
   }
-  if(exist.x==T & class.x=="vector" & num==T){
-    if(is.numeric(vec.x)==F){
+  if(exist.x & class.x=="vector" & num){
+    if(!is.numeric(vec.x)){
       err.list<-c(err.list,paste0("'",which,"' should be numeric"))
     }
   }
   
-  if(exist.x==T & class.x=="data" & missing==T){
+  if(exist.x & class.x=="data" & missing){
     if(sum(complete.cases(vec.x))==0){
       err.list<-c(err.list,paste0("All the elements in '",which,"' are missing!"))
     }
@@ -123,11 +123,11 @@ chk.data.old<-function(x,data,name.data,name.x,num=F,missing=F,
            bad.request=bad.request,err.list=err.list,warn.list=warn.list)
 }
 
-chk.data<-function(x,data,name.data,name.x,num=F,missing=F,
+chk.data<-function(x,data,name.data,name.x,num = FALSE,missing = FALSE,
                        err.list=NULL,warn.list=NULL,required="vector"){
-  exist.x<-F; vec.x<-NULL;  class.x<-"none"; 
-  if(is.list(err.list)==F){err.list<-list()}
-  if(is.list(warn.list)==F){warn.list<-list()}
+  exist.x <- FALSE; vec.x<-NULL;  class.x<-"none"; 
+  if(!is.list(err.list)){err.list<-list()}
+  if(!is.list(warn.list)){warn.list<-list()}
   ini.err<-length(err.list)
   which<-deparse1(substitute(x))
   
@@ -136,7 +136,7 @@ chk.data<-function(x,data,name.data,name.x,num=F,missing=F,
   
   check.x<-function(){
     x.err.list<-list()
-    x.exist.x<-F; x.vec.x<-NULL;  x.class.x<-"none"; 
+    x.exist.x <- FALSE; x.vec.x<-NULL;  x.class.x<-"none"; 
     # x can be an object in the environment, or a column in a dataframe or an element in a list
     # -> try to create a copy of x to verify whether it exists in env or in a df/matrix
     copyx<-function(x){y<-x ; return(y)}
@@ -144,8 +144,8 @@ chk.data<-function(x,data,name.data,name.x,num=F,missing=F,
     check.dim<-dim(check.x) ; check.len<-length(check.x)
     # if no dimension and has length x is a vector
     if(is.null(check.dim) && check.len>1){
-      if(is.atomic(x)==T){
-        x.exist.x<-T ;  x.vec.x<-x; x.class.x<-"vector"
+      if(is.atomic(x)){
+        x.exist.x <- TRUE ;  x.vec.x<-x; x.class.x<-"vector"
       } else {
         x.err.list<-c(x.err.list,paste0("'",which,"' should be vector, not ",class(x))) } 
     }
@@ -156,7 +156,7 @@ chk.data<-function(x,data,name.data,name.x,num=F,missing=F,
     if(!is.null(check.dim) & required=="vector"){
       x.err.list<-c(x.err.list,paste0("'",which,"' should be vector, not ",class(x))) } 
     if(!is.null(check.dim) & required=="data" && (inherits(x,"matrix") | inherits(x,"data.frame"))){
-      x.exist.x<-T; x.vec.x<-x; x.class.x<-"data"
+      x.exist.x <- TRUE; x.vec.x<-x; x.class.x<-"data"
     }
     
     list(exist.x=x.exist.x,vec.x=x.vec.x,class.x=x.class.x,
@@ -165,7 +165,7 @@ chk.data<-function(x,data,name.data,name.x,num=F,missing=F,
   
   check.data<-function(){
     d.err.list<-list()
-    d.exist.x<-F; d.vec.x<-NULL;  d.class.x<-"none"; 
+    d.exist.x <- FALSE; d.vec.x<-NULL;  d.class.x<-"none"; 
     ge <- (ls(name=.GlobalEnv))
     if(!(name.data %in% ge)){
       d.err.list<-c(d.err.list,paste0("data ",name.data," does not exist"))}
@@ -174,11 +174,11 @@ chk.data<-function(x,data,name.data,name.x,num=F,missing=F,
         d.err.list<-c(d.err.list,paste0(name.data," is not a dataframe or a matrix"))}
       if(is.data.frame(data) | is.matrix(data)){
         if(name.x %in% colnames(data)){
-          d.vec.x<-data[[name.x]]; d.exist.x<-T; d.class.x<-"vector"} 
+          d.vec.x<-data[[name.x]]; d.exist.x <- TRUE; d.class.x<-"vector"} 
         if(!(name.x %in% colnames(data))){
           n.name.x<-gsub("\"", "", name.x)
           if(n.name.x %in% colnames(data)){
-            d.vec.x<-data[,n.name.x]; d.exist.x<-T; d.class.x<-"vector"} 
+            d.vec.x<-data[,n.name.x]; d.exist.x <- TRUE; d.class.x<-"vector"} 
           if(!(n.name.x %in% colnames(data))){
             d.err.list<-c(d.err.list,paste0("Variable ",name.x," is not included in ",name.data))
           }
@@ -190,38 +190,38 @@ chk.data<-function(x,data,name.data,name.x,num=F,missing=F,
   }
   
   
-  check.solo<-check.indata<-F
+  check.solo<-check.indata <- FALSE
   x.solo<-x.data<-NULL
-  if(isFALSE(missing(x))){x.solo<-check.x(); check.solo=T}
-  if(isFALSE(missing(data))){x.data<-check.data(); check.indata=T}
+  if(isFALSE(missing(x))){x.solo<-check.x(); check.solo = TRUE}
+  if(isFALSE(missing(data))){x.data<-check.data(); check.indata = TRUE}
   
   # only x given
-  if(check.solo==T & check.indata==F){
+  if(check.solo & !check.indata){
     exist.x<-x.solo$exist.x; vec.x<-x.solo$vec.x;  
     class.x<-x.solo$class.x
     err.list<-c(err.list,x.solo$x.err.list)
   }
   # both x and data given
-  if(check.solo==T & check.indata==T){
+  if(check.solo & check.indata){
     # x exists & not a column of data
-    if(x.solo$exist.x==T & x.data$exist.x==F){
+    if(x.solo$exist.x & !x.data$exist.x){
       exist.x<-x.solo$exist.x; vec.x<-x.solo$vec.x;  
       class.x<-x.solo$class.x
       err.list<-c(err.list,x.solo$x.err.list)
     }
     # x does not exist & x is a column of data
-    if(x.solo$exist.x==F & x.data$exist.x==T){
+    if(!x.solo$exist.x & x.data$exist.x){
       exist.x<-x.data$exist.x; vec.x<-x.data$vec.x;  
       class.x<-x.data$class.x
       err.list<-c(err.list,x.data$d.err.list)
     }
     # x does not exist & x is not a column of data
-    if(x.solo$exist.x==F & x.data$exist.x==F){
+    if(!x.solo$exist.x & !x.data$exist.x){
       err.list<-c(err.list,x.solo$x.err.list)
       err.list<-c(err.list,x.data$d.err.list)
     }
     # x exists & x is a column of data
-    if(x.solo$exist.x==T & x.data$exist.x==T){
+    if(x.solo$exist.x & x.data$exist.x){
       warn.list<-c(warn.list,
                    paste0(name.x," is both a vector/factor in the environment",
                           " and a column in ",name.data,
@@ -233,24 +233,24 @@ chk.data<-function(x,data,name.data,name.x,num=F,missing=F,
   }
   
   # consistency checks for x:
-  if(exist.x==T && class.x=="vector" && missing==T){
+  if(exist.x && class.x=="vector" && missing){
     if(sum(is.na(vec.x))==length(vec.x)){
       err.list<-c(err.list,paste0("All the elements in '",which,"' are missing!"))
-      exist.x<-F}
-    if(exist.x==T && sum(!is.na(vec.x))<2){
+      exist.x <- FALSE}
+    if(exist.x && sum(!is.na(vec.x))<2){
       err.list<-c(err.list,paste0("Cases with non missing values in '",which,"' should be at least 2!"))
-      exist.x<-F}
-    if(exist.x==T && length(unique(vec.x))==1){
+      exist.x <- FALSE}
+    if(exist.x && length(unique(vec.x))==1){
       err.list<-c(err.list,paste0("'",which,"' is constant (takes only one value)!"))
-      exist.x<-F}
+      exist.x <- FALSE}
   }
-  if(exist.x==T & class.x=="vector" & num==T){
-    if(is.numeric(vec.x)==F){
+  if(exist.x & class.x=="vector" & num){
+    if(!is.numeric(vec.x)){
       err.list<-c(err.list,paste0("'",which,"' should be numeric"))
     }
   }
   
-  if(exist.x==T & class.x=="data" & missing==T){
+  if(exist.x & class.x=="data" & missing){
     if(sum(complete.cases(vec.x))==0){
       err.list<-c(err.list,paste0("All the elements in '",which,"' are missing!"))
     }
@@ -262,12 +262,12 @@ chk.data<-function(x,data,name.data,name.x,num=F,missing=F,
            err.list=err.list,warn.list=warn.list)
 }
 
-chkpar.option<-function(value,allowed,onlyone=T,listall=T,
+chkpar.option<-function(value,allowed,onlyone = TRUE,listall = TRUE,
                         err.list=NULL,warn.list=NULL){
-  if(is.list(err.list)==F){err.list<-list()}
-  if(is.list(warn.list)==F){warn.list<-list()}
+  if(!is.list(err.list)){err.list<-list()}
+  if(!is.list(warn.list)){warn.list<-list()}
   what<-deparse1(substitute(value))
-  exist.char<-F; fin.val<-"none"
+  exist.char <- FALSE; fin.val<-"none"
   ok.value<-(complete.cases(value))
   if(sum(ok.value)==0){
     err.list<-c(err.list,paste0("All the elements of '",what,"' are missing!"))
@@ -276,15 +276,15 @@ chkpar.option<-function(value,allowed,onlyone=T,listall=T,
       err.list<-c(err.list,paste0("'",what,"' cannot be a ",class(value)[1]))
     } 
     if(inherits(value,"character")){
-      value<-value[ok.value==T]
+      value<-value[ok.value]
       is.inchar<-pmatch(toupper(value),toupper(allowed))
       valid<-!is.na(is.inchar)
       not.valid<-is.na(is.inchar)
       if(sum(valid)==0){
-        if(listall==T){
+        if(listall){
           err.list<-c(err.list,paste0("Invalid '",what,"' argument (allowed are ",
                                       paste0(allowed,collapse="/"),")"))}
-        if(listall==F){
+        if(!listall){
           err.list<-c(err.list,paste0("Invalid '",what,"' argument"))}
       } 
       if(sum(not.valid)>=1 & sum(valid)>0){
@@ -292,9 +292,9 @@ chkpar.option<-function(value,allowed,onlyone=T,listall=T,
                                       paste0(value[not.valid],collapse=", ")))
       }
       if(sum(valid)>=1){
-        exist.char<-T
+        exist.char <- TRUE
         fin.val<-allowed[is.inchar[valid]]
-        if(onlyone==T & sum(valid)>1){
+        if(onlyone & sum(valid)>1){
           warn.list<-c(warn.list,paste0("More valid options defined for '",what,
                                         "'; only the first is considered"))
           fin.val<-fin.val[1]

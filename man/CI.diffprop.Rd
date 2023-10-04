@@ -78,8 +78,8 @@ CI.diffprop(x = WouldSuggest_M, y = WouldSuggest_F, success.x = "Yes",
 
 # CI for difference between proportion based on logical variable
 NoChildren <- (MktDATA$Children == 0)
-Deals_w_child <- MktDATA$Deals.ge50[NoChildren == FALSE]
-Deals_no_child <- MktDATA$Deals.ge50[NoChildren == TRUE]
+Deals_w_child <- MktDATA$Deals.ge50[!NoChildren]
+Deals_no_child <- MktDATA$Deals.ge50[NoChildren]
 CI.diffprop(x = Deals_w_child, y = Deals_no_child, conf.level = 0.9,
   digits = 3)
 
