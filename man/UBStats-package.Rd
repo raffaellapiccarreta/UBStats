@@ -29,4 +29,20 @@ The main functions included in the package are:
 \item \code{\link{TEST.diffvar}()}
 }
 }
+\seealso{
+Useful links:
+\itemize{
+  \item Report bugs at \url{https://github.com/raffaellapiccarreta/UBStats/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Raffaella Piccarreta \email{raffaella.piccarreta@unibocconi.it}
+
+Other contributors:
+\itemize{
+  \item Sergio Venturini \email{sergio.venturini@unicatt.it} [contributor]
+}
+
+}
 \keyword{internal}
