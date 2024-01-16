@@ -2,7 +2,7 @@ Package: UBStats
 Type: Package
 Title: Basic Statistics with R
 Version: 0.1.4
-Date: 2023-10-05
+Date: 2024-01-16
 Authors@R: c(
   person("Raffaella", "Piccarreta", role=c("aut", "cre"), email = "raffaella.piccarreta@unibocconi.it"),
   person("Sergio", "Venturini", role=c("ctb"), email = "sergio.venturini@unicatt.it"))
@@ -28,5 +28,5 @@ Depends:
 BugReports: https://github.com/raffaellapiccarreta/UBStats/issues
 Encoding: UTF-8
 VignetteBuilder: knitr
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0
 Roxygen: list(markdown = TRUE)

@@ -238,13 +238,14 @@ CI.prop<-function(x, success=NULL,conf.level = 0.95, digits = 2,
 #'   standard deviations for the two population. If \code{NULL} they estimate
 #'   the populations standard deviations using the data.
 #' @param sigma.by An optional numeric value used to specify the possibly known
-#'   variances for the two independent samples identified via \code{by}.
-#'   \code{sigma.by} can be a single value indicating the same variance in the
-#'   two by-groups, or a vector with two values, specifying the variances in
-#'   the two by-groups. To avoid errors, in the latter case the vector should be
-#'   named, with names coinciding with the two levels of \code{by}.
+#'   standard deviations for the two independent samples identified via
+#'   \code{by}. \code{sigma.by} can be a single value indicating the same
+#'   standard deviation in the two by-groups, or a vector with two values,
+#'   specifying the standard deviations in the two by-groups. To avoid errors,
+#'   in the latter case the vector should be named, with names coinciding with
+#'   the two levels of \code{by}.
 #' @param sigma.d An optional numeric value that specify the possibly known
-#'   variance of the difference in \bold{paired} samples.
+#'   standard deviation of the difference in \bold{paired} samples.
 #' @param conf.level Numeric value corresponding to the confidence level
 #'   required. Default to 0.95.
 #' @param digits Integer value specifying the number of decimals used
@@ -883,13 +884,14 @@ TEST.prop<-function(x, success=NULL,p0=0.5,
 #'   standard deviations for the two population. If \code{NULL} they estimate
 #'   the populations standard deviations using the data.
 #' @param sigma.by An optional numeric value used to specify the possibly known
-#'   variances for the two independent samples identified via \code{by}.
-#'   \code{sigma.by} can be a single value indicating the same variance in the
-#'   two by-groups, or a vector with two values, specifying the variances in
-#'   the two by-groups. To avoid errors, in the latter case the vector should be
-#'   named, with names coinciding with the two levels of \code{by}.
+#'   standard deviations for the two independent samples identified via
+#'   \code{by}. \code{sigma.by} can be a single value indicating the same standard
+#'   deviation in the two by-groups, or a vector with two values, specifying the
+#'   standard deviations in the two by-groups. To avoid errors, in the latter case
+#'   the vector should be named, with names coinciding with the two levels of
+#'   \code{by}.
 #' @param sigma.d An optional numeric value that specify the possibly known
-#'   variance of the difference in \bold{paired} samples.
+#'   standard deviation of the difference in \bold{paired} samples.
 #' @param mdiff0 Numeric value that specifies the null hypothesis to test for
 #'   (default is 0).
 #' @param alternative A length-one character vector specifying the direction
