@@ -1,8 +1,8 @@
 Package: UBStats
 Type: Package
 Title: Basic Statistics with R
-Version: 0.1.4
-Date: 2024-01-16
+Version: 0.2.0
+Date: 2024-07-08
 Authors@R: c(
   person("Raffaella", "Piccarreta", role=c("aut", "cre"), email = "raffaella.piccarreta@unibocconi.it"),
   person("Sergio", "Venturini", role=c("ctb"), email = "sergio.venturini@unicatt.it"))
@@ -18,15 +18,14 @@ LazyData: true
 Imports:
     graphics,
     grDevices,
-    stats,
-    utils
+    stats
 Suggests:
     knitr,
     rmarkdown
 Depends:
-    R (>= 3.5.0)
+    R (>= 3.5.0),
+    utils
 BugReports: https://github.com/raffaellapiccarreta/UBStats/issues
 Encoding: UTF-8
-VignetteBuilder: knitr
-RoxygenNote: 7.3.0
+RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
