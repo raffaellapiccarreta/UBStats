@@ -188,7 +188,7 @@ Out_TotVal<-distr.summary.x(x = TotVal,
 
 }
 \seealso{
-\code{\link{plotsummary.x}()} to graphically display
+\code{\link{summaries.plot.x}()} to graphically display
 conditioned tendency summaries of a univariate distribution.
 
 \code{\link{distr.table.x}()} for tabulating a univariate
