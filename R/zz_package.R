@@ -1,6 +1,6 @@
 #' UBStats: a package for teaching introductory statistics courses at Bocconi University (Milan, Italy)
 #'
-#' @docType package
+#' _PACKAGE
 #'
 #' @name UBStats-package
 #' @aliases UBStats-pkg
