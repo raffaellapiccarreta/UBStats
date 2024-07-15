@@ -3264,7 +3264,7 @@ CI.diffprop<-function(x, y, success.x = NULL, success.y = NULL,
 #'   (default is 0).
 #' @param alternative A length-one character vector specifying the direction
 #'   of the alternative hypothesis. Allowed values are \code{"two.sided"} 
-#'   population mean differs from \code{mu0}; default), or \code{"less"}
+#'   (population mean differs from \code{mu0}; default), or \code{"less"}
 #'   (population mean is lower than \code{mu0}), or \code{"greater"}
 #'   (population mean is higher than \code{mu0}).
 #' @param digits Integer value specifying the number of 
@@ -3428,9 +3428,9 @@ TEST.mean<-function(x, sigma = NULL,
 #'   (default is 0).
 #' @param alternative A length-one character vector specifying the direction
 #'   of the alternative hypothesis. Allowed values are \code{"two.sided"} 
-#'   population mean differs from \code{p0}; default), or \code{"less"}
-#'   (population mean is lower than \code{p0}), or \code{"greater"}
-#'   (population mean is higher than \code{p0}).
+#'   (population proportion differs from \code{p0}; default), or \code{"less"}
+#'   (population proportion is lower than \code{p0}), or \code{"greater"}
+#'   (population proportion is higher than \code{p0}).
 #' @param digits Integer value specifying the number of 
 #'   decimals used to round statistics; default to 2. If the chosen rounding formats some 
 #'   non-zero values as zero, the number of decimals is increased 
@@ -3607,9 +3607,9 @@ TEST.prop<-function(x, success = NULL,
 #'   (default is 0).
 #' @param alternative A length-one character vector specifying the direction
 #'   of the alternative hypothesis. Allowed values are \code{"two.sided"} 
-#'   population mean differs from \code{mdiff0}; default), or \code{"less"}
-#'   (population mean is lower than \code{mdiff0}), or \code{"greater"}
-#'   (population mean is higher than \code{mdiff0}).
+#'   (difference between populations' means differs from \code{mdiff0}; default), or \code{"less"}
+#'   (difference between populations' means is lower than \code{mdiff0}), or \code{"greater"}
+#'   (difference between populations' means is higher than \code{mdiff0}).
 #' @param sigma.x,sigma.y Optional numeric values specifying 
 #'   the possibly known populations' standard deviations 
 #'   (when \code{x} and \code{y} are specified). If \code{NULL} (default)
@@ -3962,9 +3962,9 @@ TEST.diffmean<-function(x, y, type = "independent",
 #'   (default is 0).
 #' @param alternative A length-one character vector specifying the direction
 #'   of the alternative hypothesis. Allowed values are \code{"two.sided"} 
-#'   population mean differs from \code{pdiff0}; default), or \code{"less"}
-#'   (population mean is lower than \code{pdiff0}), or \code{"greater"}
-#'   (population mean is higher than \code{pdiff0}).
+#'   (difference between populations' proportions differs from \code{pdiff0}; default), or \code{"less"}
+#'   (difference between populations' proportions is lower than \code{pdiff0}), or \code{"greater"}
+#'   (difference between populations' proportions is higher than \code{pdiff0}).
 #' @param by Optional unquoted string identifying a variable 
 #'   (of any type), defined same way as \code{x},
 #'   taking only \bold{two} values used to split 
