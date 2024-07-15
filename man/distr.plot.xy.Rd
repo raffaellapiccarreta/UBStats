@@ -38,7 +38,7 @@ Note that in the plot \code{x} is reported on the
 \emph{horizontal} axis while \code{y} is reported on
 the \emph{vertical} axis.}
 
-\item{plot.type}{A single character providing the type of plot to build.
+\item{plot.type}{A single character specifying the type of plot to build.
 Allowed options are \code{"bars"}, \code{"scatter"}, and
 \code{"boxplot"}. If both \code{x} and \code{y} are character vectors
 or factors and \code{bar.type = "scatter"} a bubble plot is
@@ -52,12 +52,12 @@ otherwise specified using \code{freq.type="x|y"}.}
 stacked (\code{bar.type = "stacked"}, default) or side-by-side
 (\code{bar.type = "beside"}) bars should be displayed.}
 
-\item{freq}{A single character providing the frequencies
+\item{freq}{A single character specifying the frequencies
 to be displayed when a bar plot is requested (\code{plot.type="bars"}).
 Allowed options (possibly abbreviated) are \code{"counts"},
 \code{"percentages"} and \code{"proportions"}.}
 
-\item{freq.type}{A single character providing the type of
+\item{freq.type}{A single character specifying the type of
 frequencies to be displayed when a bar plot is requested
 (\code{plot.type="bars"}). Allowed options are \code{joint} (default)
 for joint frequencies, \code{x|y} for the distributions
@@ -118,12 +118,12 @@ called trend line or regression line) should be added to a scatter plot
 \item{legend}{Logical value indicating whether a legend should be displayed
 in the plot (\code{legend = TRUE}; default) or not (\code{legend = FALSE}).}
 
-\item{use.scientific}{Logical value specifying whether numbers on
+\item{use.scientific}{Logical value indicating whether numbers on
 axes should be displayed using scientific notation
 (\code{TRUE}); default to \code{FALSE}.}
 
-\item{data}{An optional data frame containing the variables to be
-analysed and/or the variable used to color points in scatter plots.
+\item{data}{An optional data frame containing \code{x} and/or \code{y}
+and/or \code{var.c} (the variable used to color points in scatter plots).
 If not found in \code{data}, the variables are taken from the environment
 from which \code{distr.plot.xy()} is called.}
 

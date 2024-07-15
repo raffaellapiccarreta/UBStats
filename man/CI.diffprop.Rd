@@ -61,7 +61,7 @@ should be forcedly rounded to the number of decimals specified in
 \code{digits} even if non-zero values are
 rounded to zero (default to \code{FALSE}).}
 
-\item{use.scientific}{Logical value specifying whether numbers
+\item{use.scientific}{Logical value indicating whether numbers
 in tables should be displayed using
 scientific notation (\code{TRUE}); default to \code{FALSE}.}
 

@@ -108,12 +108,12 @@ to use in the plot rather than a standard palette
 in the plot (\code{legend = TRUE}; default) or not
 (\code{legend = FALSE}).}
 
-\item{use.scientific}{Logical value specifying whether numbers on
+\item{use.scientific}{Logical value indicating whether numbers on
 axes should be displayed using scientific notation
 (\code{TRUE}); default to \code{FALSE}.}
 
-\item{data}{An optional data frame containing the variable to be
-analysed and the variables specifying the layers.
+\item{data}{An optional data frame containing \code{x}
+and/or the variables specifying the layers, \code{by1} and \code{by2}.
 If not found in \code{data}, the variables are taken from
 the environment from which \code{distr.summary.x()} is called.}
 

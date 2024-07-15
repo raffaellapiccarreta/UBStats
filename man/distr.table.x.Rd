@@ -26,7 +26,7 @@ distribution has to be analysed. \code{x} can be the name of a vector
 or a factor in the workspace or the name of one of the columns in the
 data frame specified in the \code{data} argument.}
 
-\item{freq}{A character vector providing the set of frequencies to be
+\item{freq}{A character vector specifying the set of frequencies to be
 displayed (more options are allowed). Allowed options (possibly abbreviated)
 are \code{"counts"}, \code{"percentages"}, \code{"proportions"},
 \code{"densities"} (only for variables classified into intervals
@@ -72,12 +72,12 @@ densities should be forcedly rounded to the number of decimals specified in
 \code{f.digits}, \code{p.digits}, and \code{d.digits} even if non-zero
 values are rounded to zero (default to \code{FALSE}).}
 
-\item{use.scientific}{Logical value specifying whether numbers
+\item{use.scientific}{Logical value indicating whether numbers
 in tables (typically densities) should be displayed using
 scientific notation (\code{TRUE}); default to \code{FALSE}.}
 
-\item{data}{An optional data frame containing the variable to be analysed.
-If not found in \code{data}, the variables are taken from the environment
+\item{data}{An optional data frame containing \code{x}.
+If not found in \code{data}, \code{x} is taken from the environment
 from which \code{distr.table.x()} is called.}
 
 \item{...}{Additional arguments to be passed to low level functions.}
