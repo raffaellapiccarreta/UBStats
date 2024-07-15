@@ -11,7 +11,7 @@
 #'   distribution has to be analysed. \code{x} can be the name of a vector
 #'   or a factor in the workspace or the name of one of the columns in the
 #'   data frame specified in the \code{data} argument.
-#' @param freq A character vector providing the set of frequencies to be 
+#' @param freq A character vector specifying the set of frequencies to be 
 #'   displayed (more options are allowed). Allowed options (possibly abbreviated)
 #'   are \code{"counts"}, \code{"percentages"}, \code{"proportions"},
 #'   \code{"densities"} (only for variables classified into intervals
@@ -50,11 +50,11 @@
 #'   densities should be forcedly rounded to the number of decimals specified in
 #'   \code{f.digits}, \code{p.digits}, and \code{d.digits} even if non-zero 
 #'   values are rounded to zero (default to \code{FALSE}).
-#' @param use.scientific Logical value specifying whether numbers 
+#' @param use.scientific Logical value indicating whether numbers 
 #'   in tables (typically densities) should be displayed using 
 #'   scientific notation (\code{TRUE}); default to \code{FALSE}.
-#' @param data An optional data frame containing the variable to be analysed.
-#'   If not found in \code{data}, the variables are taken from the environment
+#' @param data An optional data frame containing \code{x}.
+#'   If not found in \code{data}, \code{x} is taken from the environment
 #'   from which \code{distr.table.x()} is called.
 #' @param ... Additional arguments to be passed to low level functions.
 #' @return A table (converted to dataframe) listing the 
@@ -259,11 +259,11 @@ distr.table.x<-function(x, freq = c("counts","proportions"), total = TRUE,
 #'   the columns in the data frame specified in the \code{data} argument.
 #'   Note that in the table \code{x} is displayed on the \emph{rows} and
 #'   \code{y} on the \emph{columns}.
-#' @param freq A character vector providing the set of frequencies 
+#' @param freq A character vector specifying the set of frequencies 
 #'   to be displayed (more options are allowed). Allowed options 
 #'   (possibly abbreviated) are \code{"counts"},
 #'   \code{"percentages"} and \code{"proportions"}.
-#' @param freq.type A character vector providing the types of
+#' @param freq.type A character vector specifying the types of
 #'   frequencies to be displayed (more types are allowed). 
 #'   Allowed options are \code{joint} (default) 
 #'   for joint frequencies, \code{x|y} (or \code{column}) for the distributions
@@ -305,7 +305,7 @@ distr.table.x<-function(x, freq = c("counts","proportions"), total = TRUE,
 #'   percentages should be forcedly rounded to the number of decimals specified in
 #'   \code{f.digits} and \code{p.digits} even if non-zero values are
 #'   rounded to zero (default to \code{FALSE}).
-#' @param data An optional data frame containing the variables to be analysed.
+#' @param data An optional data frame containing \code{x} and/or \code{y}.
 #'   If not found in \code{data}, the variables are taken from the environment
 #'   from which \code{distr.table.xy()} is called.
 #' @param ... Additional arguments to be passed to low level functions.
@@ -528,11 +528,11 @@ distr.table.xy<-function(x, y, freq = "counts", freq.type = "joint",
 #'   distribution has to be analysed. \code{x} can be the name of a vector
 #'   or a factor in the workspace or the name of one of the columns in the
 #'   data frame specified in the \code{data} argument.
-#' @param freq A single character providing the frequencies to be
+#' @param freq A single character specifying the frequencies to be
 #'   displayed. Allowed options (possibly abbreviated) are \code{"counts"},
 #'   \code{"percentages"}, \code{"proportions"}, \code{"densities"}
 #'   (for histograms and density plots).
-#' @param plot.type A single character providing the type of plot to build.
+#' @param plot.type A single character specifying the type of plot to build.
 #'   Allowed options are \code{"pie"}, \code{"bars"}, \code{"spike"},
 #'   \code{"histogram"}, \code{"density"}, \code{"boxplot"}, and
 #'   \code{"cumulative"}.
@@ -566,11 +566,11 @@ distr.table.xy<-function(x, y, freq = "counts", freq.type = "joint",
 #' @param color Optional string vector allowing to specify colors 
 #'   to use in the plot rather than a standard palette  
 #'   (\code{NULL}, default).
-#' @param use.scientific Logical value specifying whether numbers on 
+#' @param use.scientific Logical value indicating whether numbers on 
 #'   axes should be displayed using scientific notation 
 #'   (\code{TRUE}); default to \code{FALSE}.
-#' @param data An optional data frame containing the variable to be analysed.
-#'   If not found in \code{data}, the variables are taken from the environment
+#' @param data An optional data frame containing \code{x}.
+#'   If not found in \code{data}, \code{x} is taken from the environment
 #'   from which \code{distr.plot.x()} is called.
 #' @param ... Additional arguments to be passed to low level functions.
 #' @author Raffaella Piccarreta \email{raffaella.piccarreta@unibocconi.it}
@@ -896,7 +896,7 @@ distr.plot.x<-function(x,freq="counts",plot.type,ord.freq="none",
 #'   Note that in the plot \code{x} is reported on the 
 #'   \emph{horizontal} axis while \code{y} is reported on 
 #'   the \emph{vertical} axis.
-#' @param plot.type A single character providing the type of plot to build.
+#' @param plot.type A single character specifying the type of plot to build.
 #'   Allowed options are \code{"bars"}, \code{"scatter"}, and
 #'   \code{"boxplot"}. If both \code{x} and \code{y} are character vectors
 #'   or factors and \code{bar.type = "scatter"} a bubble plot is 
@@ -908,11 +908,11 @@ distr.plot.x<-function(x,freq="counts",plot.type,ord.freq="none",
 #' @param bar.type A single character indicating whether in a bar plot
 #'   stacked (\code{bar.type = "stacked"}, default) or side-by-side
 #'   (\code{bar.type = "beside"}) bars should be displayed.
-#' @param freq A single character providing the frequencies 
+#' @param freq A single character specifying the frequencies 
 #'   to be displayed when a bar plot is requested (\code{plot.type="bars"}). 
 #'   Allowed options (possibly abbreviated) are \code{"counts"},
 #'   \code{"percentages"} and \code{"proportions"}.
-#' @param freq.type A single character providing the type of
+#' @param freq.type A single character specifying the type of
 #'   frequencies to be displayed when a bar plot is requested 
 #'   (\code{plot.type="bars"}). Allowed options are \code{joint} (default) 
 #'   for joint frequencies, \code{x|y} for the distributions
@@ -962,11 +962,11 @@ distr.plot.x<-function(x,freq="counts",plot.type,ord.freq="none",
 #'   (\code{fitline = TRUE}) or not (\code{fitline = FALSE}; default).
 #' @param legend Logical value indicating whether a legend should be displayed
 #'   in the plot (\code{legend = TRUE}; default) or not (\code{legend = FALSE}).
-#' @param use.scientific Logical value specifying whether numbers on 
+#' @param use.scientific Logical value indicating whether numbers on 
 #'   axes should be displayed using scientific notation 
 #'   (\code{TRUE}); default to \code{FALSE}.
-#' @param data An optional data frame containing the variables to be 
-#'   analysed and/or the variable used to color points in scatter plots. 
+#' @param data An optional data frame containing \code{x} and/or \code{y} 
+#'   and/or \code{var.c} (the variable used to color points in scatter plots). 
 #'   If not found in \code{data}, the variables are taken from the environment
 #'   from which \code{distr.plot.xy()} is called.
 #' @param ... Additional arguments to be passed to low level functions.
@@ -1484,11 +1484,11 @@ distr.plot.xy<-function(x,y,plot.type,
 #'   requested summaries should be forcedly rounded to the number of decimals 
 #'   specified in \code{digits} and \code{f.digits} even if non-zero 
 #'   values are rounded to zero (default to \code{FALSE}).
-#' @param use.scientific Logical value specifying whether numbers 
+#' @param use.scientific Logical value indicating whether numbers 
 #'   in tables should be displayed using 
 #'   scientific notation (\code{TRUE}); default to \code{FALSE}.
-#' @param data An optional data frame containing the variable to be 
-#'   analysed and the variables specifying the layers.
+#' @param data An optional data frame containing \code{x}
+#'   and/or the variables specifying the layers, \code{by1} and \code{by2}.
 #'   If not found in \code{data}, the variables are taken from 
 #'   the environment from which \code{distr.summary.x()} is called.
 #' @param ... Additional arguments to be passed to low level functions.
@@ -1958,11 +1958,11 @@ distr.summary.x<-function(x,stats=c("summary"),
 #' @param legend Logical value indicating whether a legend should be displayed
 #'   in the plot (\code{legend = TRUE}; default) or not 
 #'   (\code{legend = FALSE}).
-#' @param use.scientific Logical value specifying whether numbers on 
+#' @param use.scientific Logical value indicating whether numbers on 
 #'   axes should be displayed using scientific notation 
 #'   (\code{TRUE}); default to \code{FALSE}.
-#' @param data An optional data frame containing the variable to be 
-#'   analysed and the variables specifying the layers.
+#' @param data An optional data frame containing \code{x} 
+#'   and/or the variables specifying the layers, \code{by1} and \code{by2}.
 #'   If not found in \code{data}, the variables are taken from 
 #'   the environment from which \code{distr.summary.x()} is called.
 #' @param ... Additional arguments to be passed to low level functions.
@@ -2391,7 +2391,7 @@ summaries.plot.x<-function(x,stats="mean",
 #'   should be forcedly rounded to the number of decimals specified in
 #'   \code{digits} even if non-zero values are
 #'   rounded to zero (default to \code{FALSE}).
-#' @param use.scientific Logical value specifying whether numbers 
+#' @param use.scientific Logical value indicating whether numbers 
 #'   in tables should be displayed using 
 #'   scientific notation (\code{TRUE}); default to \code{FALSE}.
 #' @param data An optional data frame containing \code{x}.
@@ -2530,7 +2530,7 @@ CI.mean<-function(x,sigma = NULL,conf.level = 0.95,
 #'   should be forcedly rounded to the number of decimals specified in
 #'   \code{digits} even if non-zero values are
 #'   rounded to zero (default to \code{FALSE}).
-#' @param use.scientific Logical value specifying whether numbers 
+#' @param use.scientific Logical value indicating whether numbers 
 #'   in tables should be displayed using 
 #'   scientific notation (\code{TRUE}); default to \code{FALSE}.
 #' @param data An optional data frame containing \code{x}.
@@ -2711,7 +2711,7 @@ CI.prop<-function(x, success = NULL, conf.level = 0.95,
 #'   should be forcedly rounded to the number of decimals specified in
 #'   \code{digits} even if non-zero values are
 #'   rounded to zero (default to \code{FALSE}).
-#' @param use.scientific Logical value specifying whether numbers 
+#' @param use.scientific Logical value indicating whether numbers 
 #'   in tables should be displayed using 
 #'   scientific notation (\code{TRUE}); default to \code{FALSE}.
 #' @param data An optional data frame containing \code{x} and/or
@@ -3021,7 +3021,7 @@ CI.diffmean<-function(x, y, type = "independent",
 #'   should be forcedly rounded to the number of decimals specified in
 #'   \code{digits} even if non-zero values are
 #'   rounded to zero (default to \code{FALSE}).
-#' @param use.scientific Logical value specifying whether numbers 
+#' @param use.scientific Logical value indicating whether numbers 
 #'   in tables should be displayed using 
 #'   scientific notation (\code{TRUE}); default to \code{FALSE}.
 #' @param data An optional data frame containing \code{x} and/or
@@ -3276,7 +3276,7 @@ CI.diffprop<-function(x, y, success.x = NULL, success.y = NULL,
 #'   should be forcedly rounded to the number of decimals specified in
 #'   \code{digits} even if non-zero values are
 #'   rounded to zero (default to \code{FALSE}).
-#' @param use.scientific Logical value specifying whether numbers 
+#' @param use.scientific Logical value indicating whether numbers 
 #'   in tables should be displayed using 
 #'   scientific notation (\code{TRUE}); default to \code{FALSE}.
 #' @param data An optional data frame containing \code{x}.
@@ -3440,7 +3440,7 @@ TEST.mean<-function(x, sigma = NULL,
 #'   should be forcedly rounded to the number of decimals specified in
 #'   \code{digits} even if non-zero values are
 #'   rounded to zero (default to \code{FALSE}).
-#' @param use.scientific Logical value specifying whether numbers 
+#' @param use.scientific Logical value indicating whether numbers 
 #'   in tables should be displayed using 
 #'   scientific notation (\code{TRUE}); default to \code{FALSE}.
 #' @param data An optional data frame containing \code{x}.
@@ -3648,11 +3648,11 @@ TEST.prop<-function(x, success = NULL,
 #'   should be forcedly rounded to the number of decimals specified in
 #'   \code{digits} even if non-zero values are
 #'   rounded to zero (default to \code{FALSE}).
-#' @param use.scientific Logical value specifying whether numbers 
+#' @param use.scientific Logical value indicating whether numbers 
 #'   in tables should be displayed using 
 #'   scientific notation (\code{TRUE}); default to \code{FALSE}.
 #' @param data An optional data frame containing \code{x} and/or
-#'   \code{y}. If not found in \code{data}, the variables 
+#'   \code{y} or \code{by}. If not found in \code{data}, the variables 
 #'   are taken from the environment
 #'   from which \code{TEST.diffmean()} is called.
 #' @param ... Additional arguments to be passed to low level functions.
@@ -3985,11 +3985,11 @@ TEST.diffmean<-function(x, y, type = "independent",
 #'   should be forcedly rounded to the number of decimals specified in
 #'   \code{digits} even if non-zero values are
 #'   rounded to zero (default to \code{FALSE}).
-#' @param use.scientific Logical value specifying whether numbers 
+#' @param use.scientific Logical value indicating whether numbers 
 #'   in tables should be displayed using 
 #'   scientific notation (\code{TRUE}); default to \code{FALSE}.
 #' @param data An optional data frame containing \code{x} and/or
-#'   \code{y}. If not found in \code{data}, the variables 
+#'   \code{y} or \code{by}. If not found in \code{data}, the variables 
 #'   are taken from the environment
 #'   from which \code{TEST.diffprop()} is called.
 #' @param ... Additional arguments to be passed to low level functions.
@@ -4265,7 +4265,7 @@ TEST.diffprop<-function(x, y, success.x = NULL, success.y = NULL,
 #'   should be forcedly rounded to the number of decimals specified in
 #'   \code{digits} even if non-zero values are
 #'   rounded to zero (default to \code{FALSE}).
-#' @param use.scientific Logical value specifying whether numbers 
+#' @param use.scientific Logical value indicating whether numbers 
 #'   in tables should be displayed using 
 #'   scientific notation (\code{TRUE}); default to \code{FALSE}.
 #' @param data An optional data frame containing \code{x} and/or
