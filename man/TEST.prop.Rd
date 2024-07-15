@@ -34,9 +34,9 @@ cases success is assumed to be \code{TRUE}).}
 
 \item{alternative}{A length-one character vector specifying the direction
 of the alternative hypothesis. Allowed values are \code{"two.sided"}
-population mean differs from \code{p0}; default), or \code{"less"}
-(population mean is lower than \code{p0}), or \code{"greater"}
-(population mean is higher than \code{p0}).}
+(population proportion differs from \code{p0}; default), or \code{"less"}
+(population proportion is lower than \code{p0}), or \code{"greater"}
+(population proportion is higher than \code{p0}).}
 
 \item{digits}{Integer value specifying the number of
 decimals used to round statistics; default to 2. If the chosen rounding formats some

@@ -41,9 +41,9 @@ is assumed to correspond to \code{TRUE}).}
 
 \item{alternative}{A length-one character vector specifying the direction
 of the alternative hypothesis. Allowed values are \code{"two.sided"}
-population mean differs from \code{pdiff0}; default), or \code{"less"}
-(population mean is lower than \code{pdiff0}), or \code{"greater"}
-(population mean is higher than \code{pdiff0}).}
+(difference between populations' proportions differs from \code{pdiff0}; default), or \code{"less"}
+(difference between populations' proportions is lower than \code{pdiff0}), or \code{"greater"}
+(difference between populations' proportions is higher than \code{pdiff0}).}
 
 \item{by}{Optional unquoted string identifying a variable
 (of any type), defined same way as \code{x},

@@ -32,7 +32,7 @@ data.}
 
 \item{alternative}{A length-one character vector specifying the direction
 of the alternative hypothesis. Allowed values are \code{"two.sided"}
-population mean differs from \code{mu0}; default), or \code{"less"}
+(population mean differs from \code{mu0}; default), or \code{"less"}
 (population mean is lower than \code{mu0}), or \code{"greater"}
 (population mean is higher than \code{mu0}).}
 
