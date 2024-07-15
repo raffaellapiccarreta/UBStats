@@ -40,9 +40,9 @@ Allowed values are \code{"independent"} or \code{"paired"}.}
 
 \item{alternative}{A length-one character vector specifying the direction
 of the alternative hypothesis. Allowed values are \code{"two.sided"}
-population mean differs from \code{mdiff0}; default), or \code{"less"}
-(population mean is lower than \code{mdiff0}), or \code{"greater"}
-(population mean is higher than \code{mdiff0}).}
+(difference between populations' means differs from \code{mdiff0}; default), or \code{"less"}
+(difference between populations' means is lower than \code{mdiff0}), or \code{"greater"}
+(difference between populations' means is higher than \code{mdiff0}).}
 
 \item{sigma.x, sigma.y}{Optional numeric values specifying
 the possibly known populations' standard deviations
