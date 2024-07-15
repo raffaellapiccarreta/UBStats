@@ -92,12 +92,12 @@ requested summaries should be forcedly rounded to the number of decimals
 specified in \code{digits} and \code{f.digits} even if non-zero
 values are rounded to zero (default to \code{FALSE}).}
 
-\item{use.scientific}{Logical value specifying whether numbers
+\item{use.scientific}{Logical value indicating whether numbers
 in tables should be displayed using
 scientific notation (\code{TRUE}); default to \code{FALSE}.}
 
-\item{data}{An optional data frame containing the variable to be
-analysed and the variables specifying the layers.
+\item{data}{An optional data frame containing \code{x}
+and/or the variables specifying the layers, \code{by1} and \code{by2}.
 If not found in \code{data}, the variables are taken from
 the environment from which \code{distr.summary.x()} is called.}
 

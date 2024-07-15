@@ -30,12 +30,12 @@ the columns in the data frame specified in the \code{data} argument.
 Note that in the table \code{x} is displayed on the \emph{rows} and
 \code{y} on the \emph{columns}.}
 
-\item{freq}{A character vector providing the set of frequencies
+\item{freq}{A character vector specifying the set of frequencies
 to be displayed (more options are allowed). Allowed options
 (possibly abbreviated) are \code{"counts"},
 \code{"percentages"} and \code{"proportions"}.}
 
-\item{freq.type}{A character vector providing the types of
+\item{freq.type}{A character vector specifying the types of
 frequencies to be displayed (more types are allowed).
 Allowed options are \code{joint} (default)
 for joint frequencies, \code{x|y} (or \code{column}) for the distributions
@@ -84,7 +84,7 @@ percentages should be forcedly rounded to the number of decimals specified in
 \code{f.digits} and \code{p.digits} even if non-zero values are
 rounded to zero (default to \code{FALSE}).}
 
-\item{data}{An optional data frame containing the variables to be analysed.
+\item{data}{An optional data frame containing \code{x} and/or \code{y}.
 If not found in \code{data}, the variables are taken from the environment
 from which \code{distr.table.xy()} is called.}
 

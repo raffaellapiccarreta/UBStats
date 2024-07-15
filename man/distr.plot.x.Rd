@@ -25,12 +25,12 @@ distribution has to be analysed. \code{x} can be the name of a vector
 or a factor in the workspace or the name of one of the columns in the
 data frame specified in the \code{data} argument.}
 
-\item{freq}{A single character providing the frequencies to be
+\item{freq}{A single character specifying the frequencies to be
 displayed. Allowed options (possibly abbreviated) are \code{"counts"},
 \code{"percentages"}, \code{"proportions"}, \code{"densities"}
 (for histograms and density plots).}
 
-\item{plot.type}{A single character providing the type of plot to build.
+\item{plot.type}{A single character specifying the type of plot to build.
 Allowed options are \code{"pie"}, \code{"bars"}, \code{"spike"},
 \code{"histogram"}, \code{"density"}, \code{"boxplot"}, and
 \code{"cumulative"}.}
@@ -71,12 +71,12 @@ palette (\code{FALSE}, default).}
 to use in the plot rather than a standard palette
 (\code{NULL}, default).}
 
-\item{use.scientific}{Logical value specifying whether numbers on
+\item{use.scientific}{Logical value indicating whether numbers on
 axes should be displayed using scientific notation
 (\code{TRUE}); default to \code{FALSE}.}
 
-\item{data}{An optional data frame containing the variable to be analysed.
-If not found in \code{data}, the variables are taken from the environment
+\item{data}{An optional data frame containing \code{x}.
+If not found in \code{data}, \code{x} is taken from the environment
 from which \code{distr.plot.x()} is called.}
 
 \item{...}{Additional arguments to be passed to low level functions.}
