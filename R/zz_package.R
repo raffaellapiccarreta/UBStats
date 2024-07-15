@@ -21,6 +21,7 @@
 #' * \code{\link{distr.plot.x}()}
 #' * \code{\link{distr.plot.xy}()}
 #' * \code{\link{distr.summary.x}()}
+#' * \code{\link{summaries.plot.x}()}
 #' * \code{\link{CI.mean}()} and \code{\link{TEST.mean}()}
 #' * \code{\link{CI.prop}()} and \code{\link{TEST.prop}()}
 #' * \code{\link{CI.diffmean}()} and \code{\link{TEST.diffmean}()}

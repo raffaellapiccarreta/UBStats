@@ -21,6 +21,7 @@ The main functions included in the package are:
 \item \code{\link{distr.plot.x}()}
 \item \code{\link{distr.plot.xy}()}
 \item \code{\link{distr.summary.x}()}
+\item \code{\link{summaries.plot.x}()}
 \item \code{\link{CI.mean}()} and \code{\link{TEST.mean}()}
 \item \code{\link{CI.prop}()} and \code{\link{TEST.prop}()}
 \item \code{\link{CI.diffmean}()} and \code{\link{TEST.diffmean}()}
