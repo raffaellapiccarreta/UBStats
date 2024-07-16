@@ -2318,15 +2318,15 @@ build.summary.plt<-function(out,name.x,
     USE.MINUS<-"-"
   }
   if(type.print=="print"){
-    USE.MU<-"MY_MU.RP"
-    USE.SIGMA<-"MY_SIGMA.RP"
-    USE.GE<-"MY_GE.RP"
-    USE.GT<-"MY_GT.RP"
-    USE.LE<-"MY_LE.RP"
-    USE.LT<-"MY_LT.RP"
-    USE.NEQ<-"MY_NE.RP"
-    USE.EQ<-"MY_EQ.RP"
-    USE.MINUS<-"MY_MINUS.RP"
+    USE.MU<-"MY.MU.RP"
+    USE.SIGMA<-"MY.SIGMA.RP"
+    USE.GE<-"MY.GE.RP"
+    USE.GT<-"MY.GT.RP"
+    USE.LE<-"MY.LE.RP"
+    USE.LT<-"MY.LT.RP"
+    USE.NEQ<-"MY.NE.RP"
+    USE.EQ<-"MY.EQ.RP"
+    USE.MINUS<-"MY.MINUS.RP"
   }
   list(mu=USE.MU,sigma=USE.SIGMA,ge=USE.GE,le=USE.LE,lt=USE.LT,gt=USE.GT,
        neq=USE.NEQ,eq=USE.EQ,minus=USE.MINUS)
