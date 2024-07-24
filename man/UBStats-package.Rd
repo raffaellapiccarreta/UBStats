@@ -7,7 +7,7 @@
 \alias{UBStats}
 \title{UBStats: a package for teaching and learning introductory statistics}
 \description{
-The \pkg{UBStats} package has been developed to be support
+The \pkg{UBStats} package has been developed to support
 instructors and students involved in basic statistics courses
 at Bocconi University (Milan, Italy). It contains a limited
 number of functions, with very similar and coherent syntax,
