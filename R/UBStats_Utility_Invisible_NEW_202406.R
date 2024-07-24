@@ -1340,10 +1340,12 @@ plt.xy.crossbars<-function(tab,bw = TRUE,color=NULL,name.x,name.y,freq,legend,
     par(mar=use.par$mar,tck=use.par$tck,tcl=use.par$tcl,las=mylas,
         mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis) 
     if(!legend){
-      barplot(tab,col=use.color,main=tit.use,
+      barplot(tab,col=use.color,#main=tit.use,
               ylim=c(0,use.max.y),beside=beside)
       mtext(side = 1, name.x, line = 2)
       mtext(side = 2, freq, line = pos.tit2,las=0)
+      mtext(side = 3, tit.use,
+            line=1,outer=F,adj=0,font=2)
     }
     if(legend){
       if(max(nchar(as.character(use.max.y)))<=5){mylas=1} else{mylas=0}
@@ -1357,10 +1359,12 @@ plt.xy.crossbars<-function(tab,bw = TRUE,color=NULL,name.x,name.y,freq,legend,
              widths = c(1-prop.leg,prop.leg))
       par(mar=mypar,tck=use.par$tck,tcl=use.par$tcl,las=mylas,
           mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis) 
-      barplot(tab,col=use.color,main=tit.use,
+      barplot(tab,col=use.color,#main=tit.use,
               ylim=c(0,use.max.y),beside=beside)
       mtext(side = 1, name.x, line = 2)
       mtext(side = 2, freq, line = pos.tit2-0.2, las=0)
+      mtext(side = 3, tit.use,
+            line=1,outer=F,adj=0,font=2)
       
       leg.par<-rep(0,4)
       leg.par[3]<-mypar[3]+0.1
@@ -1380,11 +1384,14 @@ plt.xy.crossbars<-function(tab,bw = TRUE,color=NULL,name.x,name.y,freq,legend,
       mypar[2]<-1+max(ceiling(strwidth(colnames(tab),units="inc")*5))
       par(mar=mypar,tck=use.par$tck,tcl=use.par$tcl,las=1,
           mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis) 
-      barplot(tab,col=use.color,main=tit.use,
+      barplot(tab,col=use.color,#main=tit.use,
               xlim=c(0,use.max.y),beside=beside,
               horiz = TRUE,cex.names=use.par$cex.axis)
       mtext(side = 1, freq, line = 2)
       mtext(side = 2, name.y, line = mypar[2]-1,las=0)
+      mtext(side = 3, tit.use,
+            line=1,outer=F,adj=0,font=2)
+      
     }
     if(legend){
       mypar<-use.par$mar
@@ -1398,11 +1405,13 @@ plt.xy.crossbars<-function(tab,bw = TRUE,color=NULL,name.x,name.y,freq,legend,
              widths = c(1-prop.leg,prop.leg))
       par(mar=mypar,tck=use.par$tck,tcl=use.par$tcl,las=1,
           mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis) 
-      barplot(tab,col=use.color,main=tit.use,
+      barplot(tab,col=use.color,#main=tit.use,
               xlim=c(0,use.max.y),beside=beside,
               horiz = TRUE,cex.names=use.par$cex.axis)
       mtext(side = 1, freq, line = 2)
       mtext(side = 2, name.y, line = mypar[2]-1,las=0)
+      mtext(side = 3, tit.use,
+            line=1,outer=F,adj=0,font=2)
       
       leg.par<-rep(0,4)
       leg.par[3]<-mypar[3]+0.1
@@ -1504,12 +1513,12 @@ plt.xy.scatter<-function(xlist,ylist,bw = TRUE,color=NULL,
     
     # no legend
     if(!legend){
-      
       par(mar=mypar,tck=use.par$tck,tcl=use.par$tcl,las=mylas,
           mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis) 
-      
-      
-      plot(x=x.num,y=y.num,main=tit.use,axes=FALSE,
+
+      # plot(x=x.num,y=y.num,main=tit.use,axes=FALSE,
+      #      xlab="",ylab="",pch=21,bg=use.color)
+      plot(x=x.num,y=y.num,axes=FALSE,
            xlab="",ylab="",pch=21,bg=use.color)
       if(fitline){
         abline(lm(y.num ~ x.num),col=line.color,lwd=2)}
@@ -1547,6 +1556,9 @@ plt.xy.scatter<-function(xlist,ylist,bw = TRUE,color=NULL,
       if(!ylist$isnum){
         mtext(side = 2, name.y, line = mypar[2]-1,las=0)
       }
+      mtext(side = 3, tit.use,
+            line=1,outer=F,adj=0,font=2)
+      
     } # closes !legend
     
     # legend
@@ -1568,7 +1580,8 @@ plt.xy.scatter<-function(xlist,ylist,bw = TRUE,color=NULL,
           mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis)
       
       
-      plot(x=x.num,y=y.num,main=tit.use,axes=FALSE,
+      plot(x=x.num,y=y.num,#main=tit.use,
+           axes=FALSE,
            xlab="",ylab="",pch=21,bg=use.color)
       if(fitline){
         abline(lm(y.num ~ x.num),col=line.color,lwd=2)}
@@ -1606,6 +1619,8 @@ plt.xy.scatter<-function(xlist,ylist,bw = TRUE,color=NULL,
       if(!ylist$isnum){
         mtext(side = 2, name.y, line = mypar[2]-1,las=0)
       }
+      mtext(side = 3, tit.use,
+            line=1,outer=F,adj=0,font=2)
       
       # PLACE THE LEGEND
       leg.par<-rep(0,4)
@@ -1649,7 +1664,7 @@ plt.xy.scatter<-function(xlist,ylist,bw = TRUE,color=NULL,
         cex.axis=use.par$cex.axis) 
     
     plot(x=tab$xnum,y=tab$ynum,xlim=c(0.5,max(tab$xnum)+0.5),
-         ylim=c(0.5,max(tab$ynum)+0.5),main=tit.use,
+         ylim=c(0.5,max(tab$ynum)+0.5),#main=tit.use,
          xlab="",ylab="",cex=(0.5+9.5*tab$FreqP),pch=21,
          bg=use.color,axes = FALSE)
     axis(1, at=1:length(levels(tab$Var1)), 
@@ -1659,6 +1674,9 @@ plt.xy.scatter<-function(xlist,ylist,bw = TRUE,color=NULL,
     box()
     mtext(side = 1, name.x, line = 2)
     mtext(side = 2, name.y, line = mypar[2]-1,las=0)
+    mtext(side = 3, tit.use,
+          line=1,outer=F,adj=0,font=2)
+    
   }
   
 }
@@ -1963,17 +1981,24 @@ build.summary.plt<-function(out,name.x,
       if(is.numeric(out[[names(list.by)]])){
         Warn.list<-c(Warn.list,"With 'bars' the by-var is treated as a factor")}
       if(!adj.breaks){
+        # barplot(out[[stats]],names.arg=out[[names(list.by)]],
+        #         col=use.color,main=tit.stats)
         barplot(out[[stats]],names.arg=out[[names(list.by)]],
-                col=use.color,main=tit.stats)}
+                col=use.color)
+      }
       if(adj.breaks){
+        # barplot(out[[stats]],names.arg=out[[names(list.by)]],
+        #         col=use.color,main=tit.stats,axes=FALSE)
         barplot(out[[stats]],names.arg=out[[names(list.by)]],
-                col=use.color,main=tit.stats,axes=FALSE)
+                col=use.color,axes=FALSE)
         p.yaxp<-par("yaxp")
         aty<-seq(p.yaxp[1],p.yaxp[2],(p.yaxp[2]-p.yaxp[1])/p.yaxp[3])
         use.labs<-format(aty, scientific = FALSE)
         axis(2, at=aty, labels=use.labs)
       }
       box()
+      mtext(side = 3, tit.stats,
+            line=1,outer=F,adj=0,font=2)
     }
     if(plot.type=="lines" | plot.type=="points"){
       use.color<-build.colors(n=1,bw,color,bw.default="black",
@@ -1986,7 +2011,7 @@ build.summary.plt<-function(out,name.x,
         x.n<-as.numeric(x.c)}
       
       plot(y=out[[stats]],x=x.n,col=use.color,
-           main=tit.stats,
+           #main=tit.stats,
            axes = FALSE,xlab="",ylab="",lwd=2)
       points(y=out[[stats]],x=x.n,pch=16,col=use.color)
       
@@ -2008,6 +2033,8 @@ build.summary.plt<-function(out,name.x,
     }
     mtext(side = 1, names(list.by), line = 2)
     mtext(side = 2, list.tit, line = pos.tit2,las=0)
+    mtext(side = 3, tit.stats,
+          line=1,outer=F,adj=0,font=2)
     
     if(msg.p$warn){
       if(length(Warn.list)>1){
@@ -2058,9 +2085,11 @@ build.summary.plt<-function(out,name.x,
       par(mar=mypar,tck=par.my$tck,tcl=par.my$tcl,las=mylas,
           mgp=par.my$mgp,cex=par.my$cex,cex.axis=par.my$cex.axis)
     }
+    # plot(c(mymin.x,mymax.x),c(mymin.y,mymax.y),axes = FALSE,
+    #      type="n",xlim=c(mymin.x,mymax.x),ylab="",xlab="",
+    #      main=tit.stats)
     plot(c(mymin.x,mymax.x),c(mymin.y,mymax.y),axes = FALSE,
-         type="n",xlim=c(mymin.x,mymax.x),ylab="",xlab="",
-         main=tit.stats)
+         type="n",xlim=c(mymin.x,mymax.x),ylab="",xlab="")
     for(k in 1:length(use.by2)){
       sel<-out[[names(list.by)[2]]]==use.by2[k]
       points(x.n[sel],out[[stats]][sel],type="l",col=use.color[k],lwd=2)
@@ -2080,6 +2109,8 @@ build.summary.plt<-function(out,name.x,
     }
     mtext(side = 1, names(list.by)[1], line = 2)
     mtext(side = 2, list.tit, line = pos.tit2,las=0)
+    mtext(side = 3, tit.stats,
+          line=1,outer=F,adj=0,font=2)
     
     if(legend){
       leg.par<-rep(0,4)
@@ -2139,12 +2170,17 @@ build.summary.plt<-function(out,name.x,
                         ylim=c(mymin,mymax),plot = FALSE)
       
       if(!adj.breaks){
+        # barplot(out$mean,names.arg=out[[names(list.by)]],
+        #         col=use.color,main=tit.stats,ylim=c(mymin,mymax))
         barplot(out$mean,names.arg=out[[names(list.by)]],
-                col=use.color,main=tit.stats,ylim=c(mymin,mymax))
+                col=use.color,ylim=c(mymin,mymax))
       }
       if(adj.breaks){
+        # barplot(out$mean,names.arg=out[[names(list.by)]],
+        #         col=use.color,main=tit.stats,ylim=c(mymin,mymax),
+        #         axes=FALSE)
         barplot(out$mean,names.arg=out[[names(list.by)]],
-                col=use.color,main=tit.stats,ylim=c(mymin,mymax),
+                col=use.color,ylim=c(mymin,mymax),
                 axes=FALSE)
         p.yaxp<-par("yaxp")
         aty<-seq(p.yaxp[1],p.yaxp[2],(p.yaxp[2]-p.yaxp[1])/p.yaxp[3])
@@ -2160,6 +2196,8 @@ build.summary.plt<-function(out,name.x,
       if(min(out$mean,na.rm = TRUE)<0){
         segments(x0=0,y0=0,x1=max(orig.plt),y1=0)}
       box()
+      mtext(side = 3, tit.stats,
+            line=1,outer=F,adj=0,font=2)
     }
     if(plot.type=="lines" | plot.type=="points"){
       use.color<-build.colors(n=1,bw,color,bw.default="black",
@@ -2171,7 +2209,7 @@ build.summary.plt<-function(out,name.x,
         x.n<-as.numeric(x.c)}
       mymin=min(out$mean-out$marg.err,na.rm = TRUE)
       
-      plot(y=out$mean,x=x.n,type="n",col=use.color,main=tit.stats,
+      plot(y=out$mean,x=x.n,type="n",col=use.color,#main=tit.stats,
            axes = FALSE,xlab="",ylab="",lwd=2,ylim=c(mymin,mymax))
       points(y=out$mean[sel],x=x.n[sel],pch=16,col=use.color)
       points(y=out$mean[!sel],x=x.n[!sel],pch=8,col=use.color)
@@ -2198,6 +2236,8 @@ build.summary.plt<-function(out,name.x,
     }
     mtext(side = 1, names(list.by), line = 2)
     mtext(side = 2, list.tit, line = pos.tit2,las=0)
+    mtext(side = 3, tit.stats,
+          line=1,outer=F,adj=0,font=2)
     
     if(msg.p$warn){
       if(length(Warn.list)>1){
@@ -2255,9 +2295,11 @@ build.summary.plt<-function(out,name.x,
           mgp=par.my$mgp,cex=par.my$cex,cex.axis=par.my$cex.axis)
     }
     
+    # plot(c(mymin.x,mymax.x),c(mymin.y,mymax.y),axes = FALSE,
+    #      type="n",xlim=c(mymin.x,mymax.x),ylab="",xlab="",
+    #      main=tit.stats)
     plot(c(mymin.x,mymax.x),c(mymin.y,mymax.y),axes = FALSE,
-         type="n",xlim=c(mymin.x,mymax.x),ylab="",xlab="",
-         main=tit.stats)
+         type="n",xlim=c(mymin.x,mymax.x),ylab="",xlab="")
     for(k in pctiles){
       points(x.n,out[[k]],type="l",col=use.color[k],lwd=2)
       points(x.n,out[[k]],pch=16,col=use.color[k])
@@ -2276,6 +2318,9 @@ build.summary.plt<-function(out,name.x,
     }
     mtext(side = 1, names(list.by), line = 2)
     mtext(side = 2, list.tit, line = pos.tit2,las=0)
+    mtext(side = 3, tit.stats,
+          line=1,outer=F,adj=0,font=2)
+    
     if(legend){
       leg.par<-rep(0,4)
       leg.par[3]<-mypar[3]+0.1
