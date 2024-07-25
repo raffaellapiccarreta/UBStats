@@ -2,10 +2,10 @@ Package: UBStats
 Type: Package
 Title: Basic Statistics with R
 Version: 0.2.1
-Date: 2024-07-24
+Date: 2024-07-25
 Authors@R: c(
-  person("Raffaella", "Piccarreta", role=c("aut", "cre"), email = "raffaella.piccarreta@unibocconi.it"),
-  person("Sergio", "Venturini", role=c("ctb"), email = "sergio.venturini@unicatt.it"))
+  person("Raffaella", "Piccarreta", role = "aut", email = "raffaella.piccarreta@unibocconi.it"),
+  person("Sergio", "Venturini", role = "cre", email = "sergio.venturini@unicatt.it"))
 Description: Functions for basic statistical analyses. The package has been developed
     to be used in statistics courses at Bocconi University (Milan, Italy).
     Currently, the package includes some exploratory and inferential analyses
