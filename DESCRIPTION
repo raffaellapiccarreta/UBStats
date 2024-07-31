@@ -1,12 +1,12 @@
 Package: UBStats
 Type: Package
-Title: Basic Statistics with R
-Version: 0.2.1
-Date: 2024-07-25
+Title: Basic Statistics
+Version: 0.2.2
+Date: 2024-08-01
 Authors@R: c(
   person("Raffaella", "Piccarreta", role = "aut", email = "raffaella.piccarreta@unibocconi.it"),
   person("Sergio", "Venturini", role = "cre", email = "sergio.venturini@unicatt.it"))
-Description: Functions for basic statistical analyses. The package has been developed
+Description: Basic statistical analyses. The package has been developed
     to be used in statistics courses at Bocconi University (Milan, Italy).
     Currently, the package includes some exploratory and inferential analyses
     usually presented in introductory statistics courses.
@@ -19,9 +19,6 @@ Imports:
     graphics,
     grDevices,
     stats
-Suggests:
-    knitr,
-    rmarkdown
 Depends:
     R (>= 3.5.0),
     utils

@@ -573,6 +573,7 @@ distr.table.xy<-function(x, y, freq = "counts", freq.type = "joint",
 #'   If not found in \code{data}, \code{x} is taken from the environment
 #'   from which \code{distr.plot.x()} is called.
 #' @param ... Additional arguments to be passed to low level functions.
+#' @return No return value, called for side effects.
 #' @author Raffaella Piccarreta \email{raffaella.piccarreta@unibocconi.it}
 #' @seealso \code{\link{distr.table.x}()} for tabulating a univariate
 #'   distribution.
@@ -667,9 +668,9 @@ distr.table.xy<-function(x, y, freq = "counts", freq.type = "joint",
 #' distr.plot.x(x = TotVal, plot.type = "boxplot", data = MktDATA)
 #' # - A  numerical variable: with specified breaks
 #' #   the plot is not built
-#' \dontrun{distr.plot.x(AOV, plot.type = "boxplot", 
-#'                       breaks = c(0,20,40,60,80,100,180), 
-#'                       data = MktDATA)}
+#' # distr.plot.x(AOV, plot.type = "boxplot", 
+#' #              breaks = c(0,20,40,60,80,100,180), 
+#' #              data = MktDATA)
 #' 
 #' # Arguments adj.breaks, use.scientific
 #' #  A variable with a very wide range (very small densities)
@@ -880,7 +881,6 @@ distr.plot.x<-function(x,freq="counts",plot.type,ord.freq="none",
                                freq,adj.breaks=as.logical(1-use.scientific)),
                  type.print=type.print)
   }
-  par(pardef)
 }
 
 ## Bivariate distributions -----
@@ -970,6 +970,7 @@ distr.plot.x<-function(x,freq="counts",plot.type,ord.freq="none",
 #'   If not found in \code{data}, the variables are taken from the environment
 #'   from which \code{distr.plot.xy()} is called.
 #' @param ... Additional arguments to be passed to low level functions.
+#' @return No return value, called for side effects.
 #' @author Raffaella Piccarreta \email{raffaella.piccarreta@unibocconi.it}
 #' @seealso \code{\link{distr.table.xy}()} for tabulating a bivariate
 #'   distribution.
@@ -1416,7 +1417,6 @@ distr.plot.xy<-function(x,y,plot.type,
                                 switch.xy=switch.xy,use.par=par.my),
                  type.print=type.print)
   }
-  par(pardef)
 }
 
 # Summaries ------
@@ -1985,52 +1985,52 @@ distr.summary.x<-function(x,stats=c("summary"),
 #' # - Barplot of medians by a numerical variable
 #' #   classified into intervals: user-defined color
 #' summaries.plot.x(x = TotVal, stats = "median", 
-#'                by1 = AOV, breaks.by1 = 5, 
-#'                color = "purple", data = MktDATA)
+#'                  by1 = AOV, breaks.by1 = 5, 
+#'                  color = "purple", data = MktDATA)
 #' # - Lineplot of means and their CI by a variable 
 #' #   measured in classes
 #' summaries.plot.x(x = TotVal, 
-#'                stats = "ci.mean", plot.type = "lines",
-#'                by1 = Income.S, interval.by1 = TRUE,
-#'                data = MktDATA)
+#'                  stats = "ci.mean", plot.type = "lines",
+#'                  by1 = Income.S, interval.by1 = TRUE,
+#'                  data = MktDATA)
 #' # - Barplot of means and their CI by a 
 #' #   numerical variable; change the confidence level
 #' summaries.plot.x(x = TotVal, 
-#'                stats = "ci.mean", conf.level = 0.90,
-#'                plot.type = "bars", 
-#'                by1 = NWeb_Purch, data = MktDATA)
+#'                  stats = "ci.mean", conf.level = 0.90,
+#'                  plot.type = "bars", 
+#'                  by1 = NWeb_Purch, data = MktDATA)
 #' # - Note: no plot built for a variable with 
 #' #   too many levels (>20)
-#' \dontrun{summaries.plot.x(x = TotVal, 
-#'                         stats = "ci.mean", plot.type = "lines",
-#'                         by1 = AOV, data = MktDATA)}
+#' # summaries.plot.x(x = TotVal, 
+#' #                  stats = "ci.mean", plot.type = "lines",
+#' #                  by1 = AOV, data = MktDATA)
 #' 
 #' # Quantiles by a single variable
 #' # - Only lines plots allowed for quantiles
 #' summaries.plot.x(x = Baseline, 
-#'                stats = "deciles", plot.type = "lines",
-#'                by1 = NDeals, data = MktDATA)
+#'                  stats = "deciles", plot.type = "lines",
+#'                  by1 = NDeals, data = MktDATA)
 #' summaries.plot.x(x = Baseline, 
-#'                stats = "quartiles", plot.type = "lines",
-#'                by1 = Marital_Status, data = MktDATA)
+#'                  stats = "quartiles", plot.type = "lines",
+#'                  by1 = Marital_Status, data = MktDATA)
 #' 
 #' # Means and medians by two variables
 #' # - Default: only lines allowed
 #' summaries.plot.x(x = TotVal, stats = "mean", 
-#'                by1 = Education, by2 = Kids, 
-#'                data = MktDATA)
+#'                  by1 = Education, by2 = Kids, 
+#'                  data = MktDATA)
 #' summaries.plot.x(x = TotVal, stats = "median", 
-#'                by1 = Income.S, by2 = Gender,
-#'                interval.by1 = TRUE,
-#'                data = MktDATA)
+#'                  by1 = Income.S, by2 = Gender,
+#'                  interval.by1 = TRUE,
+#'                  data = MktDATA)
 #' summaries.plot.x(x = Baseline, stats = "mean", 
-#'                by1 = CustClass, by2 = AOV,
-#'                breaks.by2 = 5, data = MktDATA)
+#'                  by1 = CustClass, by2 = AOV,
+#'                  breaks.by2 = 5, data = MktDATA)
 #' # - "ci.mean" not allowed with two layers
 #' CustClass_Kids<-paste0(MktDATA$CustClass,"-",MktDATA$Kids)
 #' summaries.plot.x(x = Baseline, stats = "ci.mean", 
-#'                conf.level = 0.99, by1 = CustClass_Kids,
-#'                color = "gold", data = MktDATA)
+#'                  conf.level = 0.99, by1 = CustClass_Kids,
+#'                  color = "gold", data = MktDATA)
 #' 
 #' # Arguments adj.breaks and use.scientific
 #' #  Variables with a very wide range
@@ -2038,26 +2038,26 @@ distr.summary.x<-function(x,stats=c("summary"),
 #' LargeBY<-MktDATA$AOV*5000000 
 #' #  - Default: no scientific notation
 #' summaries.plot.x(LargeX, plot.type = "bars",
-#'                by1=LargeBY, breaks.by1 = 5, data = MktDATA)
+#'                  by1=LargeBY, breaks.by1 = 5, data = MktDATA)
 #' #  - Scientific notation for summaries (axes) 
 #' summaries.plot.x(LargeX, plot.type = "lines",
-#'                by1=LargeBY, breaks.by1 = 5, 
-#'                use.scientific = TRUE, data = MktDATA)
+#'                  by1=LargeBY, breaks.by1 = 5, 
+#'                  use.scientific = TRUE, data = MktDATA)
 #' #  - Scientific notation for intervals endpoints
 #' summaries.plot.x(LargeX, stats = "ci.mean",
-#'                plot.type = "lines", 
-#'                by1=LargeBY, breaks.by1 = 5, 
-#'                adj.breaks = FALSE, data = MktDATA)
+#'                  plot.type = "lines",
+#'                  by1=LargeBY, breaks.by1 = 5,
+#'                  adj.breaks = FALSE, data = MktDATA)
 #' #  - Scientific notation for intervals endpoints and summaries
 #' summaries.plot.x(LargeX, stats = "quartiles",
-#'                plot.type = "lines", 
-#'                by1=LargeBY, breaks.by1 = 5, 
-#'                adj.breaks = FALSE, use.scientific = TRUE,
-#'                data = MktDATA)
+#'                  plot.type = "lines", 
+#'                  by1=LargeBY, breaks.by1 = 5, 
+#'                  adj.breaks = FALSE, use.scientific = TRUE,
+#'                  data = MktDATA)
 #' 
 #' # Output the table with the requested summaries 
 #' Out_TotVal<-summaries.plot.x(x = TotVal, stats = "ci.mean", 
-#'                            by1 = Education, data = MktDATA)
+#'                              by1 = Education, data = MktDATA)
 #'
 #' @export
 summaries.plot.x<-function(x,stats="mean",
@@ -2363,7 +2363,6 @@ summaries.plot.x<-function(x,stats="mean",
                                           type.print=type.print),
                         type.print=type.print)
   # removed printout of the table
-  par(pardef)
   plt.out
 }
 

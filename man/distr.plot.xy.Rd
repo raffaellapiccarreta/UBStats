@@ -129,6 +129,9 @@ from which \code{distr.plot.xy()} is called.}
 
 \item{...}{Additional arguments to be passed to low level functions.}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 \code{distr.plot.xy()} generates plots of a bivariate distribution.
 }

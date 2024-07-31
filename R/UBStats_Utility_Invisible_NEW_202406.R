@@ -32,6 +32,8 @@ stop_quietly <- function() {
 }
 
 # Function to printout in markdown
+#' @noRd
+#' 
 #' @importFrom utils write.table
 my.p.err <- function(m){
   utils::write.table(format(m, justify="left"),
@@ -772,6 +774,8 @@ build.table.xy<-function(Xlist,Ylist,name.x,name.y,
 
 # Added 202405
 ## Function to build colors for plots -----
+#' @noRd
+#' 
 #' @importFrom grDevices gray.colors
 #' @importFrom grDevices rgb
 #' @importFrom grDevices hcl.colors
@@ -937,12 +941,12 @@ build.varcolors<-function(var,bw=TRUE,color=NULL,
 # Modified 202405
 plt.x.pie<-function(tab,bw = TRUE,color=NULL,name.x,freq){
   use.color<-build.colors(n=length(tab),bw,color)
-  mai.p<-par("mai")
+  pardef <- par(no.readonly = TRUE)
+  on.exit(par(pardef))
   par(mai=c(0,0,0.1,0))
   pie(tab,col=use.color,clockwise = TRUE)
   mtext(side=3,paste0("Pie chart: ",name.x),font=2,
         cex=par("cex.main"),line=-1)
-  par(mai=mai.p)
 }
 plt.x.bars<-function(tab,bw = TRUE,color=NULL,name.x,
                      freq){
@@ -951,6 +955,8 @@ plt.x.bars<-function(tab,bw = TRUE,color=NULL,name.x,
                           col.default="skyblue")
   use.max.y<-pretty_max(tab,freq)
   if(max(nchar(as.character(use.max.y)))<=5){mylas=1} else{mylas=0}
+  pardef <- par(no.readonly = TRUE)
+  on.exit(par(pardef))
   par(las=mylas)
   barplot(tab,col=use.color,main=paste0("Bar plot: ",name.x),
           ylim=c(0,use.max.y))
@@ -965,6 +971,8 @@ plt.x.bars<-function(tab,bw = TRUE,color=NULL,name.x,
                           col.default="skyblue")
   use.max.y<-pretty_max(tab,freq)
   if(max(nchar(as.character(use.max.y)))<=5){mylas=1} else{mylas=0}
+  pardef <- par(no.readonly = TRUE)
+  on.exit(par(pardef))
   par(las=mylas)
   if(is.na(tit)){
     barplot(tab,col=use.color,main=paste0("Bar plot: ",name.x),
@@ -985,6 +993,8 @@ plt.x.spike<-function(xlist,bw=TRUE,color=NULL,name.x,freq){
   tab<-xlist$tab.x
   use.max.y<-pretty_max(tab,freq)
   if(max(nchar(as.character(use.max.y)))<=5){mylas=1} else{mylas=0}
+  pardef <- par(no.readonly = TRUE)
+  on.exit(par(pardef))
   par(las=mylas)
   if(xlist$isnum & xlist$class=="standard"){
     x.values<-as.numeric(names(tab))
@@ -1017,6 +1027,8 @@ plt.x.cum<-function(xlist,bw=TRUE,color=NULL,name.x,freq,adj.breaks){
   use.color<-build.colors(n=1,bw,color,bw.default="black",
                           col.default="black")
   
+  pardef <- par(no.readonly = TRUE)
+  on.exit(par(pardef))
   if(xlist$class=="interval" | xlist$class=="breaks"){
     if(xlist$class=="interval"){
       check.int<-xlist$info.int$tab
@@ -1222,6 +1234,8 @@ plt.x.hist<-function(xlist,bw = TRUE,color=NULL,name.x,freq,adj.breaks){
   if(adj.breaks){
     if(max(nchar(as.character(format(use.max.y,scientific = FALSE))))<=5){
       mylas=1} else{mylas=0}}
+  pardef <- par(no.readonly = TRUE)
+  on.exit(par(pardef))
   par(las=mylas)
   
   # if no adj required:
@@ -1254,7 +1268,6 @@ plt.x.density<-function(xlist,bw = TRUE,color=NULL,name.x,freq,adj.breaks){
     # create a synthetic vector by sampling from
     # a uniform distribution from one endpoint to another
     # as many cases as are those in each interval
-    set.seed(100)
     x<-NULL
     for(k in 1:length(levels(xlist$V.f))){
       x<-c(x,runif(sum(!is.na(xlist$V.f) & xlist$V.f== levels(xlist$V.f)[k]),
@@ -1272,6 +1285,8 @@ plt.x.density<-function(xlist,bw = TRUE,color=NULL,name.x,freq,adj.breaks){
   if(adj.breaks){
     if(max(nchar(as.character(format(use.max.y,scientific = FALSE))))<=5){
       mylas=1} else{mylas=0}}
+  pardef <- par(no.readonly = TRUE)
+  on.exit(par(pardef))
   par(las=mylas)
   
   # if no adj required:
@@ -1302,6 +1317,8 @@ plt.x.boxplot<-function(xlist,bw = TRUE,color=NULL,name.x,freq,adj.breaks){
                           col.default="skyblue")
   x<-xlist$V
   if(max(nchar(as.character(max(x,na.rm = TRUE))))<=5){mylas=1} else{mylas=0}
+  pardef <- par(no.readonly = TRUE)
+  on.exit(par(pardef))
   par(las=mylas)
   if(!adj.breaks){
     boxplot(x,main=paste0("Boxplot: ",name.x),
@@ -1334,6 +1351,8 @@ plt.xy.crossbars<-function(tab,bw = TRUE,color=NULL,name.x,name.y,freq,legend,
     use.max.y<-pretty_max(max(apply(tab,2,sum,na.rm = TRUE)),freq)
   }
   bar.width=1
+  pardef <- par(no.readonly = TRUE)
+  on.exit(par(pardef))
   if(!switch.xy){
     tit.use<-paste0("Bars: ",use.tit)  
     if(max(nchar(as.character(use.max.y)))<=5){mylas=1} else{mylas=0}
@@ -1512,6 +1531,8 @@ plt.xy.scatter<-function(xlist,ylist,bw = TRUE,color=NULL,
     }
     
     # no legend
+    pardef <- par(no.readonly = TRUE)
+    on.exit(par(pardef))
     if(!legend){
       par(mar=mypar,tck=use.par$tck,tcl=use.par$tcl,las=mylas,
           mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis) 
@@ -1693,6 +1714,8 @@ plt.xy.boxplot<-function(xlist,ylist,bw = TRUE,color=NULL,name.x,
     ylist$isnum <- FALSE  }
   
   # two numeric variables
+  pardef <- par(no.readonly = TRUE)
+  on.exit(par(pardef))
   if(xlist$isnum & ylist$isnum & !switch.xy){
     use.max.y<-pretty_max(ylist$V)
     if(!adj.breaks){
@@ -1945,6 +1968,8 @@ build.summaries<-function(x,ListBy,
 
 
 # Function to build plots of summaries (added 202406)
+#' @noRd
+#' 
 #' @importFrom stats qt
 build.summary.plt<-function(out,name.x,
                             list.stats,list.tit,
@@ -2041,7 +2066,6 @@ build.summary.plt<-function(out,name.x,
         my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       cat("\n")}
-    par(pardef)
     return(out)
   }
   if(stats %in% c("mean","median") & length(list.by)==2){
@@ -2131,7 +2155,6 @@ build.summary.plt<-function(out,name.x,
         my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       cat("\n")}
-    par(pardef)
     return(out)
   }
   
@@ -2244,7 +2267,6 @@ build.summary.plt<-function(out,name.x,
         my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       cat("\n")}
-    par(pardef)
     return(myout)
   } # closes ci.mean
   
@@ -2340,7 +2362,6 @@ build.summary.plt<-function(out,name.x,
         my.p.list(Warn.list[!duplicated(Warn.list)],
                   type.print=type.print)  }
       cat("\n")}
-    par(pardef)
     return(out)
   } # closes quantiles
 }
