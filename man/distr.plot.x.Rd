@@ -81,6 +81,9 @@ from which \code{distr.plot.x()} is called.}
 
 \item{...}{Additional arguments to be passed to low level functions.}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 \code{distr.plot.x()} generates plots of a univariate distribution.
 }
@@ -171,9 +174,9 @@ distr.plot.x(Income, plot.type = "density",
 distr.plot.x(x = TotVal, plot.type = "boxplot", data = MktDATA)
 # - A  numerical variable: with specified breaks
 #   the plot is not built
-\dontrun{distr.plot.x(AOV, plot.type = "boxplot", 
-                      breaks = c(0,20,40,60,80,100,180), 
-                      data = MktDATA)}
+# distr.plot.x(AOV, plot.type = "boxplot", 
+#              breaks = c(0,20,40,60,80,100,180), 
+#              data = MktDATA)
 
 # Arguments adj.breaks, use.scientific
 #  A variable with a very wide range (very small densities)
