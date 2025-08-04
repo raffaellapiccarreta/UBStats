@@ -67,7 +67,10 @@ my.p.list<-function(use.xx,type.print="print"){
 Signal.Error<-function(x,type.print){
   tryCatch(x,error=function(e){
     my.p.list(c("\nThere is an unmanaged error in the syntax.
-    The procedure is interrupted"),type.print=type.print)
+    The procedure is interrupted"),
+              type.print=type.print)
+    traceback()  # optional: prints the call stack
+    NULL
   })
 }
 
@@ -279,6 +282,30 @@ pretty_max<-function(tab,type){
   }
   use.max.y
 }
+# MODIFIED 2025
+pretty_max<-function(tab,type){
+  use.max.y<-max(pretty(max(tab,na.rm = TRUE)))
+  to.use<-0
+  if(!isTRUE(missing(type))){
+    if(type=="Percentages" | 
+       (type=="Counts" & max(tab,na.rm=TRUE)<=100)){
+      if(abs(max(tab,na.rm = TRUE)-100)<0.9){
+        use.max.y<-100
+      } else {
+        if(max(tab,na.rm = TRUE)>10){
+          use.max.y<-min(seq(0,100,by=5)[(seq(0,100,by=5)>=max(tab,na.rm = TRUE))])}
+      }
+    }
+    if(type=="Proportions" & max(tab,na.rm = TRUE)>0.1){
+      use.max.y<-min(seq(0,1,by=0.05)[(seq(0,1,by=0.05)>=max(tab,na.rm = TRUE))])}
+    if(type %in% c("Densities","Density")){
+      p<-signif(max(tab),1)
+      use.max.y<-seq(0,2*p,by=p/100)
+      use.max.y<-min(use.max.y[use.max.y>=max(tab,na.rm = TRUE)])
+    }
+  }
+  use.max.y
+}
 
 # function to verify whether two objects exist
 # check if used 
@@ -439,11 +466,13 @@ chk.interval<-function(obs.x,name.x,consistency = FALSE,warn.list=NULL,
 
 ## Function to classify a variable into intervals
 chk.breaks<-function(x,name.x,breaks,adj.breaks,consistency = TRUE,
-                     err.list=NULL,warn.list=NULL,nn=NULL){
+                     err.list=NULL,warn.list=NULL,
+                     nn=NULL,varname.x=NULL){
   if(!is.list(err.list)){err.list<-list()}
   if(!is.list(warn.list)){warn.list<-list()}
-  
-  name.x<-deparse1(substitute(x))
+  # modified 2025
+  #name.x<-deparse1(substitute(x))
+  if(!is.null(varname.x)){name.x<-varname.x}
   name.breaks<-"breaks"
   if(!is.null(nn)){name.breaks<-nn}
   ok.breaks <- TRUE
@@ -504,14 +533,15 @@ chk.breaks<-function(x,name.x,breaks,adj.breaks,consistency = TRUE,
 ## Function to create a list with var features
 build.Xlist<-function(x,name.x,breaks,interval,adj.breaks,consistency = FALSE,
                       err.list=NULL,warn.list=NULL,
-                      list.print=NULL,suffix = FALSE){
+                      list.print=NULL,suffix = FALSE,
+                      # added 2025
+                      varname.x=NULL){
   if(!is.list(err.list)){err.list<-list()}
   if(!is.list(warn.list)){warn.list<-list()}
   if(!is.list(list.print)){list.print<-list()}
   name.breaks<-deparse1(substitute(breaks))
   name.interv<-deparse1(substitute(interval))
   if(suffix){nn<-name.breaks} else{nn<-NULL}
-  
   isnum<-is.numeric(x) # check x numeric
   isfac<-is.factor(x) # check x factor
   
@@ -545,7 +575,9 @@ build.Xlist<-function(x,name.x,breaks,interval,adj.breaks,consistency = FALSE,
     } else { 
       check.breaks<-chk.breaks(x=x,name.x=name.x,breaks=breaks,adj.breaks=adj.breaks,
                                consistency=consistency,
-                               warn.list=warn.list,err.list=err.list,nn=nn)
+                               warn.list=warn.list,err.list=err.list,nn=nn,
+                               # added 2025
+                               varname.x =varname.x)
       # update the list including info on breaks
       Xlist<-list(class="breaks",isnum = TRUE,breaks=check.breaks$breaks,V=x,
                   V.f=check.breaks$i.x)
@@ -643,8 +675,11 @@ build.table.x<-function(Xlist,name.x,freq,total,
     no.cum<-!(substr(colnames(out),1,3) %in% c("Cum","Den") |
                 colnames(out)==name.x)
     out[nrow(out),no.cum]<-apply(out[,no.cum,drop = FALSE],2,"sum",na.rm = TRUE)
+  # MOD 2025
+    rownames(out)[nrow(out)]<-"Sum"
+    
   }
-  rownames(out)[nrow(out)]<-"Sum"
+  #rownames(out)[nrow(out)]<-"Sum"
   
   use.digits["Cum.Prop"]<-use.digits["Prop"]
   use.digits["Cum.Percent"]<-use.digits["Percent"]
@@ -658,12 +693,24 @@ build.table.x<-function(Xlist,name.x,freq,total,
         n.use<-c(n.use,rep(paste0("Cum.",k),length(n.use)))
       }
       round.k<-round(to.use,use.digits[k])
-      if(k=="Prop"){
+      # MODIFIED 2025 -> ADJUSTED DENSITY
+      # if(k=="Prop"){
+      #   n.dec.k<-nchar(sub("^\\d+\\.","",sub("0+$","",
+      #                                        as.character(round.k))))
+      #   n.dec.k<-max(n.dec.k,na.rm=T)
+      #   round.k<-format(round.k,nsmall=n.dec.k)
+      # }
+      # MODIFIED 2025 
+      if(k=="Prop" | k=="Density"){
+        my.sci<-getOption("scipen")
+        options(scipen=999)
+        round.k<-round(to.use,use.digits[k])
         n.dec.k<-nchar(sub("^\\d+\\.","",sub("0+$","",
                                              as.character(round.k))))
         n.dec.k<-max(n.dec.k,na.rm=T)
         round.k<-format(round.k,nsmall=n.dec.k)
-      }
+        options(scipen=my.sci)
+      } # END MODIFIED 2025
       if(k=="Percent" & use.digits["Percent"]>0){
         n.dec.k<-nchar(sub("^\\d+\\.","",as.character(round.k[round.k<100])))
         n.dec.k<-max(n.dec.k,na.rm=T)
@@ -712,9 +759,60 @@ build.table.x<-function(Xlist,name.x,freq,total,
 
 ## Function to create bivariate tables
 build.table.xy<-function(Xlist,Ylist,name.x,name.y,
-                         type.tab,freq,total,use.digits,force.digits=FALSE){
+                         type.tab,freq,total,
+                         use.digits,
+                         force.digits=FALSE,
+                         # ADDED 2025
+                         use.scientific=FALSE){
+  
   # capitalize freq
   substr(freq,1,1)<-toupper(substr(freq,1,1))
+  
+  # FUNCTION ADDED 2025
+  fix.tabP<-function(to.use,freq,mydigits,
+                     force.digits=FALSE,
+                     use.scientific=FALSE){
+    if(freq==c("Proportion")){
+      my.sci<-getOption("scipen")
+      options(scipen=999)
+      r.tab<-round(to.use,mydigits)
+      n.dec.k<-nchar(sub("^\\d+\\.","",sub("0+$","",
+                                           as.character(r.tab))))
+      n.dec.k<-max(n.dec.k,na.rm=T)
+      r.tab<-format(r.tab,nsmall=n.dec.k)
+      options(scipen=my.sci)
+    }
+    if(freq=="Percentage"){
+      r.tab<-round(to.use,mydigits)
+      n.dec.k<-nchar(sub("^\\d+\\.","",as.character(r.tab[r.tab<100])))
+      n.dec.k<-min(mydigits,max(n.dec.k,na.rm=T))
+      r.tab<-format(r.tab,nsmall=n.dec.k)
+    }
+    
+    if(!force.digits){
+      use.values<-to.use
+      min.nozero<-min(use.values[use.values>0],na.rm=T)
+      min.round<-round(min.nozero,mydigits)
+      if(min.round==0){
+        r.tab<-format(use.values,digits=1,
+                      scientific=use.scientific)
+      }
+      if(is.numeric(r.tab)){
+        r.tab<-as.character(r.tab)
+      }
+    }
+    if(use.scientific){
+      r.mat<-matrix(as.numeric(r.tab),nrow=nrow(to.use),ncol=ncol(to.use))
+      dimnames(r.mat) <- dimnames(to.use)
+      print(r.mat)
+    }
+    if(!use.scientific){
+      r.mat<-matrix((r.tab),nrow=nrow(to.use),ncol=ncol(to.use))
+      dimnames(r.mat) <- dimnames(to.use)
+      print(noquote(r.mat),right=TRUE)
+    }
+  }
+  
   
   # Ready for tables!
   out<-list()
@@ -730,7 +828,8 @@ build.table.xy<-function(Xlist,Ylist,name.x,name.y,
       if(ftype.i=="Joint"){
         
         tit<-paste0("Joint ",tolower(freq.i))
-        tab<-switch(freq.i,Counts=tab.c,Proportions=prop.table(tab.c),
+        tab<-switch(freq.i,Counts=tab.c,
+                    Proportions=prop.table(tab.c),
                     Percentages=prop.table(tab.c)*100)
         if(total){tab<-addmargins(tab)}
         colnames(tab)[colnames(tab)=="Sum"]<-"TOTAL"
@@ -738,10 +837,25 @@ build.table.xy<-function(Xlist,Ylist,name.x,name.y,
         out[[tit]]<-as.data.frame.matrix(tab) # save the table
         if(count.tab==0){cat(paste0(tit,"\n"))
         } else {cat(paste0("   \n",tit,"\n"))}
-        print(round(tab,use.digits[freq.i]))
+        # MODIFIED 2025 -> ERASE
+        #print(round(tab,use.digits[freq.i]))
+        # MODIFIED 2025 -> ADDED
+        if(freq.i=="Counts"){
+          print(round(tab,use.digits[freq.i])) }
+        if(freq.i=="Proportions"){
+          fix.tabP(tab,freq="Proportion",
+                   mydigits=use.digits[freq.i],
+                   force.digits=force.digits,
+                   use.scientific=use.scientific)}
+        if(freq.i=="Percentages"){
+          fix.tabP(tab,freq="Percentage",
+                   mydigits=use.digits[freq.i],
+                   force.digits=force.digits,
+                   use.scientific=use.scientific)}
+        # MODIFIED 2025 -> end ADDED
         count.tab<-count.tab+1
         
-      }
+      } # close joint
       if(ftype.i %in% c("x_y","y_x","row","col")){
         use.m<-switch(ftype.i,x_y=c(2,1),y_x=c(1,2),col=c(2,1),row=c(1,2))
         tab<-switch(freq.i,Counts=tab.c,
@@ -755,13 +869,28 @@ build.table.xy<-function(Xlist,Ylist,name.x,name.y,
         if(count.tab==0){cat(paste0(tit,"\n"))
         } else {cat(paste0("   \n",tit,"\n"))}
         
-        # added
-        min.nozero<-min(tab[tab>0],na.rm=T)
-        min.round<-round(min.nozero,use.digits[freq.i])
-        if(min.round==0 & !force.digits){
-          print(tab,digits=1,quote=F,right=T)
-        } else {print(round(tab,use.digits[freq.i]),quote=F,right=T)
-        }
+        # MODIFIED 2025 -> ERASED
+        ## added
+        # min.nozero<-min(tab[tab>0],na.rm=T)
+        # min.round<-round(min.nozero,use.digits[freq.i])
+        # if(min.round==0 & !force.digits){
+        #   print(tab,digits=1,quote=F,right=T)
+        # } else {print(round(tab,use.digits[freq.i]),quote=F,right=T)
+        # }
+        # MODIFIED 2025 -> ADDED
+        if(freq.i=="Counts"){
+          print(round(tab,use.digits[freq.i])) }
+        if(freq.i=="Proportions"){
+          fix.tabP(tab,freq="Proportion",
+                   mydigits=use.digits[freq.i],
+                   force.digits=force.digits,
+                   use.scientific=use.scientific)}
+        if(freq.i=="Percentages"){
+          fix.tabP(tab,freq="Percentage",
+                   mydigits=use.digits[freq.i],
+                   force.digits=force.digits,
+                   use.scientific=use.scientific)}
+        # MODIFIED 2025 -> END ADDED
         count.tab<-count.tab+1
       }
     }
@@ -811,7 +940,15 @@ build.palette<-function(n,add=0.15,mod.b=TRUE,
     if(palette=="spectral"){
       col<-grDevices::hcl.colors(n,palette = "Spectral")
     }
-    if(palette=="bw"){col=grDevices::gray.colors(n)}
+    if(palette=="bw"){
+      # MODIFIED 2025
+      #col=grDevices::gray.colors(n)
+      if(n<5){
+        col=grDevices::gray.colors(n,start=0.1,end=0.9)}
+      if(n>=5){
+        col=grDevices::gray.colors(n,start=0,end=1)}
+      # END MODIFIED 2025
+      }
     if(palette=="ramp_red_green"){
       col<-grDevices::colorRampPalette(c("darkgreen","green",
                                          "gold","darkorange","red"))
@@ -943,10 +1080,17 @@ plt.x.pie<-function(tab,bw = TRUE,color=NULL,name.x,freq){
   use.color<-build.colors(n=length(tab),bw,color)
   pardef <- par(no.readonly = TRUE)
   on.exit(par(pardef))
+  mai.p<-par("mai")
   par(mai=c(0,0,0.1,0))
   pie(tab,col=use.color,clockwise = TRUE)
+  # modified 2025
+  # mtext(side=3,paste0("Pie chart: ",name.x),font=2,
+  #       cex=par("cex.main"),line=-1)
+  # added 2025
   mtext(side=3,paste0("Pie chart: ",name.x),font=2,
-        cex=par("cex.main"),line=-1)
+        cex=par("cex.main")*par("cex"),
+        line=-1)
+  par(mai=mai.p)
 }
 plt.x.bars<-function(tab,bw = TRUE,color=NULL,name.x,
                      freq){
@@ -986,6 +1130,76 @@ plt.x.bars<-function(tab,bw = TRUE,color=NULL,name.x,
   mtext(side = 2, freq, line = pos.tit2,las=0)
   box()
 }
+
+# modified 2025
+plt.x.bars<-function(tab,bw = TRUE,color=NULL,name.x,
+                     freq,adj.breaks){
+  pos.tit2<-2.6
+  my.sci<-options("scipen")
+  pardef <- par(no.readonly = TRUE)
+  on.exit(par(pardef))
+  use.color<-build.colors(n=1,bw,color,bw.default="grey",
+                          col.default="skyblue")
+  use.max.y<-pretty_max(tab,freq)
+  use.las<-pretty_max(tab,freq)
+  
+  # modified 2025
+  use.max.y<-max(tab,na.rm=TRUE)+sd(tab)/10
+  # if(max(nchar(as.character(use.max.y)))<=5){
+  #   mylas=1} else{mylas=0}
+  # par(las=mylas)
+  
+  # modified 2025
+  if(adj.breaks==FALSE){
+    if(max(nchar(as.character(use.las)))<=5){mylas=1
+    } else{mylas=0}
+    par(las=mylas)
+    barplot(tab,col=use.color,
+            main=paste0("Bar plot: ",name.x),
+            ylim=c(0,use.max.y))
+    mtext(side = 1, name.x, line = 2)
+    mtext(side = 2, freq, line = pos.tit2,las=0)
+    box()
+  }
+  # modified 2025
+  # if(adj.breaks==TRUE){
+  #   options("scipen"=99)
+  #   barplot(tab,col=use.color,
+  #           main=paste0("Bar plot: ",name.x),
+  #           ylim=c(0,use.max.y))
+  #   mtext(side = 1, name.x, line = 2,cex=par("cex.lab"))
+  #   mtext(side = 2, freq, line = pos.tit2,las=0,
+  #         cex=par("cex.lab"))
+  #   box()
+  #   options("scipen"=my.sci)
+  # }
+  if(adj.breaks==TRUE){
+    if(max(nchar(as.character(format(use.las,scientific = FALSE))))<=5){
+      mylas=1} else{mylas=0}
+    par(las=mylas)
+    ixp<-barplot(tab,col=use.color,
+                 main=paste0("Bar plotXX: ",name.x),
+                 ylim=c(0,use.max.y),plot=FALSE)
+    barplot(tab,col=use.color,yaxt="n",
+            main=paste0("Bar plot: ",name.x),
+            ylim=c(0,use.max.y))
+    axis(1, at=ixp[,1], labels=FALSE)
+    aty=pretty(c(0,tab))
+    aty<-aty[aty<use.max.y]
+    axis(2, at=aty, labels=format(aty, scientific = FALSE))
+    mtext(side = 1, name.x, line = 2)
+    mtext(side = 2, freq, line = pos.tit2,las=0)
+    box()
+    
+    # if(freq!="Counts"){
+    #   axis(2, at=aty)
+    # }
+    # if(freq=="Counts"){
+    #   axis(2, at=aty, labels=format(aty, scientific = FALSE))
+    # }
+  }
+}
+
 plt.x.spike<-function(xlist,bw=TRUE,color=NULL,name.x,freq){
   pos.tit2<-2.6
   use.color<-build.colors(n=1,bw,color,bw.default="black",
@@ -1022,6 +1236,77 @@ plt.x.spike<-function(xlist,bw=TRUE,color=NULL,name.x,freq){
   mtext(side = 1, name.x, line = 2)
   mtext(side = 2, freq, line = pos.tit2,las=0)
 }
+
+# modified 2025
+plt.x.spike<-function(xlist,bw=TRUE,color=NULL,
+                      name.x,freq,adj.breaks){
+  pos.tit2<-2.6
+  cex.symbols<-1
+  pardef <- par(no.readonly = TRUE)
+  on.exit(par(pardef))
+  use.color<-build.colors(n=1,bw,color,bw.default="black",
+                          col.default="black")
+  tab<-xlist$tab.x
+  use.max.y<-pretty_max(tab,freq)
+  use.las<-pretty_max(tab,freq)
+  use.max.y<-max(tab,na.rm=TRUE)+sd(tab)/10
+  if(!adj.breaks){
+    if(max(nchar(as.character(use.las)))<=5){
+      mylas=1} else{mylas=0}}
+  if(adj.breaks){
+    if(max(nchar(as.character(format(use.las,scientific = FALSE))))<=5){
+      mylas=1} else{mylas=0}}
+  
+  # if(max(nchar(as.character(use.las)))<=5){mylas=1
+  # } else{mylas=0}
+  par(las=mylas)
+  if(xlist$isnum & xlist$class=="standard"){
+    x.values<-as.numeric(names(tab))
+    plot(x.values,y=as.vector(tab),type="p",
+         main=paste0("Spike plot: ",name.x),
+         ylim=c(0,use.max.y),xlab="",ylab="",
+         lwd=2,pch=19,yaxs="i",cex=0.01,
+         xlim=c(min(x.values),max(x.values)),
+         axes=FALSE,
+         col=use.color) 
+    lines(tab)
+    points(x.values,y=as.vector(tab),pch=21,
+           bg=use.color, cex=cex.symbols,
+           ylim=c(0,use.max.y),xlab="",ylab="",lwd=2) 
+    if(!adj.breaks){
+      axis(1)
+      axis(2, las=mylas)
+    } # closes !adj breaks
+    
+    if(adj.breaks){
+      p.yaxp<-par("yaxp")
+      aty<-seq(p.yaxp[1],p.yaxp[2],(p.yaxp[2]-p.yaxp[1])/p.yaxp[3])
+      use.labs<-format(aty, scientific = FALSE)
+      use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+      axis(2, at=aty, labels=use.labs)
+      p.xaxp<-par("xaxp")
+      atx<-seq(p.xaxp[1],p.xaxp[2],(p.xaxp[2]-p.xaxp[1])/p.xaxp[3])
+      use.labs<-format(atx, scientific = FALSE)
+      use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+      axis(1, at=atx, labels=use.labs)
+    }# closes adj breaks
+    box()
+    
+  } else {
+    x.values<-factor(names(tab),levels=names(tab))
+    plot(tab,main=paste0("Spike plot: ",name.x),type="p",
+         pch=19,cex=0.01,yaxs="i",
+         ylim=c(0,use.max.y),xlab="",ylab="",lwd=2) 
+    lines(tab)
+    points(1:length(x.values),tab,pch=21,
+           bg=use.color,yaxs="i", cex=cex.symbols,
+           ylim=c(0,use.max.y),xlab="",ylab="",lwd=2) 
+    box()
+  }
+  mtext(side = 1, name.x, line = 2)
+  mtext(side = 2, freq, line = pos.tit2,las=0)
+}
+
 plt.x.cum<-function(xlist,bw=TRUE,color=NULL,name.x,freq,adj.breaks){
   pos.tit2<-2.6
   use.color<-build.colors(n=1,bw,color,bw.default="black",
@@ -1194,6 +1479,213 @@ plt.x.cum<-function(xlist,bw=TRUE,color=NULL,name.x,freq,adj.breaks){
     mtext(side = 2, paste0("Cumulative ",freq), line = pos.tit2,las=0)
   }
 }
+
+# modified 2025
+plt.x.cum<-function(xlist,bw=TRUE,color=NULL,name.x,
+                    freq,adj.breaks){
+  pardef <- par(no.readonly = TRUE)
+  on.exit(par(pardef))
+  pos.tit2<-2.6
+  use.color<-build.colors(n=1,bw,color,bw.default="black",
+                          col.default="black")
+  
+  if(xlist$class=="interval" | xlist$class=="breaks"){
+    if(xlist$class=="interval"){
+      check.int<-xlist$info.int$tab
+      x<-xlist$V
+      # Adjust possible missing intervals
+      all.ends<-unique(c(check.int$Low,check.int$Up))
+      all.ends<-all.ends[order(all.ends)]
+      # reshape x assigning upper ends to intervals
+      intm.x<-factor(x,levels=check.int$Obs,labels=check.int$Up)
+      intm.x<-as.numeric(as.character(intm.x))
+      # reshape using all the endpoints as levels.
+      # Not observed endpoints are added but will not contribute to freqs
+      intm.x<-factor(intm.x,levels=all.ends)
+      x.values<-all.ends
+      tab<-switch(freq,Counts=table(intm.x),
+                  Proportions=prop.table(table(intm.x)),
+                  Percentages=prop.table(table(intm.x))*100)
+      Cum.freq<-cumsum(tab)
+    }
+    if(xlist$class=="breaks"){
+      # if breaks specified, create a factor
+      # assigning to x the endpoints of specified intervals
+      x.f<-cut(xlist$V,breaks=xlist$breaks,
+               right = FALSE,include.lowest = TRUE,labels=xlist$breaks[-1])
+      x.values<-c(xlist$breaks[1],as.numeric(levels(x.f)))
+      tab<-switch(freq,Counts=table(x.f),
+                  Proportions=prop.table(table(x.f)),
+                  Percentages=prop.table(table(x.f))*100)
+      Cum.freq<-c(0,cumsum(tab))
+    }
+    use.max.y<-switch(freq,
+                      Counts=pretty_max(Cum.freq,freq),
+                      Proportions=as.integer(1),
+                      Percentages=as.integer(100))
+    mylas<-1
+    if(freq=="Counts"){
+      if(!adj.breaks){
+        if(max(nchar(as.character(use.max.y)))<=5){mylas=1} else{mylas=0}}
+      if(adj.breaks){
+        if(max(nchar(as.character(format(use.max.y,scientific = FALSE))))<=5){
+          mylas=1} else{mylas=0}}
+    }
+    par(las=mylas)
+    if(!adj.breaks){
+      plot(x=x.values,y=Cum.freq,type="l",
+           main=paste0("Ogive: ",name.x),
+           xlab="",ylab="",lwd=2,
+           ylim=c(0,use.max.y),
+           col="black")
+      segments(x0=min(x.values), y0=0, 
+               x1 = max(x.values), 
+               y1 = max(Cum.freq),
+               col="firebrick",lty =5, lwd =2)
+      # add dots only when reasonable
+      if(length(x.values)<60){
+        points(x=x.values,y=Cum.freq,pch=21,
+               #cex=cex.symbols,
+               bg=use.color)}}
+    if(adj.breaks){
+      plot(x=x.values,y=Cum.freq,type="l",
+           main=paste0("Ogive: ",name.x),
+           xlab="",ylab="",lwd=2,
+           ylim=c(0,use.max.y),
+           col="black",axes = FALSE)
+      segments(x0=min(x.values), y0=0, 
+               x1 = max(x.values), 
+               y1 = max(Cum.freq),
+               col="firebrick",lty =5, lwd =2)
+      
+      if(length(x.values)<60){
+        points(x=x.values,y=Cum.freq,pch=21,
+               #cex=cex.symbols,
+               bg=use.color)}
+      if(freq!="Counts"){
+        p.yaxp<-par("yaxp")
+        aty<-seq(p.yaxp[1],p.yaxp[2],(p.yaxp[2]-p.yaxp[1])/p.yaxp[3])
+        axis(2, at=aty)
+      }
+      if(freq=="Counts"){
+        p.yaxp<-par("yaxp")
+        aty<-seq(p.yaxp[1],p.yaxp[2],(p.yaxp[2]-p.yaxp[1])/p.yaxp[3])
+        axis(2, at=aty, labels=format(aty, scientific = FALSE)) 
+      }
+      p.xaxp<-par("xaxp")
+      atx<-seq(p.xaxp[1],p.xaxp[2],(p.xaxp[2]-p.xaxp[1])/p.xaxp[3])
+      use.labs<-format(atx, scientific = FALSE)
+      use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+      axis(1, at=atx, labels=use.labs)
+    }
+    box()
+    mtext(side = 1, name.x, line = 2)
+    mtext(side = 2, paste0("Cumulative ",freq), line = pos.tit2,las=0)
+  }
+  if(xlist$class=="standard"){
+    tab<-xlist$tab.x
+    Cum.freq=as.numeric(cumsum(tab))
+    use.max.y<-switch(freq,Counts=pretty_max(Cum.freq,freq),
+                      Proportions=as.integer(1),
+                      Percentages=as.integer(100))
+    mylas<-1
+    if(freq=="Counts"){
+      if(max(nchar(as.character(use.max.y)))>5){mylas=0}
+    }
+    par(las=mylas)
+    if(!xlist$isnum){
+      plot(x=factor(names(tab),levels=names(tab)),
+           y=Cum.freq,type="l",
+           xlab="",ylab="",lwd=1,
+           main=paste0("Cumulative freq: ",name.x),
+           ylim=c(0,use.max.y),col=use.color)
+    } else {
+      x.values<-as.numeric(names(tab))
+      dr <- max(0.08 * (max(x.values)-min(x.values)), 
+                median(diff(x.values)))
+      use.xlim <- c(min(x.values)-dr,max(x.values)+ dr)
+      use.x.values<-c(min(x.values)-dr,x.values,max(x.values)+dr)
+      use.Cum.freq<-c(0,Cum.freq,max(Cum.freq))
+      if(!adj.breaks){
+        plot(x=c(min(x.values),x.values),y=c(0,Cum.freq),
+             type="s",
+             xlab="",ylab="",lwd=1.5,
+             main=paste0("Cumulative freq: ",name.x),
+             ylim=c(0,use.max.y),xlim=use.xlim,
+             col="black")
+        segments(x0=min(x.values), y0=0, 
+                 x1 = max(x.values), y1 = max(Cum.freq),
+                 col="firebrick",lty =5, lwd =2)
+        segments(x0=min(use.x.values)-dr, y0=0, 
+                 x1 = max(use.x.values)+dr, y1 = 0,
+                 col="grey50",lty =2, lwd =1.5)
+        segments(x0=min(use.x.values)-dr, y0=max(Cum.freq), 
+                 x1 = max(use.x.values)+dr, y1 = max(Cum.freq),
+                 col="grey50",lty =2, lwd =1.5)
+        segments(x0=min(use.x.values)-dr, y0=0, 
+                 x1 = min(x.values), y1 = 0,
+                 col="grey50",lty =2, lwd =1.5)
+        segments(x0=max(x.values), y0=max(Cum.freq), 
+                 x1 = max(use.x.values)+dr, y1 = max(Cum.freq),
+                 col="grey50",lty =2, lwd =1.5)
+        # add points only if limited
+        if(length(x.values)<60){
+          points(x=x.values,y=Cum.freq,pch=21,
+                 #cex=cex.symbols,
+                 bg=use.color)}
+        
+      }
+      if(adj.breaks){
+        plot(x=c(min(x.values),x.values),
+             y=c(0,Cum.freq),type="s",
+             xlab="",ylab="",lwd=1.5,
+             main=paste0("Cumulative freq: ",name.x),
+             ylim=c(0,use.max.y),xlim=use.xlim,
+             axes = FALSE,col="black")
+        segments(x0=min(x.values), y0=0, 
+                 x1 = max(x.values), y1 = max(Cum.freq),
+                 col="firebrick",lty =5, lwd =2)
+        # use.color substituted by grey
+        segments(x0=min(use.x.values)-dr, y0=0, 
+                 x1 = max(use.x.values)+dr, y1 = 0,
+                 col="grey50",lty =2, lwd =1.5)
+        segments(x0=min(use.x.values)-dr, y0=max(Cum.freq), 
+                 x1 = max(use.x.values)+dr, y1 = max(Cum.freq),
+                 col="grey50",lty =2, lwd =1.5)
+        segments(x0=min(use.x.values)-dr, y0=0, 
+                 x1 = min(x.values), y1 = 0,
+                 col="grey50",lty =2, lwd =1.5)
+        segments(x0=max(x.values), y0=max(Cum.freq), 
+                 x1 = max(use.x.values)+dr, y1 = max(Cum.freq),
+                 col="grey50",lty =2, lwd =1.5)
+        if(length(x.values)<60){
+          points(x=x.values,y=Cum.freq,pch=21,
+                 #cex=cex.symbols,
+                 bg=use.color)}
+        
+        if(freq!="Counts"){
+          p.yaxp<-par("yaxp")
+          aty<-seq(p.yaxp[1],p.yaxp[2],(p.yaxp[2]-p.yaxp[1])/p.yaxp[3])
+          axis(2, at=aty)
+        }
+        if(freq=="Counts"){
+          p.yaxp<-par("yaxp")
+          aty<-seq(p.yaxp[1],p.yaxp[2],(p.yaxp[2]-p.yaxp[1])/p.yaxp[3])
+          axis(2, at=aty, labels=format(aty, scientific = FALSE)) 
+        }
+        p.xaxp<-par("xaxp")
+        atx<-seq(p.xaxp[1],p.xaxp[2],(p.xaxp[2]-p.xaxp[1])/p.xaxp[3])
+        use.labs<-format(atx, scientific = FALSE)
+        use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+        axis(1, at=atx, labels=use.labs)
+      }
+      box()
+    }
+    mtext(side = 1, name.x, line = 2)
+    mtext(side = 2, paste0("Cumulative ",freq), line = pos.tit2,las=0)
+  }
+}
+
 plt.x.hist<-function(xlist,bw = TRUE,color=NULL,name.x,freq,adj.breaks){
   pos.tit2<-2.6
   
@@ -1257,6 +1749,84 @@ plt.x.hist<-function(xlist,bw = TRUE,color=NULL,name.x,freq,adj.breaks){
   mtext(side = 1, name.x, line = 2)
   mtext(side = 2, freq, line = pos.tit2,las=0)
 }
+
+# modified 2025
+plt.x.hist<-function(xlist,bw = TRUE,color=NULL,
+                     name.x,freq,adj.breaks){
+  pardef <- par(no.readonly = TRUE)
+  on.exit(par(pardef))
+  pos.tit2<-2.6
+  use.color<-build.colors(n=1,bw,color,bw.default="grey",
+                          col.default="skyblue")
+  x<-xlist$V[!(is.na(xlist$V))]
+  if(xlist$class=="interval"){
+    check.int<-xlist$info.int$tab
+    # Adjust possible missing intervals
+    all.ends<-unique(c(check.int$Low,check.int$Up))
+    all.ends<-all.ends[order(all.ends)]
+    # reshape x assigning upper ends to intervals
+    intm.x<-factor(x,levels=check.int$Obs,
+                   labels=((check.int$Low+check.int$Up)/2))
+    intm.x<-as.numeric(as.character(intm.x))
+    # save the histogram
+    h<-hist(intm.x,breaks=all.ends,include.lowest = TRUE,right = FALSE,plot = FALSE)
+  } # close interval = TRUE
+  if(xlist$class=="standard"){h<-hist(x,include.lowest = TRUE,right = FALSE,plot = FALSE)}
+  if(xlist$class=="breaks"){
+    x<-x[x>= min(xlist$breaks) & x<=max(xlist$breaks)]
+    h<-hist(x,breaks=xlist$breaks,include.lowest = TRUE,right = FALSE,plot = FALSE)}
+  # if classes have equal width one can choose what to display
+  if(h$equidist){
+    h$density<-switch(freq,Counts=h$counts,
+                      Percentages= h$counts/sum(h$counts)*100,
+                      Proportions=h$counts/sum(h$counts),
+                      Densities=h$density)
+  }
+  # if classes width unequal h$density is not modified
+  # and freq is set to Density
+  if(!h$equidist){freq<-"Densities"}
+  
+  # plot:
+  use.las<-pretty_max(h$density,freq)
+  use.max.y<-max(h$density,na.rm=TRUE)+
+    sd(h$density,na.rm=TRUE)/10
+  if(!adj.breaks){
+    if(max(nchar(as.character(use.las)))<=5){
+      mylas=1} else{mylas=0}}
+  if(adj.breaks){
+    if(max(nchar(as.character(format(use.las,scientific = FALSE))))<=5){
+      mylas=1} else{mylas=0}}
+  par(las=mylas)
+  
+  # if no adj required:
+  if(!adj.breaks){
+    plot(h,freq = FALSE,main=paste0("Histogram: ",name.x),
+         xlab="",ylab="",yaxs="i",#xaxs="i",
+         ylim=c(0,use.max.y),
+         col=use.color)  
+    box()
+  }
+  if(adj.breaks){
+    plot(h,freq = FALSE,main=paste0("Histogram: ",name.x),
+         xlab="",ylab="",yaxs="i",#xaxs="i",
+         ylim=c(0,use.max.y),
+         col=use.color,axes = FALSE)
+    p.yaxp<-par("yaxp")
+    aty<-seq(p.yaxp[1],p.yaxp[2],(p.yaxp[2]-p.yaxp[1])/p.yaxp[3])
+    axis(2, at=aty, 
+         labels=format(aty, scientific = FALSE),
+         yaxs="i")
+    p.xaxp<-par("xaxp")
+    atx<-seq(p.xaxp[1],p.xaxp[2],(p.xaxp[2]-p.xaxp[1])/p.xaxp[3])
+    use.labs<-format(atx, scientific = FALSE)
+    use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+    axis(1, at=atx, labels=use.labs)
+    box()
+  }
+  mtext(side = 1, name.x, line = 2)
+  mtext(side = 2, freq, line = pos.tit2,las=0)
+}
+
 plt.x.density<-function(xlist,bw = TRUE,color=NULL,name.x,freq,adj.breaks){
   pos.tit2<-2.6
   
@@ -1268,6 +1838,7 @@ plt.x.density<-function(xlist,bw = TRUE,color=NULL,name.x,freq,adj.breaks){
     # create a synthetic vector by sampling from
     # a uniform distribution from one endpoint to another
     # as many cases as are those in each interval
+    set.seed(100)
     x<-NULL
     for(k in 1:length(levels(xlist$V.f))){
       x<-c(x,runif(sum(!is.na(xlist$V.f) & xlist$V.f== levels(xlist$V.f)[k]),
@@ -1310,7 +1881,69 @@ plt.x.density<-function(xlist,bw = TRUE,color=NULL,name.x,freq,adj.breaks){
   mtext(side = 1, name.x, line = 2)
   mtext(side = 2, freq, line = pos.tit2,las=0)
 }
-plt.x.boxplot<-function(xlist,bw = TRUE,color=NULL,name.x,freq,adj.breaks){
+
+# modified 2025
+plt.x.density<-function(xlist,bw = TRUE,color=NULL,
+                        name.x,freq,adj.breaks){
+  pos.tit2<-2.6
+  pardef <- par(no.readonly = TRUE)
+  on.exit(par(pardef))
+  use.color<-build.colors(n=1,bw,color,bw.default="black",
+                          col.default="black")
+  x<-xlist$V[!(is.na(xlist$V))]
+  if(xlist$class=="interval"){
+    check.int<-xlist$info.int$tab
+    # create a synthetic vector by sampling from
+    # a uniform distribution from one endpoint to another
+    # as many cases as are those in each interval
+    set.seed(100)
+    x<-NULL
+    for(k in 1:length(levels(xlist$V.f))){
+      x<-c(x,runif(sum(!is.na(xlist$V.f) & xlist$V.f== levels(xlist$V.f)[k]),
+                   check.int$Low[k],check.int$Up[k]))
+    }
+  } # close interval = TRUE
+  if(xlist$class=="breaks"){
+    #cat("\n   'breaks' ignored in density plots",file=stderr())
+    x<-x[x>= min(xlist$breaks) & x<=max(xlist$breaks)]
+  }
+  d<-density(x)
+  use.las<-pretty_max(d$y,freq)
+  use.max.y<-max(d$y,na.rm=TRUE)+
+    sd(d$y,na.rm=TRUE)/10  
+  if(!adj.breaks){
+    if(max(nchar(as.character(use.las)))<=5){mylas=1} else{mylas=0}}
+  if(adj.breaks){
+    if(max(nchar(as.character(format(use.las,scientific = FALSE))))<=5){
+      mylas=1} else{mylas=0}}
+  par(las=mylas)
+  
+  # if no adj required:
+  if(!adj.breaks){
+    plot(d$x,d$y,type="l",main=paste0("Density plot: ",name.x),
+         xlab="",ylab="",ylim=c(0,use.max.y),
+         yaxs="i",col=use.color,lwd=2)  }
+  if(adj.breaks){
+    plot(d$x,d$y,type="l",main=paste0("Density plot: ",name.x),
+         xlab="",ylab="",ylim=c(0,use.max.y),
+         yaxs="i",col=use.color,axes = FALSE,lwd=2)
+    p.yaxp<-par("yaxp")
+    aty<-seq(p.yaxp[1],p.yaxp[2],(p.yaxp[2]-p.yaxp[1])/p.yaxp[3])
+    axis(2, at=aty, labels=format(aty, scientific = FALSE))
+    
+    p.xaxp<-par("xaxp")
+    atx<-seq(p.xaxp[1],p.xaxp[2],(p.xaxp[2]-p.xaxp[1])/p.xaxp[3])
+    use.labs<-format(atx, scientific = FALSE)
+    use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+    axis(1, at=atx, labels=use.labs)
+  }
+  box()
+  mtext(side = 1, name.x, line = 2)
+  mtext(side = 2, freq, line = pos.tit2,las=0)
+}
+
+plt.x.boxplot<-function(xlist,bw = TRUE,color=NULL,name.x,freq,
+                        adj.breaks){
   pos.tit2<-2.6
   
   use.color<-build.colors(n=1,bw,color,bw.default="grey",
@@ -1319,6 +1952,33 @@ plt.x.boxplot<-function(xlist,bw = TRUE,color=NULL,name.x,freq,adj.breaks){
   if(max(nchar(as.character(max(x,na.rm = TRUE))))<=5){mylas=1} else{mylas=0}
   pardef <- par(no.readonly = TRUE)
   on.exit(par(pardef))
+  par(las=mylas)
+  if(!adj.breaks){
+    boxplot(x,main=paste0("Boxplot: ",name.x),
+            xlab="",ylab="",col=use.color)  }
+  if(adj.breaks){
+    boxplot(x,main=paste0("Boxplot: ",name.x),
+            xlab="",ylab="",col=use.color,axes = FALSE)  
+    p.yaxp<-par("yaxp")
+    aty<-seq(p.yaxp[1],p.yaxp[2],(p.yaxp[2]-p.yaxp[1])/p.yaxp[3])
+    use.labs<-format(aty, scientific = FALSE)
+    use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+    axis(2, at=aty, labels=use.labs)
+    box()
+  }
+  mtext(side = 2, name.x, line = pos.tit2,las=0)
+}  
+# modified 2025
+plt.x.boxplot<-function(xlist,bw = TRUE,color=NULL,
+                        name.x,freq,adj.breaks){
+  pos.tit2<-2.6
+  pardef <- par(no.readonly = TRUE)
+  on.exit(par(pardef))
+  
+  use.color<-build.colors(n=1,bw,color,bw.default="grey",
+                          col.default="skyblue")
+  x<-xlist$V
+  if(max(nchar(as.character(max(x,na.rm = TRUE))))<=5){mylas=1} else{mylas=0}
   par(las=mylas)
   if(!adj.breaks){
     boxplot(x,main=paste0("Boxplot: ",name.x),
@@ -1444,6 +2104,225 @@ plt.xy.crossbars<-function(tab,bw = TRUE,color=NULL,name.x,name.y,freq,legend,
     }
   }
 }
+
+# modified 2025
+plt.xy.crossbars<-function(tab,bw = TRUE,color=NULL,
+                           name.x,name.y,freq,legend,
+                           beside = FALSE,use.tit=NULL,
+                           switch.xy = FALSE,
+                           use.par=NULL,adj.breaks=TRUE){
+  pardef1 <- par(no.readonly = TRUE)
+  on.exit(par(pardef1))
+  # added 2025
+  pos.tit2<-2.6
+  if(freq %in% c("Proportions","Percentages")){
+    adj.breaks<-FALSE
+  }
+  use.color<-build.colors(n=nrow(tab),bw,color)
+  names(use.color)<-rownames(tab)
+  if(beside){
+    bar.space=c(0,1)
+    # mod 2025
+    #use.max.y<-pretty_max(tab,freq)
+    use.las<-pretty_max(tab,freq)
+    use.max.y<-max(tab,na.rm=TRUE)+sd(tab)/10
+    if((freq=="Proportions" & use.max.y<1) |
+       (freq=="Percentages" & use.max.y<100)){
+      use.max.y<-(pretty_max(use.max.y,freq))
+    } else{use.max.y<-use.las}
+  }
+  if(!beside){
+    bar.space<-0.2
+    # mod 2025
+    #use.max.y<-pretty_max(max(apply(tab,2,sum,na.rm = TRUE)),freq)
+    use.las<-pretty_max(max(apply(tab,2,sum,na.rm = TRUE)),freq)
+    use.max.y<-(apply(tab,2,sum,na.rm = TRUE))
+    use.max.y<-max(use.max.y)+sd(use.max.y)/10
+    if((freq=="Proportions" & use.max.y<1) |
+       (freq=="Percentages" & use.max.y<100)){
+      use.max.y<-(pretty_max(use.max.y,freq))
+    } else{use.max.y<-use.las}
+  }
+  bar.width=1
+  
+  if(!switch.xy){
+    tit.use<-paste0("Bars: ",use.tit)
+    # mod 2025 use.las instead of use.max.y
+    # adj.breaks added
+    if(adj.breaks==FALSE){
+      if(max(nchar(as.character(use.las)))<=5){mylas=1
+      } else{mylas=0}
+    }
+    if(adj.breaks==TRUE){
+      if(max(nchar(as.character(format(use.las,
+                                       scientific = FALSE))))<=5){
+        mylas=1} else{mylas=0}
+    }
+    
+    #if(max(nchar(as.character(use.las)))<=5){
+    #  mylas=1} else{mylas=0}
+    par(mar=use.par$mar,tck=use.par$tck,
+        tcl=use.par$tcl,las=mylas,
+        mgp=use.par$mgp,cex=use.par$cex,
+        cex.axis=use.par$cex.axis) 
+    if(!legend){
+      if(adj.breaks==FALSE){
+        barplot(tab,col=use.color,#main=tit.use,
+                ylim=c(0,use.max.y),beside=beside)}
+      # added 2025 modified for adj.breaks
+      if(adj.breaks==TRUE){
+        ixp<-barplot(tab,col=use.color,
+                     ylim=c(0,use.max.y),plot=FALSE)
+        barplot(tab,col=use.color,axes=F,
+                ylim=c(0,use.max.y),beside=beside)
+        axis(1, at=ixp, labels=FALSE)
+        if(beside){aty=pretty(tab)}
+        if(!beside){
+          aty=pretty(c(0,apply(tab,2,sum)))
+        }
+        # mod 2025
+        aty<-aty[aty<=use.max.y]
+        axis(2,at=c(0,use.max.y),labels=F)
+        axis(2, at=aty, labels=format(aty, scientific = FALSE))
+      }
+      mtext(side = 1, name.x, line = 2)
+      mtext(side = 2, freq, line = pos.tit2,las=0)
+      mtext(side = 3, tit.use,
+            line=1,outer=F,adj=0,font=2,
+            # added 2025
+            cex=par("cex.main")*par("cex"))
+    }
+    if(legend){
+      # mod 2025 use.las instead of use.max.y
+      # specified before
+      # if(max(nchar(as.character(use.las)))<=5){mylas=1} else{mylas=0}
+      # mod 2025 -> not changed at the end
+      # if(use.par$dim.legend==0){
+      #  leg.text<-max((strwidth(paste0(rownames(tab),"aaA"),
+      #                          units="fig")))
+      #  leg.tit<-(strwidth(name.y,units="fig"))
+      #  length.leg<-max(leg.text,leg.tit)
+      #  prop.leg<-min(length.leg,0.5)}
+      #if(use.par$dim.legend>0){
+      #  prop.leg<-use.par$dim.legend}
+      leg.text<-max((strwidth(paste0(rownames(tab),"aaA"),units="fig")))
+      leg.tit<-(strwidth(name.y,units="fig"))
+      length.leg<-max(leg.text,leg.tit)
+      prop.leg<-min(length.leg,0.5)
+      mypar<-use.par$mar
+      mypar[4]<-0.2
+      
+      # mod 2025 -> not changed at the end
+      #mypar[4]<-use.par$mar4.legend
+      layout(matrix(c(1,2), nrow=1, byrow = TRUE),
+             widths = c(1-prop.leg,prop.leg))
+      par(mar=mypar,tck=use.par$tck,tcl=use.par$tcl,las=mylas,
+          mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis) 
+      if(adj.breaks==FALSE){
+        barplot(tab,col=use.color,
+                ylim=c(0,use.max.y),beside=beside)}
+      if(adj.breaks==TRUE){
+        ixp<-barplot(tab,col=use.color,
+                     ylim=c(0,use.max.y),plot=FALSE)
+        barplot(tab,col=use.color,axes=F,
+                ylim=c(0,use.max.y),beside=beside)
+        axis(1, at=ixp, labels=FALSE)
+        if(beside){aty=pretty(tab)}
+        if(!beside){
+          aty=pretty(c(0,apply(tab,2,sum)))
+        }
+        aty<-aty[aty<=use.max.y]
+        axis(2,at=c(0,use.max.y),labels=F)
+        axis(2, at=aty, labels=format(aty, scientific = FALSE))
+      }
+      mtext(side = 1, name.x, line = 2)
+      mtext(side = 2, freq, line = pos.tit2-0.2, las=0)
+      mtext(side = 3, tit.use,
+            line=1,outer=F,adj=0,font=2,
+            # added 2025
+            cex=par("cex.main")*par("cex"))
+      
+      
+      leg.par<-rep(0,4)
+      leg.par[3]<-mypar[3]+0.1
+      par(mar=leg.par,tck=use.par$tck,tcl=use.par$tcl,
+          mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis) 
+      plot(1:10,1:10,type="n",axes = FALSE)
+      legend("topleft", legend=rownames(tab), 
+             pch=21,pt.bg=use.color,pt.cex=1,bty="n",
+             x.intersp = 0.5,
+             cex=use.par$cex.axis,title=name.y,
+             xjust=0,title.adj = 0.5,title.font=2)    
+      layout(1)
+    }
+  }
+  if(switch.xy){
+    tit.use<-paste0("Bars: ",use.tit)  
+    if(!legend){
+      mypar<-use.par$mar
+      mypar[2]<-1+max(ceiling(strwidth(colnames(tab),units="inc")*5))
+      par(mar=mypar,tck=use.par$tck,tcl=use.par$tcl,las=1,
+          mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis) 
+      barplot(tab,col=use.color,#main=tit.use,
+              xlim=c(0,use.max.y),beside=beside,
+              horiz = TRUE,cex.names=use.par$cex.axis)
+      mtext(side = 1, freq, line = 2)
+      mtext(side = 2, name.y, line = mypar[2]-1,las=0)
+      mtext(side = 3, tit.use,
+            line=1,outer=F,adj=0,font=2,
+            # added 2025
+            cex=par("cex.main")*par("cex"))
+      
+    }
+    if(legend){
+      mypar<-use.par$mar
+      mypar[2]<-1+max(ceiling(strwidth(colnames(tab),units="inc")*5))
+      mypar[4]<-0.2
+      # mod 2025 -> not changed at the end
+      #mypar[4]<-use.par$mar4.legend
+      # mod 2025 -> not changed at the end
+      # if(use.par$dim.legend==0){
+      #   leg.text<-max((strwidth(paste0(rownames(tab),"aaA"),units="fig")))
+      #   leg.tit<-(strwidth(name.x,units="fig"))
+      #   length.leg<-max(leg.text,leg.tit)
+      #   prop.leg<-min(length.leg,0.5)}
+      #if(use.par$dim.legend>0){
+      #  prop.leg<-use.par$dim.legend}
+      leg.text<-max((strwidth(paste0(rownames(tab),"aaA"),units="fig")))
+      leg.tit<-(strwidth(name.x,units="fig"))
+      length.leg<-max(leg.text,leg.tit)
+      prop.leg<-min(length.leg,0.5)
+      layout(matrix(c(1,2), nrow=1, byrow = TRUE),
+             widths = c(1-prop.leg,prop.leg))
+      par(mar=mypar,tck=use.par$tck,tcl=use.par$tcl,las=1,
+          mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis) 
+      barplot(tab,col=use.color,#main=tit.use,
+              xlim=c(0,use.max.y),beside=beside,
+              horiz = TRUE,cex.names=use.par$cex.axis)
+      mtext(side = 1, freq, line = 2)
+      mtext(side = 2, name.y, line = mypar[2]-1,las=0)
+      mtext(side = 3, tit.use,
+            line=1,outer=F,adj=0,font=2,
+            # added 2025
+            cex=par("cex.main")*par("cex"))
+      
+      leg.par<-rep(0,4)
+      leg.par[3]<-mypar[3]+0.1
+      par(mar=leg.par,tck=use.par$tck,tcl=use.par$tcl,
+          mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis) 
+      plot(1:10,1:10,type="n",axes = FALSE)
+      legend("topleft", legend=rownames(tab), 
+             pch=21,pt.bg=use.color,pt.cex=1,bty="n",x.intersp = 0.5,
+             cex=use.par$cex.axis,title=name.x,
+             xjust=0,title.adj =0.5,title.font = 2)   
+      layout(1)
+    }
+  }
+}
+
+
+
+
 # Modified 202406
 plt.xy.scatter<-function(xlist,ylist,bw = TRUE,color=NULL,
                          name.x,name.y,legend=FALSE,
@@ -1701,6 +2580,293 @@ plt.xy.scatter<-function(xlist,ylist,bw = TRUE,color=NULL,
   }
   
 }
+
+# modified 2025
+plt.xy.scatter<-function(xlist,ylist,bw = TRUE,color=NULL,
+                         name.x,name.y,legend=FALSE,
+                         adj.breaks = TRUE,fitline = FALSE,
+                         use.par=NULL,type.print,msg.p,clist){
+  # added 2025
+  pos.tit2<-2.6
+  if(xlist$class=="interval" | xlist$class=="breaks"){
+    xlist$isnum <- FALSE  }
+  if(ylist$class=="interval" | ylist$class=="breaks"){
+    ylist$isnum <- FALSE  }
+  use.var<-FALSE
+  if(isFALSE(missing(clist)) & !xlist$isnum & !ylist$isnum){
+    if(msg.p$warn){
+      my.p.list(list(paste0(name.x," and ",name.y," are both discrete",
+                            "\n   "," -> Colouring cases by ",clist$name.v," would be meaningless")),
+                type.print=type.print)}}
+  if(isFALSE(missing(clist)) & (xlist$isnum  | ylist$isnum)){
+    use.var<-TRUE
+    check.howmany<-sum(!duplicated(data.frame(xlist$V,ylist$V)))
+    check.howmany<-round(100*check.howmany/length(xlist$V),1)
+    if(msg.p$warn){
+      my.p.list(list(paste0("% of distinct combinations: ",check.howmany,"%",
+                            "\n   "," -> A too low % makes colouring meaningless")),
+                type.print=type.print) }
+  }
+  # colors fitline
+  line.color<-"firebrick"
+  if(!bw | !is.null(color)){line.color <- "black"} 
+  # colors points in scatter
+  if(!use.var){
+    use.color<-build.colors(n=1,bw,color,bw.default="black",
+                            col.default="skyblue")
+    legend<-FALSE
+  }
+  if(use.var){
+    if(clist$class=="interval"){clist$isnum <- FALSE  } 
+    if(clist$class=="breaks" & !is.null(clist$V.f)){
+      clist$isnum <- FALSE}
+    use.gradient<-FALSE
+    if(!clist$isnum){
+      mycolor<-build.colors(n=length(levels(clist$V.f)),bw,color)
+      use.color<-mycolor[as.numeric(clist$V.f)]
+      tab<-mycolor
+      names(tab)<-levels(clist$V.f)
+    }
+    if(clist$isnum){
+      vv<-clist$V
+      if(length(unique(vv))<=20){
+        vv.r<-1:length(unique(vv))
+        mycolor<-build.colors(n=length(unique(vv)),bw,color)
+        tab<-mycolor
+        names(tab)<-unique(vv)[order(unique(vv))]
+        # modified 2025: fix color
+        #use.color<-mycolor[vv.r]
+        use.color<-mycolor[as.numeric(factor(vv))]
+      } else {
+        use.gradient<-TRUE
+        gradient.var<-build.varcolors(vv,bw,color)
+        use.color<-gradient.var$data$col
+      }
+    }
+  } # closes use.var
+  
+  tit.use<-paste0("Scatter: ",name.x," , ",name.y)  
+  
+  
+  # at least one of the two is numeric  
+  if(!(!xlist$isnum & !ylist$isnum)){
+    if(ylist$isnum){
+      use.max.y<-pretty_max(ylist$V)
+      if(!adj.breaks){
+        if(max(nchar(as.character(use.max.y)))<=5){mylas=1} else{mylas=0}}
+      if(adj.breaks){
+        if(max(nchar(as.character(format(use.max.y,scientific = FALSE))))<=5){
+          mylas=1} else{mylas=0}}
+      mypar<-use.par$mar
+      y.num<-ylist$V
+    }
+    if(xlist$isnum){x.num<-xlist$V}
+    if(!xlist$isnum){x.num<-as.numeric(xlist$V.f)}
+    if(!ylist$isnum){
+      mypar<-use.par$mar
+      mypar[2]<-1.5+max(ceiling(strwidth(levels(ylist$V.f),
+                                         units="inc")*5))
+      y.num<-as.numeric(ylist$V.f)
+      mylas=1
+    }
+    
+    pardef1 <- par(no.readonly = TRUE)
+    on.exit(par(pardef1))
+    
+    # no legend
+    if(!legend){
+      par(mar=mypar,tck=use.par$tck,tcl=use.par$tcl,las=mylas,
+          mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis) 
+      
+      # plot(x=x.num,y=y.num,main=tit.use,axes=FALSE,
+      #      xlab="",ylab="",pch=21,bg=use.color)
+      plot(x=x.num,y=y.num,axes=FALSE,
+           xlab="",ylab="",type="n")
+      points(x=x.num,y=y.num,pch=21,
+             cex=use.par$cex.symbols,bg=use.color)
+      if(fitline){
+        abline(lm(y.num ~ x.num),col=line.color,lwd=2)
+        # added 2025
+        coeff.use<-lm(y.num ~ x.num)
+        my.p.list(paste0("Coefficients of the regression line of ",
+                         name.y," on ",name.x,
+                         "\nIntercept: ",round(coeff.use$coefficients[1],5),
+                         "\nSlope: ",round(coeff.use$coefficients[2],5)),
+                  type.print="cat")}
+      if(!ylist$isnum){
+        axis(2, at=1:length(levels(ylist$V.f)), 
+             labels=levels(ylist$V.f),las=1)}
+      if(!xlist$isnum){
+        axis(1,at=1:length(levels(xlist$V.f)),
+             labels=levels(xlist$V.f))
+      }
+      if(!adj.breaks){
+        if(xlist$isnum){axis(1)}
+        if(ylist$isnum){axis(2, las=mylas)}
+      } # closes !adj breaks
+      if(adj.breaks){
+        if(ylist$isnum){
+          p.yaxp<-par("yaxp")
+          aty<-seq(p.yaxp[1],p.yaxp[2],(p.yaxp[2]-p.yaxp[1])/p.yaxp[3])
+          use.labs<-format(aty, scientific = FALSE)
+          use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+          axis(2, at=aty, labels=use.labs)}
+        if(xlist$isnum){
+          p.xaxp<-par("xaxp")
+          atx<-seq(p.xaxp[1],p.xaxp[2],(p.xaxp[2]-p.xaxp[1])/p.xaxp[3])
+          use.labs<-format(atx, scientific = FALSE)
+          use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+          axis(1, at=atx, labels=use.labs)
+        }
+      }# closes adj breaks
+      box()
+      mtext(side = 1, name.x, line = 2)
+      if(ylist$isnum){
+        mtext(side = 2, name.y, line = pos.tit2,las=0)
+      }
+      if(!ylist$isnum){
+        mtext(side = 2, name.y, line = mypar[2]-1,las=0)
+      }
+      mtext(side = 3, tit.use,
+            line=1,
+            outer=F,adj=0,font=2,
+            # added 2025
+            cex=par("cex.main")*par("cex"))
+    } # closes !legend
+    
+    # legend
+    if(legend){
+      if(!use.gradient){
+        leg.text<-max((strwidth(paste0(names(tab),"aaA"),
+                                units="fig")))}
+      if(use.gradient){
+        leg.text<-max((strwidth(paste0(gradient.var$legend$label.legend,"aaA"),
+                                units="fig")))  }
+      leg.tit<-(strwidth(clist$name.v,units="fig"))
+      length.leg<-max(leg.text,leg.tit)
+      prop.leg<-min(length.leg,0.5)
+      mypar[4]<-0.2
+      layout(matrix(c(1,2), nrow=1, byrow = TRUE),
+             widths = c(1-prop.leg,prop.leg))
+      par(mar=mypar,tck=use.par$tck,tcl=use.par$tcl,las=mylas,
+          mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis)
+
+      plot(x=x.num,y=y.num,#main=tit.use,
+           axes=FALSE,
+           xlab="",ylab="",type="n")
+      points(x=x.num,y=y.num,pch=21,
+             cex=use.par$cex.symbols,bg=use.color)
+      
+      if(fitline){
+        abline(lm(y.num ~ x.num),col=line.color,lwd=2)
+        #added 205
+        coeff.use<-lm(y.num ~ x.num)
+        my.p.list(paste0("Coefficients of the regression line of ",
+                         name.y," on ",name.x,
+                         "\nIntercept: ",round(coeff.use$coefficients[1],5),
+                         "\nSlope: ",round(coeff.use$coefficients[2],5)),
+                  type.print="cat")}
+      if(!ylist$isnum){
+        axis(2, at=1:length(levels(ylist$V.f)), 
+             labels=levels(ylist$V.f),las=1)}
+      if(!xlist$isnum){
+        axis(1,at=1:length(levels(xlist$V.f)),
+             labels=levels(xlist$V.f))}
+      
+      if(!adj.breaks){
+        if(xlist$isnum){axis(1)}
+        if(ylist$isnum){axis(2, las=mylas)}
+      } # closes !adj breaks
+      if(adj.breaks){
+        if(ylist$isnum){
+          p.yaxp<-par("yaxp")
+          aty<-seq(p.yaxp[1],p.yaxp[2],(p.yaxp[2]-p.yaxp[1])/p.yaxp[3])
+          use.labs<-format(aty, scientific = FALSE)
+          use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+          axis(2, at=aty, labels=use.labs)}
+        if(xlist$isnum){
+          p.xaxp<-par("xaxp")
+          atx<-seq(p.xaxp[1],p.xaxp[2],(p.xaxp[2]-p.xaxp[1])/p.xaxp[3])
+          use.labs<-format(atx, scientific = FALSE)
+          use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+          axis(1, at=atx, labels=use.labs)
+        }
+      }# closes adj breaks
+      box()
+      mtext(side = 1, name.x, line = 2)
+      if(ylist$isnum){
+        mtext(side = 2, name.y, line = pos.tit2,las=0)
+      }
+      if(!ylist$isnum){
+        mtext(side = 2, name.y, line = mypar[2]-1,
+              las=0)
+      }
+      mtext(side = 3, tit.use,
+            line=1,outer=F,adj=0,font=2,
+            # added 2025
+            cex=par("cex.main")*par("cex"))
+
+      # PLACE THE LEGEND
+      leg.par<-rep(0,4)
+      leg.par[3]<-mypar[3]+0.1
+      par(mar=leg.par,tck=use.par$tck,tcl=use.par$tcl,
+          mgp=use.par$mgp,cex=use.par$cex,
+          cex.axis=use.par$cex.axis) 
+      if(!use.gradient){ 
+        plot(1:10,1:10,type="n",axes = FALSE,)
+        legend("topleft", legend=names(tab), 
+               pch=21,pt.bg=tab,pt.cex=1,bty="n",
+               x.intersp = 0.5,
+               cex=use.par$cex.axis,title=clist$name.v,
+               xjust=0,title.adj =0.5,title.font = 2)    
+      }
+      if(use.gradient){
+        plot(1:10,1:10,type="n",axes = FALSE)
+        legend("topleft",pch=22, pt.cex=1.5,bty="n",
+               legend=c("",gradient.var$legend$label.legend), 
+               pt.bg=c("white",gradient.var$legend$col),
+               col=c("white",gradient.var$legend$border),
+               x.intersp = 0.5,y.intersp=0.8,
+               cex=use.par$cex.axis,title=clist$name.v,
+               xjust=0,title.adj =0.5,title.font = 2)    
+      }
+    } # closes legend
+  }
+  
+  # x not num and y not num 
+  if(!xlist$isnum & !ylist$isnum){
+    tab<-data.frame(prop.table(table((xlist$V.f),ylist$V.f)))
+    tab<-tab[tab$Freq>0,]
+    tab$FreqP<-(tab$Freq)/(max(tab$Freq))
+    tab$xnum<-as.numeric(tab$Var1)
+    tab$ynum<-as.numeric(tab$Var2)
+    
+    mypar<-use.par$mar
+    mypar[2]<-1.5+max(ceiling(strwidth(levels(ylist$V.f),units="inc")*5))
+    par(mar=mypar,tck=use.par$tck,tcl=use.par$tcl,las=1,
+        mgp=use.par$mgp,cex=use.par$cex,
+        cex.axis=use.par$cex.axis) 
+    
+    plot(x=tab$xnum,y=tab$ynum,xlim=c(0.5,max(tab$xnum)+0.5),
+         ylim=c(0.5,max(tab$ynum)+0.5),#main=tit.use,
+         xlab="",ylab="",cex=(0.5+9.5*tab$FreqP),pch=21,
+         bg=use.color,axes = FALSE)
+    axis(1, at=1:length(levels(tab$Var1)), 
+         labels=levels(tab$Var1))
+    axis(2, at=1:length(levels(tab$Var2)), 
+         labels=levels(tab$Var2),las=1)
+    box()
+    mtext(side = 1, name.x, line = 2)
+    mtext(side = 2, name.y, line = mypar[2]-1,las=0)
+    mtext(side = 3, tit.use,
+          line=1,outer=F,adj=0,font=2,
+          # added 2025
+          cex=par("cex.main")*par("cex"))
+    
+  }
+  
+}
+
 plt.xy.boxplot<-function(xlist,ylist,bw = TRUE,color=NULL,name.x,
                          name.y,adj.breaks = TRUE,switch.xy = FALSE,
                          use.par=NULL){
@@ -1837,6 +3003,143 @@ plt.xy.boxplot<-function(xlist,ylist,bw = TRUE,color=NULL,name.x,
   }
 }
 
+# modified 2025
+plt.xy.boxplot<-function(xlist,ylist,bw = TRUE,color=NULL,name.x,
+                         name.y,adj.breaks = TRUE,switch.xy = FALSE,
+                         use.par=NULL){
+  pos.tit2<-2.6
+  pardef1 <- par(no.readonly = TRUE)
+  on.exit(par(pardef1))
+  
+  use.color<-build.colors(n=1,bw,color,bw.default="grey",
+                          col.default="skyblue")
+  if(xlist$class=="interval" | xlist$class=="breaks"){
+    xlist$isnum <- FALSE  }
+  if(ylist$class=="interval" | ylist$class=="breaks"){
+    ylist$isnum <- FALSE  }
+  
+  # two numeric variables
+  if(xlist$isnum & ylist$isnum & !switch.xy){
+    use.max.y<-pretty_max(ylist$V)
+    if(!adj.breaks){
+      if(max(nchar(as.character(use.max.y)))<=5){mylas=1} else{mylas=0}}
+    if(adj.breaks){
+      if(max(nchar(as.character(format(use.max.y,scientific = FALSE))))<=5){
+        mylas=1} else{mylas=0}}
+    par(mar=use.par$mar,tck=use.par$tck,tcl=use.par$tcl,las=mylas,
+        mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis)
+    
+    if(!adj.breaks){
+      lev.x<-unique(xlist$V)
+      lev.x<-lev.x[order(lev.x)]
+      boxplot(ylist$V~xlist$V,main=paste0(name.y," | ",name.x),
+              xlab="",ylab="",col=use.color,at=lev.x)    }
+    if(adj.breaks){
+      lev.x<-unique(xlist$V)
+      lev.x<-lev.x[order(lev.x)]
+      boxplot(ylist$V~xlist$V,main=paste0(name.y," | ",name.x),
+              xlab="",ylab="",at=lev.x,axes = FALSE,col=use.color)    
+      p.yaxp<-par("yaxp")
+      aty<-seq(p.yaxp[1],p.yaxp[2],(p.yaxp[2]-p.yaxp[1])/p.yaxp[3])
+      use.labs<-format(aty, scientific = FALSE)
+      use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+      axis(2, at=aty, labels=use.labs)
+      p.xaxp<-par("xaxp")
+      atx<-seq(p.xaxp[1],p.xaxp[2],(p.xaxp[2]-p.xaxp[1])/p.xaxp[3])
+      use.labs<-format(atx, scientific = FALSE)
+      use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+      axis(1, at=atx, labels=use.labs)
+    }
+    box()
+    mtext(side = 1, name.x, line = 2)
+    mtext(side = 2, name.y, line = pos.tit2,las=0)
+  }
+  if(xlist$isnum & ylist$isnum & switch.xy){
+    use.max.y<-pretty_max(ylist$V)
+    if(!adj.breaks){
+      if(max(nchar(as.character(use.max.y)))<=5){mylas=1} else{mylas=0}}
+    if(adj.breaks){
+      if(max(nchar(as.character(format(use.max.y,scientific = FALSE))))<=5){
+        mylas=1} else{mylas=0}}
+    
+    par(mar=use.par$mar,tck=use.par$tck,tcl=use.par$tcl,las=mylas,
+        mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis) 
+    if(!adj.breaks){
+      lev.y<-unique(ylist$V)
+      lev.y<-lev.y[order(lev.y)]
+      boxplot(xlist$V~ylist$V,main=paste0(name.x," | ",name.y),
+              xlab="",ylab="",col=use.color,horizontal = TRUE,at=lev.y)    }
+    if(adj.breaks){
+      lev.y<-unique(ylist$V)
+      lev.y<-lev.y[order(lev.y)]
+      boxplot(xlist$V~ylist$V,main=paste0(name.x," | ",name.y),
+              xlab="",ylab="",axes = FALSE,col=use.color,horizontal = TRUE,
+              at=lev.y)    
+      p.yaxp<-par("yaxp")
+      aty<-seq(p.yaxp[1],p.yaxp[2],(p.yaxp[2]-p.yaxp[1])/p.yaxp[3])
+      use.labs<-format(aty, scientific = FALSE)
+      use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+      axis(2, at=aty, labels=use.labs)
+      p.xaxp<-par("xaxp")
+      atx<-seq(p.xaxp[1],p.xaxp[2],(p.xaxp[2]-p.xaxp[1])/p.xaxp[3])
+      use.labs<-format(atx, scientific = FALSE)
+      use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+      axis(1, at=atx, labels=use.labs)
+    }
+    box()
+    mtext(side = 1, name.x, line = 2)
+    mtext(side = 2, name.y, line = pos.tit2,las=0)
+  }
+  if(xlist$isnum & !ylist$isnum){
+    y.num<-as.numeric(ylist$V.f)
+    mypar<-use.par$mar
+    mypar[2]<-1.5+max(ceiling(strwidth(levels(ylist$V.f),units="inc")*5))
+    par(mar=mypar,tck=use.par$tck,tcl=use.par$tcl,las=1,
+        mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis) 
+    boxplot(xlist$V~y.num,main=paste0(name.x," | ",name.y),
+            xlab="",ylab="",horizontal = TRUE,axes = FALSE,col=use.color)    
+    axis(2, at=1:length(levels(ylist$V.f)), labels=levels(ylist$V.f),
+         cex.axis=use.par$cex.axis,las=1)
+    if(!adj.breaks){axis(1) }
+    if(adj.breaks){
+      p.xaxp<-par("xaxp")
+      atx<-seq(p.xaxp[1],p.xaxp[2],(p.xaxp[2]-p.xaxp[1])/p.xaxp[3])
+      use.labs<-format(atx, scientific = FALSE)
+      use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+      axis(1, at=atx, labels=use.labs)
+    }
+    box()
+    mtext(side = 1, name.x, line = 2)
+    mtext(side = 2, name.y, line = mypar[2]-1,las=0)
+    
+  }
+  if(!xlist$isnum & ylist$isnum){
+    x.num<-as.numeric(xlist$V.f)
+    use.max.y<-pretty_max(ylist$V)
+    if(!adj.breaks){
+      if(max(nchar(as.character(use.max.y)))<=5){mylas=1} else{mylas=0}}
+    if(adj.breaks){
+      if(max(nchar(as.character(format(use.max.y,scientific = FALSE))))<=5){
+        mylas=1} else{mylas=0}}
+    
+    par(mar=use.par$mar,tck=use.par$tck,tcl=use.par$tcl,las=mylas,
+        mgp=use.par$mgp,cex=use.par$cex,cex.axis=use.par$cex.axis) 
+    boxplot(ylist$V~x.num,main=paste0(name.y," | ",name.x),
+            xlab="",ylab="",axes = FALSE,col=use.color)    
+    axis(1, at=1:length(levels(xlist$V.f)), labels=levels(xlist$V.f))
+    if(!adj.breaks){axis(2, las=mylas)}
+    if(adj.breaks){
+      p.yaxp<-par("yaxp")
+      aty<-seq(p.yaxp[1],p.yaxp[2],(p.yaxp[2]-p.yaxp[1])/p.yaxp[3])
+      use.labs<-format(aty, scientific = FALSE)
+      use.labs<-gsub("^\\s+|\\s+$", "", use.labs)
+      axis(2, at=aty, labels=use.labs)
+    }
+    box()
+    mtext(side = 1, name.x, line = 2)
+    mtext(side = 2, name.y, line = pos.tit2,las=0)
+  }
+}
 # Functions to create and plot summaries  ------
 # Function to obtain summaries by (modified 202406)
 build.summaries<-function(x,ListBy,
@@ -1882,7 +3185,11 @@ build.summaries<-function(x,ListBy,
       return(p.m)}
     # functions for quartiles, adjusted for factors
     f.q<-function(x,f = FALSE,p){
-      if(!f){qq<-quantile(x,p)} else {qq<-as.character(quantile(x,type=3,p))}
+      if(!f){qq<-quantile(x,p)} else {
+        # modified 2025
+        #qq<-as.character(quantile(x,type=3,p))
+        qq<-as.character(quantile(x,type=1,p))
+      }
       return(qq)}
     
     cso<-NULL
@@ -2023,7 +3330,9 @@ build.summary.plt<-function(out,name.x,
       }
       box()
       mtext(side = 3, tit.stats,
-            line=1,outer=F,adj=0,font=2)
+            line=1,outer=F,adj=0,font=2,
+            # added 2025
+            cex=par("cex.main")*par("cex"))
     }
     if(plot.type=="lines" | plot.type=="points"){
       use.color<-build.colors(n=1,bw,color,bw.default="black",
@@ -2059,7 +3368,9 @@ build.summary.plt<-function(out,name.x,
     mtext(side = 1, names(list.by), line = 2)
     mtext(side = 2, list.tit, line = pos.tit2,las=0)
     mtext(side = 3, tit.stats,
-          line=1,outer=F,adj=0,font=2)
+          line=1,outer=F,adj=0,font=2,
+          # added 2025
+          cex=par("cex.main")*par("cex"))
     
     if(msg.p$warn){
       if(length(Warn.list)>1){
@@ -2134,7 +3445,9 @@ build.summary.plt<-function(out,name.x,
     mtext(side = 1, names(list.by)[1], line = 2)
     mtext(side = 2, list.tit, line = pos.tit2,las=0)
     mtext(side = 3, tit.stats,
-          line=1,outer=F,adj=0,font=2)
+          line=1,outer=F,adj=0,font=2,
+          # added 2025
+          cex=par("cex.main")*par("cex"))
     
     if(legend){
       leg.par<-rep(0,4)
@@ -2220,7 +3533,9 @@ build.summary.plt<-function(out,name.x,
         segments(x0=0,y0=0,x1=max(orig.plt),y1=0)}
       box()
       mtext(side = 3, tit.stats,
-            line=1,outer=F,adj=0,font=2)
+            line=1,outer=F,adj=0,font=2,
+            # added 2025
+            cex=par("cex.main")*par("cex"))
     }
     if(plot.type=="lines" | plot.type=="points"){
       use.color<-build.colors(n=1,bw,color,bw.default="black",
@@ -2260,7 +3575,9 @@ build.summary.plt<-function(out,name.x,
     mtext(side = 1, names(list.by), line = 2)
     mtext(side = 2, list.tit, line = pos.tit2,las=0)
     mtext(side = 3, tit.stats,
-          line=1,outer=F,adj=0,font=2)
+          line=1,outer=F,adj=0,font=2,
+          # added 2025
+          cex=par("cex.main")*par("cex"))
     
     if(msg.p$warn){
       if(length(Warn.list)>1){
@@ -2341,7 +3658,9 @@ build.summary.plt<-function(out,name.x,
     mtext(side = 1, names(list.by), line = 2)
     mtext(side = 2, list.tit, line = pos.tit2,las=0)
     mtext(side = 3, tit.stats,
-          line=1,outer=F,adj=0,font=2)
+          line=1,outer=F,adj=0,font=2,
+          # added 2025
+          cex=par("cex.main")*par("cex"))
     
     if(legend){
       leg.par<-rep(0,4)
@@ -2632,7 +3951,7 @@ ci.mean.known<-function(x,sigma,conf.level = 0.95,
   
   # modified 
   out.print.p<-ci.print(out,digits,force.digits=force.digits,
-                         use.scientific=use.scientific)
+                        use.scientific=use.scientific)
   print(as.data.frame(out.print.p),
         row.names=FALSE,quote = FALSE,
         right = TRUE)
@@ -2685,6 +4004,9 @@ hyp.mean.known<-function(x,sigma=1,
                         force.digits=force.digits,
                         use.scientific=use.scientific)
   out.print.p[,"p-value"][out[,"p-value"]<0.0001]<-"<0.0001"
+  # added july 2025
+  out.print.p[,"p-value"][out[,"p-value"]>=0.0001]<-as.character(round(out[,"p-value"],5))
+  
   print(as.data.frame(out.print.p),row.names=FALSE,
         quote = FALSE,
         right = TRUE)
@@ -2713,7 +4035,7 @@ ci.mean.unknown<-function(x,conf.level = 0.95,digits=2,
              c(n.x,m.x,s.x,se.m,m.x+(c(-1,1)*(se.m*t.q))))
   colnames(out)<-c("n","xbar","s_X","se","Lower","Upper")
   rownames(out)<-c("Normal.Approx","Student-t")
-
+  
   # modified 
   out.print.p<-ci.print(out,digits,force.digits=force.digits,
                         use.scientific=use.scientific)
@@ -2776,6 +4098,9 @@ hyp.mean.unknown<-function(x,mu0=0,alternative="two.sided",
   out.print.p<-ci.print(out,digits,force.digits=force.digits,
                         use.scientific=use.scientific)
   out.print.p[,"p-value"][out[,"p-value"]<0.0001]<-"<0.0001"
+  # added july 2025
+  out.print.p[,"p-value"][out[,"p-value"]>=0.0001]<-as.character(round(out[,"p-value"],5))
+  
   print(as.data.frame(out.print.p),quote = FALSE,
         right = TRUE)
   output=data.frame(out,check.names = FALSE)
@@ -2855,6 +4180,9 @@ hyp.prop<-function(x,success,p0=0.5,alternative="two.sided",
   out.print.p<-ci.print(out,digits,force.digits=force.digits,
                         use.scientific=use.scientific)
   out.print.p[,"p-value"][out[,"p-value"]<0.0001]<-"<0.0001"
+  # added july 2025
+  out.print.p[,"p-value"][out[,"p-value"]>=0.0001]<-as.character(round(out[,"p-value"],5))
+  
   print(as.data.frame(out.print.p),row.names=FALSE,
         quote = FALSE,right = TRUE)
   output=data.frame(out,check.names = FALSE)
@@ -2959,6 +4287,9 @@ hyp.diff.paired_known<-function(x,y,mdiff0=0,names.xy,sigma.d,
   out.print.p<-ci.print(out,digits,force.digits=force.digits,
                         use.scientific=use.scientific)
   out.print.p[,"p-value"][out[,"p-value"]<0.0001]<-"<0.0001"
+  # added july 2025
+  out.print.p[,"p-value"][out[,"p-value"]>=0.0001]<-as.character(round(out[,"p-value"],5))
+  
   print(as.data.frame(out.print.p),row.names=FALSE,
         quote = FALSE,right = TRUE)
   output=data.frame(out,check.names = FALSE)
@@ -3077,6 +4408,9 @@ hyp.diff.paired_unknown<-function(x,y,mdiff0=0,names.xy,
   out.print.p<-ci.print(out,digits,force.digits=force.digits,
                         use.scientific=use.scientific)
   out.print.p[,"p-value"][out[,"p-value"]<0.0001]<-"<0.0001"
+  # added july 2025
+  out.print.p[,"p-value"][out[,"p-value"]>=0.0001]<-as.character(round(out[,"p-value"],5))
+  
   print(as.data.frame(out.print.p),
         quote = FALSE,right = TRUE)
   output=data.frame(out,check.names = FALSE)
@@ -3200,6 +4534,9 @@ hyp.diff.indep_known<-function(x,y,mdiff0=0,names.xy,
   out.print.p<-ci.print(out,digits,force.digits=force.digits,
                         use.scientific=use.scientific)
   out.print.p[,"p-value"][out[,"p-value"]<0.0001]<-"<0.0001"
+  # added july 2025
+  out.print.p[,"p-value"][out[,"p-value"]>=0.0001]<-as.character(round(out[,"p-value"],5))
+  
   print(as.data.frame(out.print.p),row.names=FALSE,
         quote = FALSE,right = TRUE)
   output=data.frame(out,check.names = FALSE)
@@ -3274,9 +4611,9 @@ ci.diff.indep_unknown<-function(x,y,names.xy,conf.level = 0.95,
   
   # added
   out.print.p.EQ<-ci.print(out.eq,digits,force.digits=force.digits,
-                        use.scientific=use.scientific)
-  out.print.p.DIFF<-ci.print(out.diff,digits,force.digits=force.digits,
                            use.scientific=use.scientific)
+  out.print.p.DIFF<-ci.print(out.diff,digits,force.digits=force.digits,
+                             use.scientific=use.scientific)
   my.p.list(paste0("\n Unknown variances assumed to be equal"),
             type.print=type.print)
   #print(data.frame(out.eq,check.names = FALSE))
@@ -3290,8 +4627,8 @@ ci.diff.indep_unknown<-function(x,y,names.xy,conf.level = 0.95,
   
   rownames(out.eq)<-rownames(out.diff)<-c()
   out.final=data.frame(Variances=c("Equal","Equal","Different","Different"),
-                    Distrib=c("Normal.Approx","Student-t","Normal.Approx","Student-t"),
-                    rbind(out.eq,out.diff),check.names = FALSE)
+                       Distrib=c("Normal.Approx","Student-t","Normal.Approx","Student-t"),
+                       rbind(out.eq,out.diff),check.names = FALSE)
   #if(!var.test){return(output)}
   if(var.test){
     out.var<-hyp.diff.var(x,y,type="levene",
@@ -3407,11 +4744,16 @@ hyp.diff.indep_unknown<-function(x,y,mdiff0=0,names.xy,
                            force.digits=force.digits,
                            use.scientific=use.scientific)
   out.print.p.EQ[,"p-value"][out.eq[,"p-value"]<0.0001]<-"<0.0001"
+  # added july 2025
+  out.print.p.EQ[,"p-value"][out.eq[,"p-value"]>=0.0001]<-as.character(round(out.eq[,"p-value"],5))
+  
   out.print.p.DIFF<-ci.print(out.diff,digits,
-                           force.digits=force.digits,
-                           use.scientific=use.scientific)
+                             force.digits=force.digits,
+                             use.scientific=use.scientific)
   out.print.p.DIFF[,"p-value"][out.diff[,"p-value"]<0.0001]<-"<0.0001"
-
+  # added july 2025
+  out.print.p.DIFF[,"p-value"][out.diff[,"p-value"]>=0.0001]<-as.character(round(out.diff[,"p-value"],5))
+  
   my.p.list(paste0("\n Unknown variances assumed to be equal"),
             type.print=type.print)
   print(as.data.frame(out.print.p.EQ),
@@ -3485,12 +4827,15 @@ hyp.diff.var<-function(x,y,type="levene",digits=2,
     }
     if(!print.n){
       out.var<-data.frame("s2_x"=s2.x,"s2_y"=s2.y,"F-stat"=stat,
-                        "df1"=1,"df2"=(length(x)+length(y)-2),
-                        "p-value"=p.stat,check.names = FALSE)
+                          "df1"=1,"df2"=(length(x)+length(y)-2),
+                          "p-value"=p.stat,check.names = FALSE)
     }
     out.print.p<-ci.print(out.var,digits,force.digits=force.digits,
                           use.scientific=use.scientific)
     out.print.p[,"p-value"][out.var[,"p-value"]<0.0001]<-"<0.0001"
+    # added july 2025
+    out.print.p[,"p-value"][out.var[,"p-value"]>=0.0001]<-as.character(round(out.var[,"p-value"],5))
+    
     print(as.data.frame(out.print.p),row.names=FALSE,quote = FALSE,
           right = TRUE)
     output<-(out.var)
@@ -3675,9 +5020,9 @@ hyp.diff.prop<-function(x,y,names.xy,pdiff0=0,
   out.print.p<-ci.print(out,digits,force.digits=force.digits,
                         use.scientific=use.scientific)
   out.print.p[,"p-value"][out[,"p-value"]<0.0001]<-"<0.0001"
+  # added july 2025
+  out.print.p[,"p-value"][out[,"p-value"]>=0.0001]<-as.character(round(out[,"p-value"],5))
+  
   print(data.frame(out.print.p,check.names = FALSE),row.names = FALSE)
   output=data.frame(out,check.names = FALSE)
 }#ok
-
-
-

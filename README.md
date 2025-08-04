@@ -10,20 +10,18 @@ status](https://www.r-pkg.org/badges/version/UBStats)](https://cran.r-project.or
 
 ## Overview
 
-###### Current release: 0.2.2
+###### Current release: 0.3.0
 ###### R version required: at least 3.5.0
 `R` package for teaching introductory statistics courses at Bocconi
 University (Milan, Italy).
 
 ## Installation instructions
 
-The easiest way to get the package is to install it from GitHub by
-executing the following code (uncomment the first line if you don't
-have the `devtools` package available in your local installation of `R`):
+The easiest way to get the package is to install it from CRAN by
+executing the following code:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("raffaellapiccarreta/UBStats")
+install.packages("UBStats")
 ```
 
 After installing it, to use the package run `library(UBStats)`.
