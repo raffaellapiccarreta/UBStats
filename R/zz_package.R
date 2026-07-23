@@ -1,8 +1,5 @@
 #' UBStats: a package for teaching and learning introductory statistics
 #'
-#' @keywords internal
-#' _PACKAGE
-#'
 #' @name UBStats-package
 #' @aliases UBStats-pkg
 #' @aliases UBStats-p
@@ -69,4 +66,4 @@
 #' @import utils
 #' 
 #' @keywords internal
-NULL
+"_PACKAGE"

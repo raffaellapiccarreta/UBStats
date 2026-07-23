@@ -3,28 +3,30 @@
 \docType{data}
 \name{Banner}
 \alias{Banner}
-\title{Data: Banner}
+\title{Data Banner: Banner Click-Through Rate Experiment}
 \format{
-{
-A dataframe with \emph{n} = 2350 observations and the following 3 variables
-(levels of the variables listed in alphabetical order):
-\itemize{
-\item \strong{User} (\code{int}): user id
-\item \strong{Banner} (\code{chr}): banner shown to the user (Original, Redesigned)
-\item \strong{Click} (\code{logical}): logical vector indicating whether the user
-clicked on the banner (\code{TRUE}) or not
-}
+A data frame with \emph{n} = 5976 observations and 3 variables:
+\describe{
+\item{User}{(int) user id}
+\item{Banner}{(chr) banner shown to the user (Original, Redesigned)}
+\item{Click}{(logical) logical vector indicating whether the user
+clicked on the banner (TRUE) or not}
 }
 }
 \usage{
 data(Banner)
 }
 \description{
-The dataframe contains data collected by a company interested in comparing a
-Redesigned banner (featuring a brighter colour scheme and modified layout)
-with the Original version. A random sample of users from a social network is
-shown one of two banners, and the effectiveness of the two banners is
-assessed via the click-through rate (CTR) -- the proportion of users who click
-on a banner after viewing it.
+The data frame contains data collected by a company interested in comparing
+a \emph{Redesigned} banner (featuring a brighter colour scheme and modified
+layout) with the \emph{Original} version. A random sample of users from a
+social network is shown one of two banners, and the effectiveness of the
+two banners is assessed via the \strong{click-through rate (CTR)} -- the
+proportion of users who click on a banner after viewing it.
+}
+\references{
+Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
+Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+9788823824096.
 }
 \keyword{datasets}

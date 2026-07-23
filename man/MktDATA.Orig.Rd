@@ -5,45 +5,43 @@
 \alias{MktDATA.Orig}
 \title{Data: MktDATA.Orig}
 \format{
-{
-A data frame with 2224 observations and the following 19
+A data frame with \emph{n} = 2224 observations and the following 19
 variables (levels of the variables listed in alphabetical order):
-\itemize{
-\item \strong{\code{CustId}} (\code{num}): customer's identification label
-\item \strong{\code{Gender}} (\code{chr}): customer's gender (\code{F}, \code{M})
-\item \strong{\code{Age}} (\code{num}): customer's age (in years)
-\item \strong{\code{Education}} (\code{chr}): customer's level of education(\code{College}, \code{Graduate},
-\code{HighSchool}, \code{Post-Grad})
-\item \strong{\code{Marital_Status}} (\code{chr}): customer's marital status
-(\code{Divorced}, \code{Married}, \code{Single}, \code{Together}, \code{Widow})
-\item \strong{\code{Children}} (\code{num}): number of children in the household
-\item \strong{\code{Kids}} (\code{num}): number of kids aged less than 12 in the
-household
-\item \strong{\code{Income}} (\code{chr}): customer's income (measured in classes)
-\item \strong{\code{Baseline}} (\code{num}): index (from 0 to 1) assigned by the marketing dept
+\describe{
+\item{CustId}{(num) customer's identification label}
+\item{Gender}{(chr) customer's gender (\code{F}, \code{M})}
+\item{Age}{(num) customer's age (in years)}
+\item{Education}{(chr) customer's level of education(\code{College}, \code{Graduate},
+\code{HighSchool}, \code{Post-Grad})}
+\item{Marital_Status}{(chr) customer's marital status
+(\code{Divorced}, \code{Married}, \code{Single}, \code{Together}, \code{Widow})}
+\item{Children}{(num) number of children in the household}
+\item{Kids}{(num) number of kids aged less than 12 in the
+household}
+\item{Income}{(chr) customer's income (measured in classes)}
+\item{Baseline}{(num) index (from 0 to 1) assigned by the marketing dept
 indicating how promising the customer was judged at the beginning of
-the observation period
-\item \strong{\code{LikeMost}} (\code{chr}): Most frequently bought category in the last two
-years (\code{P.A}, \code{P.B}, \code{P.C})
-\item \strong{\code{TotVal}} (\code{num}): amount spent in the last 2 years
-\item \strong{\code{NPickUp_Purch}} (\code{num}): number of purchases made through company's
-website and picked up in physical store
-\item \strong{\code{NWeb_Purch}} (\code{num}): number of purchases made through company's website
-and delivered at home
-\item \strong{\code{NStore_Purch}} (\code{num}): number of purchases made in a physical store
-\item \strong{\code{NDeals}} (\code{num}): number of products purchases with discount
-\item \strong{\code{CustClass}} (\code{chr}): customer's classification (assigned by the marketing
+the observation period}
+\item{LikeMost}{(chr) Most frequently bought category in the last two
+years (\code{P.A}, \code{P.B}, \code{P.C})}
+\item{TotVal}{(num) amount spent in the last 2 years}
+\item{NPickUp_Purch}{(num) number of purchases made through company's
+website and picked up in physical store  }
+\item{NWeb_Purch}{(num) number of purchases made through company's website
+and delivered at home}
+\item{NStore_Purch}{(num) number of purchases made in a physical store}
+\item{NDeals}{(num) number of products purchases with discount}
+\item{CustClass}{(chr) customer's classification (assigned by the marketing
 dept) based on past profitability (\code{Bronze}, \code{Gold}, \code{Platinum},
-\code{Silver})
-\item \strong{\code{PastCampaigns}} (\code{num}): number of offers accepted by the customer in the
-last 2 years' marketing campaigns
-\item \strong{\code{LastCampaign}} (\code{num}): binary variable (0/1) indicating whether (1) or
+\code{Silver})}
+\item{PastCampaigns}{(num) number of offers accepted by the customer in the
+last 2 years' marketing campaigns}
+\item{LastCampaign}{(num) binary variable (0/1) indicating whether (1) or
 not (0) the customer accepted the offer in the campaign launched at
-the end of the observation period
-\item \strong{\code{WouldSuggest}} (\code{chr}): variable signalling whether (\code{Yes}) or not
+the end of the observation period}
+\item{WouldSuggest}{(chr) variable signalling whether (\code{Yes}) or not
 (\code{No}) the customer declared they would suggest the company's products
-to friends and family
-}
+to friends and family}
 }
 }
 \source{

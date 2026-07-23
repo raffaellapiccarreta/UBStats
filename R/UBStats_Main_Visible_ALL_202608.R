@@ -142,13 +142,13 @@ distr.table.x<-function(x, freq = c("counts","proportions"), total = TRUE,
     Err.list.input<-as.list("\nErrors found in the definition of inputs:") 
     Err.list.para<-as.list("\nErrors found in the definition of parameters:") 
     Err.list.options<-as.list("\nErrors found in the definition of options:")
-    Warn.list<-as.list("\nWarning:") # list to collect warn msg
+    Warn.list<-as.list(paste0("\n-->Warning:")) # list to collect warn msg # mod 26
   }
   if(type.print=="print"){
     Err.list.input<-as.list("Errors found in the definition of input vector:") 
     Err.list.para<-as.list("Errors found in the definition of parameters:") 
     Err.list.options<-as.list("Errors found in the definition of options:")
-    Warn.list<-as.list("Warning:") # list to collect warn msg
+    Warn.list<-as.list("-->Warning:") # list to collect warn msg  # mod 26
   }
   
   # All requests checked for coherency before stopping if one is not ok
@@ -393,13 +393,13 @@ distr.table.xy<-function(x, y, freq = "counts", freq.type = "joint",
     Err.list.input<-as.list("\nErrors found in the definition of inputs:") 
     Err.list.para<-as.list("\nErrors found in the definition of parameters:") 
     Err.list.options<-as.list("\nErrors found in the definition of options:")
-    Warn.list<-as.list("\nWarning:") # list to collect warn msg
+    Warn.list<-as.list("\n-->Warning:") # list to collect warn msg
   }
   if(type.print=="print"){
     Err.list.input<-as.list("Errors found in the definition of input vector:") 
     Err.list.para<-as.list("Errors found in the definition of parameters:") 
     Err.list.options<-as.list("Errors found in the definition of options:")
-    Warn.list<-as.list("Warning:") # list to collect warn msg
+    Warn.list<-as.list("-->Warning:") # list to collect warn msg
   }
   
   # All requests checked for coherency before stopping if one is not ok
@@ -708,13 +708,13 @@ distr.plot.x<-function(x,freq="counts",plot.type,ord.freq="none",
     Err.list.input<-as.list("\nErrors found in the definition of inputs:") 
     Err.list.para<-as.list("\nErrors found in the definition of parameters:") 
     Err.list.options<-as.list("\nErrors found in the definition of options:")
-    Warn.list<-as.list("\nWarning:") # list to collect warn msg
+    Warn.list<-as.list("\n-->Warning:") # list to collect warn msg
   }
   if(type.print=="print"){
     Err.list.input<-as.list("Errors found in the definition of input vector:") 
     Err.list.para<-as.list("Errors found in the definition of parameters:") 
     Err.list.options<-as.list("Errors found in the definition of options:")
-    Warn.list<-as.list("Warning:") # list to collect warn msg
+    Warn.list<-as.list("-->Warning:") # list to collect warn msg
   }
   
   # All requests checked for coherency before stopping if one is not ok
@@ -1134,13 +1134,13 @@ distr.plot.xy<-function(x,y,plot.type,
     Err.list.input<-as.list("\nErrors found in the definition of inputs:") 
     Err.list.para<-as.list("\nErrors found in the definition of parameters:") 
     Err.list.options<-as.list("\nErrors found in the definition of options:")
-    Warn.list<-as.list("\nWarning:") # list to collect warn msg
+    Warn.list<-as.list("\n-->Warning:") # list to collect warn msg
   }
   if(type.print=="print"){
     Err.list.input<-as.list("Errors found in the definition of input vector:") 
     Err.list.para<-as.list("Errors found in the definition of parameters:") 
     Err.list.options<-as.list("Errors found in the definition of options:")
-    Warn.list<-as.list("Warning:") # list to collect warn msg
+    Warn.list<-as.list("-->Warning:") # list to collect warn msg
   }
   
   # All requests checked for coherency before stopping if one is not ok
@@ -1618,13 +1618,13 @@ distr.summary.x<-function(x,stats=c("summary"),
     Err.list.input<-as.list("\nErrors found in the definition of inputs:") 
     Err.list.para<-as.list("\nErrors found in the definition of parameters:") 
     Err.list.options<-as.list("\nErrors found in the definition of options:")
-    Warn.list<-as.list("\nWarning:") # list to collect warn msg
+    Warn.list<-as.list("\n-->Warning:") # list to collect warn msg
   }
   if(type.print=="print"){
     Err.list.input<-as.list("Errors found in the definition of input vector:") 
     Err.list.para<-as.list("Errors found in the definition of parameters:") 
     Err.list.options<-as.list("Errors found in the definition of options:")
-    Warn.list<-as.list("Warning:") # list to collect warn msg
+    Warn.list<-as.list("-->Warning:") # list to collect warn msg
   }
   
   # All requests checked for coherency before stopping if one is not ok
@@ -2106,13 +2106,13 @@ summaries.plot.x<-function(x,stats="mean",
     Err.list.input<-as.list("\nErrors found in the definition of inputs:") 
     Err.list.para<-as.list("\nErrors found in the definition of parameters:") 
     Err.list.options<-as.list("\nErrors found in the definition of options:")
-    Warn.list<-as.list("\nWarning:") # list to collect warn msg
+    Warn.list<-as.list("\n-->Warning:") # list to collect warn msg
   }
   if(type.print=="print"){
     Err.list.input<-as.list("Errors found in the definition of input vector:") 
     Err.list.para<-as.list("Errors found in the definition of parameters:") 
     Err.list.options<-as.list("Errors found in the definition of options:")
-    Warn.list<-as.list("Warning:") # list to collect warn msg
+    Warn.list<-as.list("-->Warning:") # list to collect warn msg
   }
   
   # All requests checked for coherency before stopping if one is not ok
@@ -2469,12 +2469,12 @@ CI.mean<-function(x,sigma = NULL,conf.level = 0.95,
   if(type.print=="cat"){
     Err.list.input<-as.list("\nErrors found in the definition of inputs:") 
     Err.list.para<-as.list("\nErrors found in the definition of parameters:") 
-    Warn.list<-as.list("\nWarning:") # list to collect warn msg
+    Warn.list<-as.list("\n-->Warning:") # list to collect warn msg
   }
   if(type.print=="print"){
     Err.list.input<-as.list("Errors found in the definition of inputs:") 
     Err.list.para<-as.list("Errors found in the definition of parameters:") 
-    Warn.list<-as.list("Warning:") # list to collect warn msg
+    Warn.list<-as.list("-->Warning:") # list to collect warn msg
   }
   
   # All requests checked for coherency before stopping if one is not ok
@@ -2623,12 +2623,12 @@ CI.prop<-function(x, success = NULL, conf.level = 0.95,
   if(type.print=="cat"){
     Err.list.input<-as.list("\nErrors found in the definition of inputs:") 
     Err.list.para<-as.list("\nErrors found in the definition of parameters:") 
-    Warn.list<-as.list("\nWarning:") # list to collect warn msg
+    Warn.list<-as.list("\n-->Warning:") # list to collect warn msg
   }
   if(type.print=="print"){
     Err.list.input<-as.list("Errors found in the definition of inputs:") 
     Err.list.para<-as.list("Errors found in the definition of parameters:") 
-    Warn.list<-as.list("Warning:") # list to collect warn msg
+    Warn.list<-as.list("-->Warning:") # list to collect warn msg
   }
   
   # All requests checked for coherency before stopping if one is not ok
@@ -2849,12 +2849,12 @@ CI.diffmean<-function(x, y, type = "independent",
   if(type.print=="cat"){
     Err.list.input<-as.list("\nErrors found in the definition of inputs:") 
     Err.list.para<-as.list("\nErrors found in the definition of parameters:") 
-    Warn.list<-as.list("\nWarning:") # list to collect warn msg
+    Warn.list<-as.list("\n-->Warning:") # list to collect warn msg
   }
   if(type.print=="print"){
     Err.list.input<-as.list("Errors found in the definition of inputs:") 
     Err.list.para<-as.list("Errors found in the definition of parameters:") 
-    Warn.list<-as.list("Warning:") # list to collect warn msg
+    Warn.list<-as.list("-->Warning:") # list to collect warn msg
   }
   
   # All requests checked for coherency before stopping if one is not ok
@@ -3163,12 +3163,12 @@ CI.diffprop<-function(x, y, success.x = NULL, success.y = NULL,
   if(type.print=="cat"){
     Err.list.input<-as.list("\nErrors found in the definition of inputs:") 
     Err.list.para<-as.list("\nErrors found in the definition of parameters:") 
-    Warn.list<-as.list("\nWarning:") # list to collect warn msg
+    Warn.list<-as.list("\n-->Warning:") # list to collect warn msg
   }
   if(type.print=="print"){
     Err.list.input<-as.list("Errors found in the definition of inputs:") 
     Err.list.para<-as.list("Errors found in the definition of parameters:") 
-    Warn.list<-as.list("Warning:") # list to collect warn msg
+    Warn.list<-as.list("-->Warning:") # list to collect warn msg
   }
   
   # All requests checked for coherency before stopping if one is not ok
@@ -3362,12 +3362,12 @@ TEST.mean<-function(x, sigma = NULL,
   if(type.print=="cat"){
     Err.list.input<-as.list("\nErrors found in the definition of inputs:") 
     Err.list.para<-as.list("\nErrors found in the definition of parameters:") 
-    Warn.list<-as.list("\nWarning:") # list to collect warn msg
+    Warn.list<-as.list("\n-->Warning:") # list to collect warn msg
   }
   if(type.print=="print"){
     Err.list.input<-as.list("Errors found in the definition of inputs:") 
     Err.list.para<-as.list("Errors found in the definition of parameters:") 
-    Warn.list<-as.list("Warning:") # list to collect warn msg
+    Warn.list<-as.list("-->Warning:") # list to collect warn msg
   }
   
   op.sci<-getOption("scipen")
@@ -3536,12 +3536,12 @@ TEST.prop<-function(x, success = NULL,
   if(type.print=="cat"){
     Err.list.input<-as.list("\nErrors found in the definition of inputs:") 
     Err.list.para<-as.list("\nErrors found in the definition of parameters:") 
-    Warn.list<-as.list("\nWarning:") # list to collect warn msg
+    Warn.list<-as.list("\n-->Warning:") # list to collect warn msg
   }
   if(type.print=="print"){
     Err.list.input<-as.list("Errors found in the definition of inputs:") 
     Err.list.para<-as.list("Errors found in the definition of parameters:") 
-    Warn.list<-as.list("Warning:") # list to collect warn msg
+    Warn.list<-as.list("-->Warning:") # list to collect warn msg
   }
   
   op.sci<-getOption("scipen")
@@ -3787,12 +3787,12 @@ TEST.diffmean<-function(x, y, type = "independent",
   if(type.print=="cat"){
     Err.list.input<-as.list("\nErrors found in the definition of inputs:") 
     Err.list.para<-as.list("\nErrors found in the definition of parameters:") 
-    Warn.list<-as.list("\nWarning:") # list to collect warn msg
+    Warn.list<-as.list("\n-->Warning:") # list to collect warn msg
   }
   if(type.print=="print"){
     Err.list.input<-as.list("Errors found in the definition of inputs:") 
     Err.list.para<-as.list("Errors found in the definition of parameters:") 
-    Warn.list<-as.list("Warning:") # list to collect warn msg
+    Warn.list<-as.list("-->Warning:") # list to collect warn msg
   }
   
   op.sci<-getOption("scipen")
@@ -4129,12 +4129,12 @@ TEST.diffprop<-function(x, y, success.x = NULL, success.y = NULL,
   if(type.print=="cat"){
     Err.list.input<-as.list("\nErrors found in the definition of inputs:") 
     Err.list.para<-as.list("\nErrors found in the definition of parameters:") 
-    Warn.list<-as.list("\nWarning:") # list to collect warn msg
+    Warn.list<-as.list("\n-->Warning:") # list to collect warn msg
   }
   if(type.print=="print"){
     Err.list.input<-as.list("Errors found in the definition of inputs:") 
     Err.list.para<-as.list("Errors found in the definition of parameters:") 
-    Warn.list<-as.list("Warning:") # list to collect warn msg
+    Warn.list<-as.list("-->Warning:") # list to collect warn msg
   }
   
   op.sci<-getOption("scipen")
@@ -4351,12 +4351,12 @@ TEST.diffvar<-function(x, y, by, digits = 2,
   if(type.print=="cat"){
     Err.list.input<-as.list("\nErrors found in the definition of inputs:") 
     Err.list.para<-as.list("\nErrors found in the definition of parameters:") 
-    Warn.list<-as.list("\nWarning:") # list to collect warn msg
+    Warn.list<-as.list("\n-->Warning:") # list to collect warn msg
   }
   if(type.print=="print"){
     Err.list.input<-as.list("Errors found in the definition of inputs:") 
     Err.list.para<-as.list("Errors found in the definition of parameters:") 
-    Warn.list<-as.list("Warning:") # list to collect warn msg
+    Warn.list<-as.list("-->Warning:") # list to collect warn msg
   }
   
   op.sci<-getOption("scipen")
@@ -4485,13 +4485,14 @@ LM.output<-function(object,data){
   type.print<-.rp_outlet$type.print
   msg.p<-.rp_outlet$msg.p
   
+  # Mod 2026 here and everywhere \nWarning / magic word
   if(type.print=="cat"){
     Err.list.input<-as.list("\nErrors found in the definition of inputs:") 
-    Warn.list<-as.list("\nWarning:") # list to collect warn msg
+    Warn.list<-as.list("\n-->Warning:") # list to collect warn msg
   }
   if(type.print=="print"){
     Err.list.input<-as.list("Errors found in the definition of input vector:") 
-    Warn.list<-as.list("Warning:") # list to collect warn msg
+    Warn.list<-as.list("-->Warning:") # list to collect warn msg
   }
   
   # if object not specified -> error  

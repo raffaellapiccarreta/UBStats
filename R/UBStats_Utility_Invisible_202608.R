@@ -2,6 +2,7 @@
 ## ------- Utility functions ------## 
 ## --------------------------------## 
 
+
 # General functions used everywhere -------------
 ## Secret function to use to create 
 #    a "bad" output to be modified in .tex
@@ -3287,7 +3288,7 @@ build.summary.plt<-function(out,name.x,
                             conf.level=0.95,
                             adj.breaks=TRUE,msg.p,
                             type.print){
-  Warn.list<-as.list("\nWarning:") 
+  Warn.list<-as.list("\n-->Warning:") # Mod 2026
   pardef <- par(no.readonly = TRUE)
   on.exit(par(pardef))
   list.by<-ListBy
@@ -3716,6 +3717,38 @@ build.summary.plt<-function(out,name.x,
   list(mu=USE.MU,sigma=USE.SIGMA,ge=USE.GE,le=USE.LE,lt=USE.LT,gt=USE.GT,
        neq=USE.NEQ,eq=USE.EQ,minus=USE.MINUS)
 }
+
+# Mod 2026 -> added pi
+.do_gen_symbols<-function(type.print="cat"){
+  if(type.print=="cat"){
+    USE.MU<-"\u03BC"
+    USE.SIGMA<-"\u03C3"
+    USE.PI <- "\u03C0"
+    USE.GE<-"\u2265"
+    USE.GT<-">"
+    USE.LE<-"\u2264"
+    USE.LT<-"<"
+    USE.NEQ<-"\u2260"
+    USE.EQ<-"="
+    USE.MINUS<-"-"
+  }
+  if(type.print=="print"){
+    USE.MU<-"MY.MU.RP"
+    USE.SIGMA<-"MY.SIGMA.RP"
+    USE.PI <-"MY.PI.RP"
+    USE.GE<-"MY.GE.RP"
+    USE.GT<-"MY.GT.RP"
+    USE.LE<-"MY.LE.RP"
+    USE.LT<-"MY.LT.RP"
+    USE.NEQ<-"MY.NE.RP"
+    USE.EQ<-"MY.EQ.RP"
+    USE.MINUS<-"MY.MINUS.RP"
+  }
+  list(mu=USE.MU,sigma=USE.SIGMA,pi=USE.PI,ge=USE.GE,le=USE.LE,lt=USE.LT,gt=USE.GT,
+       neq=USE.NEQ,eq=USE.EQ,minus=USE.MINUS)
+}
+
+
 #   function to format printout 
 ci.print<-function(out,digits,force.digits=FALSE,use.scientific=FALSE){
   op.sci<-getOption("scipen")
@@ -4125,7 +4158,8 @@ ci.prop<-function(x,success,conf.level = 0.95,
               type.print=type.print)
   }
   out<-t(as.matrix(c(n.x,p.x,s.x,se.p,p.x+(c(-1,1)*(se.p*z.q)))))
-  colnames(out)<-c("n","phat","s_X","se","Lower","Upper")
+  #colnames(out)<-c("n","phat","s_X","se","Lower","Upper")
+  colnames(out)<-c("n","p","s_X","se","Lower","Upper") # mod 2026
   #out[2:length(out)]<-round(out[2:length(out)],digits)
   out.print.p<-ci.print(out,digits,force.digits=force.digits,
                         use.scientific=use.scientific)
@@ -4187,6 +4221,62 @@ hyp.prop<-function(x,success,p0=0.5,alternative="two.sided",
         quote = FALSE,right = TRUE)
   output=data.frame(out,check.names = FALSE)
 }
+
+# mod 2026 -> added pi symbol
+hyp.prop<-function(x,success,p0=0.5,alternative="two.sided",
+                   digits=2,force.digits=FALSE,
+                   use.scientific=FALSE,type.print="cat"){
+  my.p.list(paste0("Test hypotheses on proportion"),
+            type.print=type.print)
+  n.or<-length(x)
+  x<-na.omit(x)
+  n.x<-length(x)
+  if(is.null(success)){x.success<-sum(x)} else{x.success<-sum(x==success)}
+  p.x<-x.success/n.x
+  s.x<-sqrt(p0*(1-p0))
+  se.p<-s.x/sqrt(n.x)
+  if(n.x<n.or){
+    my.p.list(paste0("\n Warning: ",(n.or-n.x),
+                     " obs with NA on 'x' removed"),
+              type.print=type.print)
+  }
+  z <- (p.x - p0) / se.p
+  p.z<-switch(alternative,
+              two.sided=2*pnorm(-abs(z)),
+              less=pnorm(z),
+              greater=1-pnorm(z))
+  
+  symb.use<-.do_gen_symbols(type.print)
+  tit.null<-switch(alternative,#mod 2026
+                   two.sided=paste0(symb.use$pi," ",symb.use$eq," ",p0),
+                   less=paste0(symb.use$pi," ",symb.use$eq," ",p0,
+                               " or ",symb.use$pi," ",symb.use$ge," ",p0),
+                   greater=paste0(symb.use$pi," ",symb.use$eq," ",p0,
+                                  " or ",symb.use$pi," ",symb.use$le," ",p0))
+  tit.alt<-switch(alternative,#mod
+                  two.sided=paste0(symb.use$pi," ",symb.use$neq," ",p0),
+                  less=paste0(symb.use$pi," ",symb.use$lt," ",p0),
+                  greater=paste0(symb.use$pi," ",symb.use$gt," ",p0))
+  
+  my.p.list(c(paste0(" Null hypothesis        H0: ",tit.null),
+              paste0(" Alternative hypothesis H1: ",tit.alt)),
+            type.print=type.print)
+  
+  out<-data.frame(n=n.x,p=p.x,s_X=s.x,#mod 2026
+                  se=se.p,
+                  stat=z,"p-value"=p.z,
+                  check.names = FALSE)
+  out.print.p<-ci.print(out,digits,force.digits=force.digits,
+                        use.scientific=use.scientific)
+  out.print.p[,"p-value"][out[,"p-value"]<0.0001]<-"<0.0001"
+  # added july 2025
+  out.print.p[,"p-value"][out[,"p-value"]>=0.0001]<-as.character(round(out[,"p-value"],4))
+  
+  print(as.data.frame(out.print.p),row.names=FALSE,
+        quote = FALSE,right = TRUE)
+  output=data.frame(out,check.names = FALSE)
+}
+
 
 #ok
 ci.diff.paired_known<-function(x,y,names.xy,sigma.d,
@@ -4916,6 +5006,82 @@ ci.diff.prop<-function(x,y,names.xy,success.x=NULL,success.y=NULL,
   output=data.frame(out,check.names = FALSE)
 }#ok
 
+# mod 2026
+ci.diff.prop<-function(x,y,names.xy,success.x=NULL,success.y=NULL,
+                       conf.level =  0.95, digits = 2,
+                       force.digits=FALSE,
+                       use.scientific=FALSE,type.print="cat" ){
+  symb.use<-.do_gen_symbols(type.print)
+  use.diff<-paste0(symb.use$pi,"_x"," ",symb.use$minus," ",
+                   symb.use$pi,"_y") # mod 2026
+  
+  my.p.list(paste0("Confidence interval for ",use.diff, # mod
+                   "\nConfidence level: ",conf.level),type.print=type.print)
+  n.or.x<-length(x)
+  n.or.y<-length(y)
+  x<-na.omit(x)
+  y<-na.omit(y)
+  n.x<-length(x)
+  n.y<-length(y)
+  
+  if(is.null(success.x)){
+    x.success<-sum(x)
+    if(is.numeric(x)){tit.x<-paste0("  x:",names.xy["x"]," = 1")}
+    if(is.logical(x)){tit.x<-paste0("  x:",names.xy["x"]," = TRUE")}
+  } else {
+    x.success<-sum(x==success.x)
+    tit.x<-paste0("  x:",names.xy["x"]," = ",success.x)
+  }
+  if(names.xy["name.by"]!="NONE"){
+    tit.x<-paste0(tit.x," | ",names.xy["name.by"]," = ",names.xy["lev1"])
+  }
+  if(is.null(success.y)){
+    y.success<-sum(y)
+    if(is.numeric(y)){tit.y<-paste0("  y:",names.xy["y"]," = 1")}
+    if(is.logical(y)){tit.y<-paste0("  y:",names.xy["y"]," = TRUE")}
+  } else {
+    y.success<-sum(y==success.y)
+    tit.y<-paste0("  y:",names.xy["y"]," = ",success.y)
+  }
+  if(names.xy["name.by"]!="NONE"){
+    tit.y<-paste0(tit.y," | ",names.xy["name.by"]," = ",names.xy["lev2"])
+  }
+  my.p.list(paste0(tit.x,paste0("\n",tit.y)),type.print=type.print)
+  
+  p.x<-x.success/n.x
+  p.y<-y.success/n.y
+  p.diff<-p.x-p.y
+  s.x<-sqrt(p.x*(1-p.x))
+  s.y<-sqrt(p.y*(1-p.y))
+  se.xy<-sqrt((p.x*(1-p.x)/n.x)+(p.y*(1-p.y)/n.y))
+  z.q<-qnorm(0.5+conf.level/2)
+  
+  msg.warn<-NULL
+  if(n.x<n.or.x){
+    msg.warn<-paste0((n.or.x-n.x),
+                     " obs with NA removed from 'x'")}
+  if(n.y<n.or.y){
+    if(!is.null(msg.warn)){msg.warn<-paste0(msg.warn," & ")}
+    msg.warn<-paste0(msg.warn,(n.or.y-n.y),
+                     " obs with NA removed from 'y'")}
+  if(!is.null(msg.warn)){
+    my.p.list(paste0("\n Warning: ",msg.warn),type.print=type.print)
+  }
+  
+  out<-t(as.matrix(c(n.x,n.y,p.x,p.y,
+                     p.diff,s.x,s.y,se.xy,
+                     p.diff+(c(-1,1)*(se.xy*z.q)))))
+  colnames(out)<-c("n_x","n_y","p_x","p_y","p_x-p_y",
+                   "s_X","s_Y","se",
+                   "Lower","Upper") # mod 2026
+  #out[3:length(out)]<-round(out[3:length(out)],digits)
+  out.print.p<-ci.print(out,digits,force.digits=force.digits,
+                        use.scientific=use.scientific)
+  print(data.frame(out.print.p,check.names = FALSE),row.names = FALSE)
+  #print(data.frame(out,check.names = FALSE),row.names = FALSE)
+  output=data.frame(out,check.names = FALSE)
+}#ok
+
 #ok
 hyp.diff.prop<-function(x,y,names.xy,pdiff0=0,
                         success.x=NULL,
@@ -5026,3 +5192,136 @@ hyp.diff.prop<-function(x,y,names.xy,pdiff0=0,
   print(data.frame(out.print.p,check.names = FALSE),row.names = FALSE)
   output=data.frame(out,check.names = FALSE)
 }#ok
+
+
+# mod 2026
+hyp.diff.prop<-function(x,y,names.xy,pdiff0=0,
+                        success.x=NULL,
+                        success.y=NULL,
+                        alternative="two.sided", 
+                        digits = 2,force.digits=FALSE,
+                        use.scientific=FALSE,
+                        type.print="cat"){
+  symb.use<-.do_gen_symbols(type.print)
+  # my.p.list(paste0("Test hypotheses on p_x ",symb.use$minus," p_y"),
+  #           type.print=type.print)
+  
+  use.diff<-paste0(symb.use$pi,"_x"," ",symb.use$minus," ",
+                   symb.use$pi,"_y") # mod 2026
+  my.p.list(paste0("Test hypotheses on ",use.diff),
+            type.print=type.print)
+  
+  
+  n.or.x<-length(x)
+  n.or.y<-length(y)
+  x<-na.omit(x)
+  y<-na.omit(y)
+  n.x<-length(x)
+  n.y<-length(y)
+  
+  if(is.null(success.x)){
+    x.success<-sum(x)
+    if(is.numeric(x)){tit.x<-paste0("  x:",names.xy["x"]," = 1")}
+    if(is.logical(x)){tit.x<-paste0("  x:",names.xy["x"]," = TRUE")}
+  } else {
+    x.success<-sum(x==success.x)
+    tit.x<-paste0("  x:",names.xy["x"]," = ",success.x)
+  }
+  if(names.xy["name.by"]!="NONE"){
+    tit.x<-paste0(tit.x," | ",names.xy["name.by"]," = ",
+                  names.xy["lev1"])
+  }
+  if(is.null(success.y)){
+    y.success<-sum(y)
+    if(is.numeric(x)){tit.y<-paste0("  y:",names.xy["y"]," = 1")}
+    if(is.logical(x)){tit.y<-paste0("  y:",names.xy["y"]," = TRUE")}
+  } else {
+    y.success<-sum(y==success.y)
+    tit.y<-paste0("  y:",names.xy["y"]," = ",success.y)
+  }
+  if(names.xy["name.by"]!="NONE"){
+    tit.y<-paste0(tit.y," | ",names.xy["name.by"]," = ",
+                  names.xy["lev2"])
+  }
+  my.p.list(paste0(tit.x,paste0("\n",tit.y)),type.print=type.print)
+  
+  p.x<-x.success/n.x
+  p.y<-y.success/n.y
+  p.diff<-p.x-p.y
+  s.x<-sqrt(p.x*(1-p.x))
+  s.y<-sqrt(p.y*(1-p.y))
+  se.xy<-sqrt((p.x*(1-p.x)/n.x)+(p.y*(1-p.y)/n.y))
+  
+  if(pdiff0==0){
+    p_xy<-(x.success+y.success)/(n.x+n.y)
+    se.xy<-sqrt((p_xy*(1-p_xy)/n.x)+(p_xy*(1-p_xy)/n.y))
+  }
+  
+  msg.warn<-NULL
+  if(n.x<n.or.x){
+    msg.warn<-paste0((n.or.x-n.x),
+                     " obs with NA removed from 'x'")}
+  if(n.y<n.or.y){
+    if(!is.null(msg.warn)){msg.warn<-paste0(msg.warn," & ")}
+    msg.warn<-paste0(msg.warn,(n.or.y-n.y),
+                     " obs with NA removed from 'y'")}
+  if(!is.null(msg.warn)){
+    my.p.list(paste0("\n Warning: ",msg.warn),type.print=type.print)
+  }
+  
+  z<-(p.diff-pdiff0)/se.xy
+  p.z<-switch(alternative,
+              two.sided=2*pnorm(-abs(z)),
+              less=pnorm(z),
+              greater=1-pnorm(z))
+  
+  # tit.null<-switch(alternative,
+  #                  two.sided=paste0("(p_x ",symb.use$minus," p_y) ",symb.use$eq," ",pdiff0),
+  #                  less=paste0("(p_x ",symb.use$minus," p_y) ",symb.use$eq," ",pdiff0,
+  #                              " or ","(p_x ",symb.use$minus," p_y) ",symb.use$ge," ",pdiff0),
+  #                  greater=paste0("(p_x ",symb.use$minus," p_y) ",symb.use$eq," ",pdiff0,
+  #                                 " or ","(p_x ",symb.use$minus," p_y) ",symb.use$le," ",pdiff0))
+  # tit.alt<-switch(alternative,
+  #                 two.sided=paste0("(p_x ",symb.use$minus," p_y) ",symb.use$neq," ",pdiff0),
+  #                 less=paste0("(p_x ",symb.use$minus," p_y) ",symb.use$lt," ",pdiff0),
+  #                 greater=paste0("(p_x ",symb.use$minus," p_y) ",symb.use$gt," ",pdiff0))
+  # mod 2026
+  tit.null<-switch(alternative,
+                   two.sided=paste0("(",use.diff,") ",symb.use$eq," ",pdiff0),
+                   less=paste0("(",use.diff,") ",symb.use$eq," ",pdiff0,
+                               " or (",use.diff,") ",symb.use$ge," ",pdiff0),
+                   greater=paste0("(",use.diff,") ",symb.use$eq," ",pdiff0,
+                                  " or (",use.diff,") ",symb.use$le," ",pdiff0))
+  tit.alt<-switch(alternative,
+                  two.sided=paste0("(",use.diff,") ",symb.use$neq," ",pdiff0),
+                  less=paste0("(",use.diff,") ",symb.use$lt," ",pdiff0),
+                  greater=paste0("(",use.diff,") ",symb.use$gt," ",pdiff0))
+  
+  
+  my.p.list(c(paste0(" Null hypothesis        H0: ",tit.null),
+              paste0(" Alternative hypothesis H1: ",tit.alt)),
+            type.print=type.print)
+  out<-data.frame("n_x"=n.x,
+                  "n_y"=n.y,
+                  "p_x"=p.x,
+                  "p_y"=p.y,
+                  "p_x-p_y"=p.diff,
+                  "s_X"=s.x,
+                  "s_Y"=s.y,
+                  "se"=se.xy,
+                  stat=z,
+                  "p-value"=p.z,
+                  check.names = FALSE) # mod 2026
+  if(pdiff0==0){
+    colnames(out)[8]<-"se_0"
+  }
+  out.print.p<-ci.print(out,digits,force.digits=force.digits,
+                        use.scientific=use.scientific)
+  out.print.p[,"p-value"][out[,"p-value"]<0.0001]<-"<0.0001"
+  # added july 2025
+  out.print.p[,"p-value"][out[,"p-value"]>=0.0001]<-as.character(round(out[,"p-value"],4))
+  
+  print(data.frame(out.print.p,check.names = FALSE),row.names = FALSE)
+  output=data.frame(out,check.names = FALSE)
+}#ok
+

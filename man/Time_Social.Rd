@@ -3,28 +3,31 @@
 \docType{data}
 \name{Time_Social}
 \alias{Time_Social}
-\title{Data: Time_Social}
+\title{Data Time_Social: Time Spent on a Social Media Platform}
 \format{
-{
-A dataframe with \emph{n} = 5976 observations and the following 4 variables
-(levels of the variables listed in alphabetical order):
-\itemize{
-\item \strong{User} (\code{int}): user id
-\item \strong{Time} (\code{num}): Time (in minutes) spent on the platform during a
-specific day
-\item \strong{Area} (\code{chr}): geographic area where the user lives (A, B)
-\item \strong{Push} (\code{chr}): variable indicating whether the user activated push
-notifications (No, Yes)
-}
+A data frame with \emph{n} = 5976 observations and 4 variables:
+\describe{
+\item{User}{(int) user id}
+\item{Time}{(num) Time (in minutes) spent on the platform during a
+specific day}
+\item{Area}{(chr) geographic area where the user lives (A, B)}
+\item{Push}{(chr) variable indicating whether the user activated push
+notifications (No, Yes)}
 }
 }
 \usage{
 data(Time_Social)
 }
 \description{
-The dataframe contains information on the time spent on a social media
+The data frame contains information on the time spent on a social media
 platform, after the algorithm that selects displayed content to users was
 modified. Specifically, attention is limited to a sample of active users
-within a specific socio-demographic segment, who live in two distinct areas.
+within a specific socio-demographic segment, who live in two distinct
+areas.
+}
+\references{
+Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
+Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+9788823824096.
 }
 \keyword{datasets}
