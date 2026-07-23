@@ -3,57 +3,63 @@
 \docType{data}
 \name{Marketing_Mix}
 \alias{Marketing_Mix}
-\title{Data: Marketing_Mix}
+\title{Data Marketing_Mix: Marketing Investments and Digital Performance}
 \format{
-{
-A dataframe with \emph{n} = 247 observations and the following 13 variables
-(levels of the variables listed in alphabetical order):
-\itemize{
-\item \strong{Municipality} (\code{chr}): municipality id
-\item \strong{MacroArea} (\code{factor}): macro geographical region (A, B, C, D, E)
-\item \strong{LocalPromo1} (\code{num}): binary variable indicating whether Campaign 1
-is active (1) or not (0)
-\item \strong{LocalPromo2} (\code{num}): binary variable indicating whether Campaign 1
-is active (1) or not (0)
-\item \strong{Search_Spend} (\code{num}): marketing expenses on online search
-advertisements (e.g., Google Ads)
-\item \strong{Display_Spend} (\code{num}): marketing expenses on online display
-advertisements (e.g., banner ads)
-\item \strong{Retargeting_Spend} (\code{num}): marketing expenses on retargeting
-(e.g., ads targeting previous visitors)
-\item \strong{KPI_Interact} (\code{num}): number of interactions (e.g., clicks,
-engagements) across all channels.
-\item \strong{KPI_Paid} (\code{num}): number of sessions or visits generated through
-paid traffic campaigns.
-\item \strong{KPI_Organic} (\code{num}): number of sessions or visits generated through
-organic (non-paid) traffic
-\item \strong{Sales} (\code{num}): Total sales units generated during the period
-\item \strong{NewUsers} (\code{num}): number of new  customers acquired during the
-period
-\item \strong{Arpu} (\code{num}): Average Revenue Per User, calculated as total revenue
-divided by active users (then rounded)
-}
+A data frame with \emph{n} = 247 observations and 13 variables:
+\describe{
+\item{Municipality}{(chr) municipality id}
+\item{MacroArea}{(factor) macro geographical region (A, B, C, D, E)}
+\item{LocalPromo1}{(num) binary variable indicating whether Campaign
+1 is active (1) or not (0)}
+\item{LocalPromo2}{(num) binary variable indicating whether Campaign
+1 is active (1) or not (0)}
+\item{Search_Spend}{(num) marketing expenses on online search
+advertisements (e.g., Google Ads)}
+\item{Display_Spend}{(num) marketing expenses on online display
+advertisements (e.g., banner ads)}
+\item{Retargeting_Spend}{(num) marketing expenses on retargeting
+(e.g., ads targeting previous visitors)}
+\item{KPI_Interact}{(num) number of interactions (e.g., clicks,
+engagements) across all channels}
+\item{KPI_Paid}{(num) number of sessions or visits generated through
+paid traffic campaigns}
+\item{KPI_Organic}{(num) number of sessions or visits generated
+through organic (non-paid) traffic}
+\item{Sales}{(num) Total sales units generated during the period}
+\item{NewUsers}{(num) number of new customers acquired during the
+period}
+\item{Arpu}{(num) Average Revenue Per User, calculated as total
+revenue divided by active users (then rounded)}
 }
 }
 \usage{
 data(Marketing_Mix)
 }
 \description{
-This dataframe contains data on marketing campaigns conducted across
-municipalities in Italy. It provides information on marketing investments in
-each area, including spending on online paid search (paying to have a website
-or ad appear at the top of a search engine results page), online display
-(paying for visual ads on websites, apps, or social media platforms) and
-retargeting (targeting users who previously interacted with the brand
-online -- e.g. visiting a website, using an app, or engaging with content --
-but did not complete a desired action, like making a purchase).
-These investments affect key digital performance indicators (KPIs), such as
-customer interactions and paid or organic website sessions (visits resulting
-from sponsored or non-paid links), which represent intermediate outcomes that
-may influence sales and new customer acquisition -- the campaign’s key final
-targets. The dataframe also includes information about two types of local
-promotions possibly running in each municipality. All variables in the
-dataframe --investments, KPIs and outcomes -- are adjusted to account for
-structural differences between municipalities.
+This data frame contains data on marketing campaigns conducted across
+municipalities in Italy. It provides information on marketing investments
+in each area, including spending on online \strong{paid} \emph{search}
+(paying to have a website or ad appear at the top of a search engine
+results page), online \emph{display} (paying for visual ads on websites,
+apps, or social media platforms) and \emph{retargeting} (targeting users
+who previously interacted with the brand online -- e.g. visiting a
+website, using an app, or engaging with content -- but did not complete a
+desired action, like making a purchase).
+}
+\details{
+These investments affect key digital performance indicators (KPIs), such
+as customer \emph{interactions} and \emph{paid} or \emph{organic} website
+sessions (visits resulting from sponsored or non-paid links), which
+represent intermediate outcomes that may influence \emph{sales} and new
+\emph{customer acquisition} -- the campaign's key final targets. The
+data frame also includes information about two types of \emph{local
+promotions} possibly running in each municipality. All variables in the
+data frame -- investments, KPIs and outcomes -- are adjusted to account
+for structural differences between municipalities.
+}
+\references{
+Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
+Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+9788823824096.
 }
 \keyword{datasets}

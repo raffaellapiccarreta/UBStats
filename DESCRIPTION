@@ -1,8 +1,8 @@
 Package: UBStats
 Type: Package
 Title: Basic Statistics
-Version: 0.3.0
-Date: 2025-08-04
+Version: 0.4.0
+Date: 2026-07-24
 Authors@R: c(
   person("Raffaella", "Piccarreta", role = "aut", email = "raffaella.piccarreta@unibocconi.it"),
   person("Sergio", "Venturini", role = "cre", email = "sergio.venturini@unicatt.it"))
@@ -20,9 +20,9 @@ Imports:
     grDevices,
     stats
 Depends:
-    R (>= 3.5.0),
+    R (>= 3.6.0),
     utils
 BugReports: https://github.com/raffaellapiccarreta/UBStats/issues
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 8.0.0
 Roxygen: list(markdown = TRUE)

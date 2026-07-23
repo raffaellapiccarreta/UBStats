@@ -3,9 +3,9 @@
 \docType{data}
 \name{MktDATA}
 \alias{MktDATA}
-\title{Data: MktDATA}
+\title{Data MktDATA:}
 \format{
-{A data frame with 2224 observations and 26 variables.}
+{A data frame with \emph{n} = 2224 observations and 26 variables.}
 }
 \usage{
 data(MktDATA)
