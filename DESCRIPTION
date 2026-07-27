@@ -1,15 +1,17 @@
 Package: UBStats
 Type: Package
 Title: Basic Statistics
-Version: 0.4.1
+Version: 0.4.2
 Date: 2026-07-27
 Authors@R: c(
   person("Raffaella", "Piccarreta", role = "aut", email = "raffaella.piccarreta@unibocconi.it"),
   person("Sergio", "Venturini", role = "cre", email = "sergio.venturini@unicatt.it"))
-Description: Basic statistical analyses. The package has been developed
-    to be used in statistics courses at Bocconi University (Milan, Italy).
-    Currently, the package includes some exploratory and inferential analyses
-    usually presented in introductory statistics courses.
+Description: Basic statistical analyses. The package provides comprehensive functions and 
+    datasets for teaching introductory statistics courses. It has been developed 
+    to be used in undergraduate statistics courses at Bocconi University 
+    (Milan, Italy), and constitutes the core software tool used throughout the 
+    textbook by Piccarreta, R., Tonini, D., & Trentini, F. (2026) "From Data to 
+    Decisions. An Introduction to Applied Statistics", BUP, ISBN:9788823824096.
 Maintainer: Sergio Venturini <sergio.venturini@unicatt.it>
 License: GPL-3
 NeedsCompilation: no
