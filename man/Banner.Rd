@@ -8,7 +8,7 @@
 A data frame with \emph{n} = 5976 observations and 3 variables:
 \describe{
 \item{User}{(int) user id}
-\item{Banner}{(chr) banner shown to the user (Original, Redesigned)}
+\item{Banner}{(chr) banner shown to the user (\code{Original}, \code{Redesigned})}
 \item{Click}{(logical) logical vector indicating whether the user
 clicked on the banner (TRUE) or not}
 }
@@ -26,7 +26,7 @@ proportion of users who click on a banner after viewing it.
 }
 \references{
 Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 9788823824096.
 }
 \keyword{datasets}

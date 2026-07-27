@@ -3977,7 +3977,8 @@ ci.mean.known<-function(x,sigma,conf.level = 0.95,
     my.p.list(paste0("\n Warning: ",(n.or-n.x),
                      " obs with NA on 'x' removed"),
               type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
+  
   z.q<-qnorm(0.5+conf.level/2)
   out<-t(as.matrix(c(n.x,m.x,s.x,se.m,m.x+(c(-1,1)*(se.m*z.q)))))
   colnames(out)<-c("n","xbar","sigma_X","SE","Lower","Upper")
@@ -4008,7 +4009,8 @@ hyp.mean.known<-function(x,sigma=1,
     my.p.list(paste0("\n Warning: ",(n.or-n.x),
                      " obs with NA on 'x' removed"),
               type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
+  
   z <- (m.x - mu0) / se.m
   p.z<-switch(alternative,
               two.sided=2*pnorm(-abs(z)),
@@ -4061,7 +4063,7 @@ ci.mean.unknown<-function(x,conf.level = 0.95,digits=2,
     my.p.list(paste0("\n Warning: ",(n.or-n.x),
                      " obs with NA on 'x' removed"),
               type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
   z.q<-qnorm(0.5+conf.level/2)
   t.q<-qt((0.5+conf.level/2),df=(n.x-1))
   out<-rbind(c(n.x,m.x,s.x,se.m,m.x+(c(-1,1)*(se.m*z.q))),
@@ -4093,7 +4095,7 @@ hyp.mean.unknown<-function(x,mu0=0,alternative="two.sided",
     my.p.list(paste0("\n Warning: ",(n.or-n.x),
                      " obs with NA on 'x' removed"),
               type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
   z <- (m.x - mu0) / se.m
   p.z<-switch(alternative,
               two.sided=2*pnorm(-abs(z)),
@@ -4156,7 +4158,8 @@ ci.prop<-function(x,success,conf.level = 0.95,
     my.p.list(paste0("\n Warning: ",(n.or-n.x),
                      " obs with NA on 'x' removed"),
               type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
+  
   out<-t(as.matrix(c(n.x,p.x,s.x,se.p,p.x+(c(-1,1)*(se.p*z.q)))))
   #colnames(out)<-c("n","phat","s_X","se","Lower","Upper")
   colnames(out)<-c("n","p","s_X","se","Lower","Upper") # mod 2026
@@ -4184,7 +4187,8 @@ hyp.prop<-function(x,success,p0=0.5,alternative="two.sided",
     my.p.list(paste0("\n Warning: ",(n.or-n.x),
                      " obs with NA on 'x' removed"),
               type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
+  
   z <- (p.x - p0) / se.p
   p.z<-switch(alternative,
               two.sided=2*pnorm(-abs(z)),
@@ -4239,7 +4243,8 @@ hyp.prop<-function(x,success,p0=0.5,alternative="two.sided",
     my.p.list(paste0("\n Warning: ",(n.or-n.x),
                      " obs with NA on 'x' removed"),
               type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
+  
   z <- (p.x - p0) / se.p
   p.z<-switch(alternative,
               two.sided=2*pnorm(-abs(z)),
@@ -4306,7 +4311,8 @@ ci.diff.paired_known<-function(x,y,names.xy,sigma.d,
     my.p.list(paste0("\n Warning: ",(n.or-n.xy),
                      " obs with NA on 'x,y' removed"),
               type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
+  
   out<-t(as.matrix(c(n.xy,mean(x),mean(y),
                      m.diff,s.diff,se.diff,m.diff+(c(-1,1)*(se.diff*z.q)))))
   colnames(out)<-c("n","xbar","ybar","dbar=xbar-ybar","sigma_D","SE",
@@ -4346,7 +4352,7 @@ hyp.diff.paired_known<-function(x,y,mdiff0=0,names.xy,sigma.d,
     my.p.list(paste0("\n Warning: ",(n.or-n.xy),
                      " obs with NA on 'x,y' removed"),
               type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
   z <- (m.diff - mdiff0) / se.diff
   p.z<-switch(alternative,
               two.sided=2*pnorm(-abs(z)),
@@ -4416,7 +4422,7 @@ ci.diff.paired_unknown<-function(x,y,names.xy,
     my.p.list(paste0("\n Warning: ",(n.or-n.xy),
                      " obs with NA on 'x,y' removed"),
               type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
   out<-rbind(c(n.xy,mean(x),mean(y),m.diff,s.diff,
                se.diff,m.diff+(c(-1,1)*(se.diff*z.q))),
              c(n.xy,mean(x),mean(y),m.diff,s.diff,
@@ -4459,7 +4465,7 @@ hyp.diff.paired_unknown<-function(x,y,mdiff0=0,names.xy,
     my.p.list(paste0("\n Warning: ",(n.or-n.xy),
                      " obs with NA on 'x,y' removed"),
               type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
   z <- (m.diff - mdiff0) / se.diff
   p.z<-switch(alternative,
               two.sided=2*pnorm(-abs(z)),
@@ -4542,7 +4548,7 @@ ci.diff.indep_known<-function(x,y,names.xy,sigma.x,sigma.y,
   if(!is.null(msg.warn)){
     my.p.list(paste0("\n Warning: ",msg.warn),
               type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
   
   out<-rbind(c(n.x,n.y,mean(x),mean(y),m.diff,sigma.x,sigma.y,
                se.diff,m.diff+(c(-1,1)*(se.diff*z.q))))
@@ -4589,7 +4595,7 @@ hyp.diff.indep_known<-function(x,y,mdiff0=0,names.xy,
                      " obs with NA removed from 'y'")}
   if(!is.null(msg.warn)){
     my.p.list(paste0("\n Warning: ",msg.warn),type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
   
   z <- (m.diff - mdiff0) / se.diff
   p.z<-switch(alternative,
@@ -4676,7 +4682,7 @@ ci.diff.indep_unknown<-function(x,y,names.xy,conf.level = 0.95,
                      " obs with NA removed from 'y'")}
   if(!is.null(msg.warn)){
     my.p.list(paste0("\n Warning: ",msg.warn),type.print=type.print)
-  }
+  } #else{my.p.list(paste0(" "," "),type.print=type.print)}
   
   out.eq<-rbind(c(n.x,n.y,mean(x),mean(y),
                   m.diff,sqrt(s2.x),sqrt(s2.y),
@@ -4769,7 +4775,7 @@ hyp.diff.indep_unknown<-function(x,y,mdiff0=0,names.xy,
                      " obs with NA removed from 'y'")}
   if(!is.null(msg.warn)){
     my.p.list(paste0("\n Warning: ",msg.warn),type.print=type.print)
-  }
+  } #else{my.p.list(paste0(" "," "),type.print=type.print)}
   
   z.eq<-(m.diff-mdiff0)/se.equal
   z.uneq<-(m.diff-mdiff0)/se.unequal
@@ -4908,7 +4914,7 @@ hyp.diff.var<-function(x,y,type="levene",digits=2,
       if(!is.null(msg.warn)){
         my.p.list(paste0("\n Warning: ",msg.warn),
                   type.print=type.print)
-      }
+      } else{my.p.list(paste0(" "," "),type.print=type.print)}
       
       out.var<-data.frame("n_x" = n.x, "n_y"=n.y,
                           "s2_x"=s2.x,"s2_y"=s2.y,"F-stat"=stat,
@@ -4990,7 +4996,7 @@ ci.diff.prop<-function(x,y,names.xy,success.x=NULL,success.y=NULL,
                      " obs with NA removed from 'y'")}
   if(!is.null(msg.warn)){
     my.p.list(paste0("\n Warning: ",msg.warn),type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
   
   out<-t(as.matrix(c(n.x,n.y,p.x,p.y,
                      p.diff,s.x,s.y,se.xy,
@@ -5008,6 +5014,7 @@ ci.diff.prop<-function(x,y,names.xy,success.x=NULL,success.y=NULL,
 
 # mod 2026
 ci.diff.prop<-function(x,y,names.xy,success.x=NULL,success.y=NULL,
+                       whatis.x,whatis.y,
                        conf.level =  0.95, digits = 2,
                        force.digits=FALSE,
                        use.scientific=FALSE,type.print="cat" ){
@@ -5023,11 +5030,12 @@ ci.diff.prop<-function(x,y,names.xy,success.x=NULL,success.y=NULL,
   y<-na.omit(y)
   n.x<-length(x)
   n.y<-length(y)
-  
+
+  # MOD 2026
   if(is.null(success.x)){
     x.success<-sum(x)
-    if(is.numeric(x)){tit.x<-paste0("  x:",names.xy["x"]," = 1")}
-    if(is.logical(x)){tit.x<-paste0("  x:",names.xy["x"]," = TRUE")}
+    if(whatis.x=="Binary"){tit.x<-paste0("  x:",names.xy["x"]," = 1")}
+    if(whatis.x=="Logical"){tit.x<-paste0("  x:",names.xy["x"]," = TRUE")}
   } else {
     x.success<-sum(x==success.x)
     tit.x<-paste0("  x:",names.xy["x"]," = ",success.x)
@@ -5037,8 +5045,8 @@ ci.diff.prop<-function(x,y,names.xy,success.x=NULL,success.y=NULL,
   }
   if(is.null(success.y)){
     y.success<-sum(y)
-    if(is.numeric(y)){tit.y<-paste0("  y:",names.xy["y"]," = 1")}
-    if(is.logical(y)){tit.y<-paste0("  y:",names.xy["y"]," = TRUE")}
+    if(whatis.y=="Binary"){tit.y<-paste0("  y:",names.xy["y"]," = 1")}
+    if(whatis.y=="Logical"){tit.y<-paste0("  y:",names.xy["y"]," = TRUE")}
   } else {
     y.success<-sum(y==success.y)
     tit.y<-paste0("  y:",names.xy["y"]," = ",success.y)
@@ -5066,7 +5074,7 @@ ci.diff.prop<-function(x,y,names.xy,success.x=NULL,success.y=NULL,
                      " obs with NA removed from 'y'")}
   if(!is.null(msg.warn)){
     my.p.list(paste0("\n Warning: ",msg.warn),type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
   
   out<-t(as.matrix(c(n.x,n.y,p.x,p.y,
                      p.diff,s.x,s.y,se.xy,
@@ -5081,6 +5089,8 @@ ci.diff.prop<-function(x,y,names.xy,success.x=NULL,success.y=NULL,
   #print(data.frame(out,check.names = FALSE),row.names = FALSE)
   output=data.frame(out,check.names = FALSE)
 }#ok
+
+
 
 #ok
 hyp.diff.prop<-function(x,y,names.xy,pdiff0=0,
@@ -5148,7 +5158,7 @@ hyp.diff.prop<-function(x,y,names.xy,pdiff0=0,
                      " obs with NA removed from 'y'")}
   if(!is.null(msg.warn)){
     my.p.list(paste0("\n Warning: ",msg.warn),type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
   
   z<-(p.diff-pdiff0)/se.xy
   p.z<-switch(alternative,
@@ -5193,9 +5203,9 @@ hyp.diff.prop<-function(x,y,names.xy,pdiff0=0,
   output=data.frame(out,check.names = FALSE)
 }#ok
 
-
 # mod 2026
-hyp.diff.prop<-function(x,y,names.xy,pdiff0=0,
+hyp.diff.prop<-function(x,y,names.xy,whatis.x,whatis.y,
+                        pdiff0=0,
                         success.x=NULL,
                         success.y=NULL,
                         alternative="two.sided", 
@@ -5219,10 +5229,11 @@ hyp.diff.prop<-function(x,y,names.xy,pdiff0=0,
   n.x<-length(x)
   n.y<-length(y)
   
+  # MOD 2026
   if(is.null(success.x)){
     x.success<-sum(x)
-    if(is.numeric(x)){tit.x<-paste0("  x:",names.xy["x"]," = 1")}
-    if(is.logical(x)){tit.x<-paste0("  x:",names.xy["x"]," = TRUE")}
+    if(whatis.x=="Binary"){tit.x<-paste0("  x:",names.xy["x"]," = 1")}
+    if(whatis.x=="Logical"){tit.x<-paste0("  x:",names.xy["x"]," = TRUE")}
   } else {
     x.success<-sum(x==success.x)
     tit.x<-paste0("  x:",names.xy["x"]," = ",success.x)
@@ -5233,8 +5244,8 @@ hyp.diff.prop<-function(x,y,names.xy,pdiff0=0,
   }
   if(is.null(success.y)){
     y.success<-sum(y)
-    if(is.numeric(x)){tit.y<-paste0("  y:",names.xy["y"]," = 1")}
-    if(is.logical(x)){tit.y<-paste0("  y:",names.xy["y"]," = TRUE")}
+    if(whatis.y=="Binary"){tit.y<-paste0("  y:",names.xy["y"]," = 1")}
+    if(whatis.y=="Logical"){tit.y<-paste0("  y:",names.xy["y"]," = TRUE")}
   } else {
     y.success<-sum(y==success.y)
     tit.y<-paste0("  y:",names.xy["y"]," = ",success.y)
@@ -5267,7 +5278,7 @@ hyp.diff.prop<-function(x,y,names.xy,pdiff0=0,
                      " obs with NA removed from 'y'")}
   if(!is.null(msg.warn)){
     my.p.list(paste0("\n Warning: ",msg.warn),type.print=type.print)
-  }
+  } else{my.p.list(paste0(" "," "),type.print=type.print)}
   
   z<-(p.diff-pdiff0)/se.xy
   p.z<-switch(alternative,

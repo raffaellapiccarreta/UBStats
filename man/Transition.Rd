@@ -11,7 +11,7 @@ A data frame with \emph{n} = 130 observations and 4 variables:
 \item{Pre}{(num) employee's productivity with the old software}
 \item{Post}{(num) employee's productivity with the new software
 (after the training program)}
-\item{Department}{(chr) employee's department (Dept1, Dept2)}
+\item{Department}{(chr) employee's department (\code{Dept1}, \code{Dept2})}
 }
 }
 \usage{
@@ -29,7 +29,7 @@ software, recorded after a defined period of use.
 }
 \references{
 Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 9788823824096.
 }
 \keyword{datasets}

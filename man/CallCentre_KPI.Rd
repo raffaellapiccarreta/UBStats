@@ -8,29 +8,29 @@
 A data frame with \emph{n} = 5007 observations and 11 variables:
 \describe{
 \item{ID_Call}{(int) call identification}
-\item{Day}{(factor) weekday of the call (Mon, Tue, Wed,..., Sat)}
+\item{Day}{(factor) weekday of the call (\code{Mon}, \code{Tue}, \code{Wed},..., \code{Sat})}
 \item{Hour}{(num) hour of the call}
-\item{Cust.Type}{(chr) customer's type (Unknown, Private, Corporate)}
+\item{Cust.Type}{(chr) customer's type (\code{Unknown}, \code{Private}, \code{Corporate})}
 \item{Time.Auto}{(num) time (in seconds) spent interacting with the
 automatic responder}
 \item{Time.Queue}{(num) time (in seconds) spent waiting in the queue
 for an operator}
 \item{Time.Talk}{(num) duration (in seconds) of the (eventual)
 conversation with an operator}
-\item{Reason}{(chr) reason for contact (Admin -- administrative
-issues; Landline -- issues with fixed line; Mobile; and
-Activ/Transf -- calls related to the activation or the transfer of
+\item{Reason}{(chr) reason for contact (\code{Admin} -- administrative
+issues; \code{Landline} -- issues with fixed line; \code{Mobile}; and
+\code{Activ/Transf} -- calls related to the activation or the transfer of
 a line)}
-\item{Outcome}{(chr) outcome of the call (Left.Aut_Resp -- the client
-hung up before entering the queue; Left.Queue -- the client hung up
-while waiting for an operator; Operator -- the call was handled by
+\item{Outcome}{(chr) outcome of the call (\code{Left.Aut_Resp} -- the client
+hung up before entering the queue; \code{Left.Queue} -- the client hung up
+while waiting for an operator; \code{Operator} -- the call was handled by
 an operator)}
 \item{Solved}{(chr) variable indicating whether the client's issue was
-solved (No, Yes) -- available only for clients who interacted with
+solved (\code{No}, \code{Yes}) -- available only for clients who interacted with
 an operator}
 \item{Satisf}{(factor) level of satisfaction expressed by customers
-who interacted with an operator (VLow, Low, Med, High, VHigh)}
-}
+who interacted with an operator (\code{VLow}, \code{Low}, \code{Med}, \code{High}, \code{VHigh})}
+}``
 }
 \usage{
 data(CallCentre_KPI)
@@ -52,7 +52,7 @@ the call.
 }
 \references{
 Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 9788823824096.
 }
 \keyword{datasets}

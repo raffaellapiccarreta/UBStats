@@ -11,6 +11,9 @@
 #' at Bocconi University (Milan, Italy). It contains a limited
 #' number of functions, with very similar and coherent syntax,
 #' to easily perform descriptive and inferential statistical analyses.
+#' The package fully supports the methods and pedagogical approach 
+#' discussed in Piccarreta, R., Tonini, D., & Trentini, F. (2026) "From Data to
+#' Decisions. An Introduction to Applied Statistics", BUP, ISBN: 9788823824096.
 #'
 #' The main functions included in the package are:
 #' * \code{\link{distr.table.x}()} and \code{\link{distr.plot.x}()} to
@@ -51,12 +54,12 @@
 #' set of functions with very similar syntax.
 #' 
 #' A peculiar characteristic of the package is that in the case of errors the
-#' procedure is not immediately interrupted. The functions collect all the
+#' procedure is not immedi ately interrupted. The functions collect all the
 #' possible warnings and error and print a list of all the encountered problems
 #' before the possible interruption due to unmanageable errors. This makes the
 #' package very convenient for students who approach the study of statistics
 #' using RStudio for the first time.
-#' 
+#'  
 #' To make suggestions about further developments please feel free to write
 #' to \email{raffaella.piccarreta@unibocconi.it}.
 #'

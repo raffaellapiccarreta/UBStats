@@ -14,8 +14,8 @@ well-being obtained by estimating household wealth from the average
 market price and rental value of dwellings located in the same street
 as each customer's declared address, and adjusting for the number of
 cohabitants}
-\item{Promo}{(factor) binary variable indicating whether promotional
-products are frequently purchased (No, Yes)}
+\item{Promo}{(factor) variable indicating whether promotional
+products are frequently purchased (\code{No}, \code{Yes})}
 \item{SpendMix}{(num) composite index which reflects both spending
 level and basket variety}
 }
@@ -39,7 +39,7 @@ may be more inclined to experiment with new items or brands.
 }
 \references{
 Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 9788823824096.
 }
 \keyword{datasets}

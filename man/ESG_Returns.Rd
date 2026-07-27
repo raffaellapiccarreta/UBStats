@@ -11,8 +11,8 @@ A data frame with \emph{n} = 18000 observations and 10 variables:
 \item{Week}{(date) weekly time period to which each firm-level
 observation refers, covering 60 consecutive weeks beginning on 7
 June 2020}
-\item{Industry}{(chr) firm's sector classification (Consumer, Energy,
-or Technology)}
+\item{Industry}{(chr) firm's sector classification (\code{Consumer}, \code{Energy},
+or \code{Technology})}
 \item{Return}{(num) realised stock Return (in percentage points),
 with positive values indicating firm-specific gains and negative
 values indicating losses. These returns are risk-adjusted: the
@@ -65,7 +65,7 @@ together with a risk measure represented by firm-specific Volatility.
 }
 \references{
 Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 9788823824096.
 }
 \keyword{datasets}

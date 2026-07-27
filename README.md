@@ -10,7 +10,7 @@ status](https://www.r-pkg.org/badges/version/UBStats)](https://cran.r-project.or
 
 ## Overview
 
-###### Current release: 0.4.0
+###### Current release: 0.4.1
 ###### R version required: at least 3.6.0
 `R` package for teaching introductory statistics courses at Bocconi
 University (Milan, Italy).
