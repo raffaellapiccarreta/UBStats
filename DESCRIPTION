@@ -1,8 +1,8 @@
 Package: UBStats
 Type: Package
 Title: Basic Statistics
-Version: 0.4.0
-Date: 2026-07-24
+Version: 0.4.1
+Date: 2026-07-27
 Authors@R: c(
   person("Raffaella", "Piccarreta", role = "aut", email = "raffaella.piccarreta@unibocconi.it"),
   person("Sergio", "Venturini", role = "cre", email = "sergio.venturini@unicatt.it"))

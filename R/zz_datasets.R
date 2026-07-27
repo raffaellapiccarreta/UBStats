@@ -80,14 +80,14 @@
 #' @format A data frame with *n* = 5976 observations and 3 variables:
 #' \describe{
 #'   \item{User}{(int) user id}
-#'   \item{Banner}{(chr) banner shown to the user (Original, Redesigned)}
+#'   \item{Banner}{(chr) banner shown to the user (`Original`, `Redesigned`)}
 #'   \item{Click}{(logical) logical vector indicating whether the user
 #'     clicked on the banner (TRUE) or not}
 #' }
 #'
 #' @references
 #' Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-#' Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+#' Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 #' 9788823824096.
 #'
 #' @docType data
@@ -120,15 +120,15 @@
 #'     market price and rental value of dwellings located in the same street
 #'     as each customer's declared address, and adjusting for the number of
 #'     cohabitants}
-#'   \item{Promo}{(factor) binary variable indicating whether promotional
-#'     products are frequently purchased (No, Yes)}
+#'   \item{Promo}{(factor) variable indicating whether promotional
+#'     products are frequently purchased (`No`, `Yes`)}
 #'   \item{SpendMix}{(num) composite index which reflects both spending
 #'     level and basket variety}
 #' }
 #'
 #' @references
 #' Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-#' Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+#' Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 #' 9788823824096.
 #'
 #' @docType data
@@ -156,33 +156,33 @@
 #' @format A data frame with *n* = 5007 observations and 11 variables:
 #' \describe{
 #'   \item{ID_Call}{(int) call identification}
-#'   \item{Day}{(factor) weekday of the call (Mon, Tue, Wed,..., Sat)}
+#'   \item{Day}{(factor) weekday of the call (`Mon`, `Tue`, `Wed`,..., `Sat`)}
 #'   \item{Hour}{(num) hour of the call}
-#'   \item{Cust.Type}{(chr) customer's type (Unknown, Private, Corporate)}
+#'   \item{Cust.Type}{(chr) customer's type (`Unknown`, `Private`, `Corporate`)}
 #'   \item{Time.Auto}{(num) time (in seconds) spent interacting with the
 #'     automatic responder}
 #'   \item{Time.Queue}{(num) time (in seconds) spent waiting in the queue
 #'     for an operator}
 #'   \item{Time.Talk}{(num) duration (in seconds) of the (eventual)
 #'     conversation with an operator}
-#'   \item{Reason}{(chr) reason for contact (Admin -- administrative
-#'     issues; Landline -- issues with fixed line; Mobile; and
-#'     Activ/Transf -- calls related to the activation or the transfer of
+#'   \item{Reason}{(chr) reason for contact (`Admin` -- administrative
+#'     issues; `Landline` -- issues with fixed line; `Mobile`; and
+#'     `Activ/Transf` -- calls related to the activation or the transfer of
 #'     a line)}
-#'   \item{Outcome}{(chr) outcome of the call (Left.Aut_Resp -- the client
-#'     hung up before entering the queue; Left.Queue -- the client hung up
-#'     while waiting for an operator; Operator -- the call was handled by
+#'   \item{Outcome}{(chr) outcome of the call (`Left.Aut_Resp` -- the client
+#'     hung up before entering the queue; `Left.Queue` -- the client hung up
+#'     while waiting for an operator; `Operator` -- the call was handled by
 #'     an operator)}
 #'   \item{Solved}{(chr) variable indicating whether the client's issue was
-#'     solved (No, Yes) -- available only for clients who interacted with
+#'     solved (`No`, `Yes`) -- available only for clients who interacted with
 #'     an operator}
 #'   \item{Satisf}{(factor) level of satisfaction expressed by customers
-#'     who interacted with an operator (VLow, Low, Med, High, VHigh)}
-#' }
+#'     who interacted with an operator (`VLow`, `Low`, `Med`, `High`, `VHigh`)}
+#' }``
 #'
 #' @references
 #' Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-#' Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+#' Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 #' 9788823824096.
 #'
 #' @docType data
@@ -218,8 +218,8 @@
 #'   \item{Week}{(date) weekly time period to which each firm-level
 #'     observation refers, covering 60 consecutive weeks beginning on 7
 #'     June 2020}
-#'   \item{Industry}{(chr) firm's sector classification (Consumer, Energy,
-#'     or Technology)}
+#'   \item{Industry}{(chr) firm's sector classification (`Consumer`, `Energy`,
+#'     or `Technology`)}
 #'   \item{Return}{(num) realised stock Return (in percentage points),
 #'     with positive values indicating firm-specific gains and negative
 #'     values indicating losses. These returns are risk-adjusted: the
@@ -248,7 +248,7 @@
 #'
 #' @references
 #' Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-#' Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+#' Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 #' 9788823824096.
 #'
 #' @docType data
@@ -267,31 +267,33 @@
 #' spent), on customers' satisfaction with the retailer, and on the
 #' perceived weakness of the most frequently visited store.
 #'
-#' @format A data frame with *n* = 3114 observations and 28 variables:
+#' @format A data frame with *n* = 3114 observations and 26 variables:
 #' \describe{
 #'   \item{Id}{(int) customer identification}
-#'   \item{Sex}{(chr) customer's sex at birth, (F or M)}
+#'   \item{Sex}{(chr) customer's sex at birth (`F` or `M`)}
 #'   \item{Age}{(num) customer's age (in years)}
 #'   \item{Tenure}{(factor) Customer tenure in years (coded in classes:
-#'     [0,1), [1,3), [3,6), [6,10), [10,15), [15,25), [25,35))}
-#'   \item{Status}{(chr) customers' status (Active, Silent)}
-#'   \item{FavShop}{(chr) store customers visit the most (NE.01, NE.02,
-#'     ..., NE.07)}
+#'     `[0,1)`, `[1,3)`, `[3,6)`, `[6,10)`, `[10,15)`, `[15,25)`, `[25,35)`)}
+#'   \item{Status}{(chr) customers' status (`Active`, `Silent`)}
+#'   \item{FavShop}{(chr) store customers visit the most (`NE.01`, `NE.02`,
+#'     ..., `NE.07`)}
 #'   \item{FavShop_Region}{(chr) macro region where the favourite shop is
-#'     located (here, only North-East)}
+#'     located (here, only `North-East`)}
 #'   \item{TotShops}{(num) number of stores visited by the customer}
-#'   \item{WeekDay}{(chr) preferred shopping day (1:Mon, 2:Tue, ..., 7:Sun)}
-#'   \item{TimeSlot}{(chr) preferred shopping time slot (08-12, 12-14,
-#'     14-17, 17-23)}
+#'   \item{WeekDay}{(chr) preferred shopping day (`1:Mon`, `2:Tue`, ..., `7:Sun`)}
+#'   \item{TimeSlot}{(chr) preferred shopping time slot (`08-12`, `12-14`,
+#'     `14-17`, `17-23`)}
 #'   \item{Satisf}{(chr) Customer's overall declared satisfaction with the
-#'     retailer (VLow, QLow, Low, Med, QHigh, High, VHigh)}
+#'     retailer (`VLow`, `Low`, `QLow` -- that is, moderately low; `Med`,
+#'     `QHigh` -- that is, moderately high; `High`, `VHigh`)}
 #'   \item{Complaint}{(factor) major weakness of the typically visited
-#'     store (Quality&Variety, Prices, Resupply, Staff, Crowded, Checkout)}
+#'     store (`Quality&Variety`, `Prices`, `Resupply`, `Staff`, `Crowded`,
+#'     `Checkout`)}
 #'   \item{NMonths}{(num) number of months in which the customers visited
 #'     a store at least once}
-#'   \item{MonthExp}{(chr) amount spent per month, in classes ([0,50),
-#'     [50,100), [100,150), [150,200), [200,300), [300,400), [400,600),
-#'     [600,800))}
+#'   \item{MonthExp}{(chr) amount spent per month, in classes (`[0,50)`,
+#'     `[50,100)`, `[100,150)`, `[150,200)`, `[200,300)`, `[300,400)`,
+#'     `[400,600)`, `[600,800]`)}
 #'   \item{Transact_M}{(num) transactions per month}
 #'   \item{TBP}{(num) time between purchases}
 #'   \item{TotExp}{(num) amount spent in the last 12 months}
@@ -316,7 +318,7 @@
 #'
 #' @references
 #' Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-#' Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+#' Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 #' 9788823824096.
 #'
 #' @docType data
@@ -347,13 +349,14 @@
 #'     engagement}
 #'   \item{Leadership}{(num) respondent evaluation of managers, as well as
 #'     the quality of their relationship with them}
-#'   \item{Team}{(num) respondent evaluation of co-workers, respectively,
-#'     as well as the quality of relationship with them}
+#'   \item{Team}{(num) respondent evaluation of co-workers, as well as 
+#'     the quality of their relationship with them}
 #'   \item{Environment}{(num) respondent evaluation of the quality of the
 #'     work environment}
-#'   \item{Growth}{(num) indicator of professional development and
-#'     advancement; it captures the degree to which employees see clear
-#'     paths to promotion within the company and feel they are provided
+#'   \item{Growth}{(num) respondent perceived evaluation of the opportunity
+#'     of professional development and advancement; it captures the 
+#'     degree to which employees see clear paths to promotion within the 
+#'     company and feel they are provided
 #'     with opportunities to learn and develop skills}
 #'   \item{Compensation}{(num) respondent perceived fairness of
 #'     compensation}
@@ -368,15 +371,15 @@
 #'   \item{Flex}{(num) degree to which employees experience freedom,
 #'     comfort, and control in how and where they work (it reflects
 #'     work-life balance, autonomy in tasks and time management)}
-#'   \item{RemoteWork}{(factor) remote-work arrangements (No: the
-#'     employee works entirely on-site; Structured: remote work on
-#'     predefined days or under fixed rules; and Flexible: remote work
+#'   \item{RemoteWork}{(factor) remote-work arrangements (`No`: the
+#'     employee works entirely on-site; `Structured`: remote work on
+#'     predefined days or under fixed rules; and `Flexible`: remote work
 #'     without constraints)}
 #' }
 #'
 #' @references
 #' Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-#' Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+#' Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 #' 9788823824096.
 #'
 #' @docType data
@@ -409,8 +412,8 @@
 #'
 #' @format A data frame with *n* = 247 observations and 13 variables:
 #' \describe{
-#'   \item{Municipality}{(chr) municipality id}
-#'   \item{MacroArea}{(factor) macro geographical region (A, B, C, D, E)}
+#'   \item{Municipality}{(num) municipality id}
+#'   \item{MacroArea}{(factor) macro geographical region (`A`, `B`, `C`, `D`, `E`)}
 #'   \item{LocalPromo1}{(num) binary variable indicating whether Campaign
 #'     1 is active (1) or not (0)}
 #'   \item{LocalPromo2}{(num) binary variable indicating whether Campaign
@@ -436,7 +439,7 @@
 #'
 #' @references
 #' Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-#' Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+#' Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 #' 9788823824096.
 #'
 #' @docType data
@@ -474,7 +477,7 @@
 #'
 #' @references
 #' Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-#' Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+#' Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 #' 9788823824096.
 #'
 #' @docType data
@@ -496,14 +499,14 @@
 #'   \item{User}{(int) user id}
 #'   \item{Time}{(num) Time (in minutes) spent on the platform during a
 #'     specific day}
-#'   \item{Area}{(chr) geographic area where the user lives (A, B)}
+#'   \item{Area}{(chr) geographic area where the user lives (`A`, `B`)}
 #'   \item{Push}{(chr) variable indicating whether the user activated push
-#'     notifications (No, Yes)}
+#'     notifications (`No`, `Yes`)}
 #' }
 #'
 #' @references
 #' Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-#' Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+#' Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 #' 9788823824096.
 #'
 #' @docType data
@@ -529,12 +532,12 @@
 #'   \item{Pre}{(num) employee's productivity with the old software}
 #'   \item{Post}{(num) employee's productivity with the new software
 #'     (after the training program)}
-#'   \item{Department}{(chr) employee's department (Dept1, Dept2)}
+#'   \item{Department}{(chr) employee's department (`Dept1`, `Dept2`)}
 #' }
 #'
 #' @references
 #' Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-#' Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+#' Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 #' 9788823824096.
 #'
 #' @docType data

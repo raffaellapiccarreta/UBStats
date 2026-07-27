@@ -12,13 +12,14 @@ A data frame with \emph{n} = 256 observations and 11 variables:
 engagement}
 \item{Leadership}{(num) respondent evaluation of managers, as well as
 the quality of their relationship with them}
-\item{Team}{(num) respondent evaluation of co-workers, respectively,
-as well as the quality of relationship with them}
+\item{Team}{(num) respondent evaluation of co-workers, as well as
+the quality of their relationship with them}
 \item{Environment}{(num) respondent evaluation of the quality of the
 work environment}
-\item{Growth}{(num) indicator of professional development and
-advancement; it captures the degree to which employees see clear
-paths to promotion within the company and feel they are provided
+\item{Growth}{(num) respondent perceived evaluation of the opportunity
+of professional development and advancement; it captures the
+degree to which employees see clear paths to promotion within the
+company and feel they are provided
 with opportunities to learn and develop skills}
 \item{Compensation}{(num) respondent perceived fairness of
 compensation}
@@ -33,9 +34,9 @@ demands that are difficult to reconcile in day-to-day tasks)}
 \item{Flex}{(num) degree to which employees experience freedom,
 comfort, and control in how and where they work (it reflects
 work-life balance, autonomy in tasks and time management)}
-\item{RemoteWork}{(factor) remote-work arrangements (No: the
-employee works entirely on-site; Structured: remote work on
-predefined days or under fixed rules; and Flexible: remote work
+\item{RemoteWork}{(factor) remote-work arrangements (\code{No}: the
+employee works entirely on-site; \code{Structured}: remote work on
+predefined days or under fixed rules; and \code{Flexible}: remote work
 without constraints)}
 }
 }
@@ -58,7 +59,7 @@ averaged to form a composite score.
 }
 \references{
 Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 9788823824096.
 }
 \keyword{datasets}

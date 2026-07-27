@@ -7,8 +7,8 @@
 \format{
 A data frame with \emph{n} = 247 observations and 13 variables:
 \describe{
-\item{Municipality}{(chr) municipality id}
-\item{MacroArea}{(factor) macro geographical region (A, B, C, D, E)}
+\item{Municipality}{(num) municipality id}
+\item{MacroArea}{(factor) macro geographical region (\code{A}, \code{B}, \code{C}, \code{D}, \code{E})}
 \item{LocalPromo1}{(num) binary variable indicating whether Campaign
 1 is active (1) or not (0)}
 \item{LocalPromo2}{(num) binary variable indicating whether Campaign
@@ -59,7 +59,7 @@ for structural differences between municipalities.
 }
 \references{
 Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 9788823824096.
 }
 \keyword{datasets}

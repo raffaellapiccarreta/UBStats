@@ -10,9 +10,9 @@ A data frame with \emph{n} = 5976 observations and 4 variables:
 \item{User}{(int) user id}
 \item{Time}{(num) Time (in minutes) spent on the platform during a
 specific day}
-\item{Area}{(chr) geographic area where the user lives (A, B)}
+\item{Area}{(chr) geographic area where the user lives (\code{A}, \code{B})}
 \item{Push}{(chr) variable indicating whether the user activated push
-notifications (No, Yes)}
+notifications (\code{No}, \code{Yes})}
 }
 }
 \usage{
@@ -27,7 +27,7 @@ areas.
 }
 \references{
 Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 9788823824096.
 }
 \keyword{datasets}

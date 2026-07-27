@@ -3190,17 +3190,33 @@ CI.diffprop<-function(x, y, success.x = NULL, success.y = NULL,
   y<-check.yby$y; by<-check.yby$by
   Err.list.input<-check.yby$err.list
   
+  # MOD 2026
+  if(exist.x){
+    whatval.x<-unique(na.omit(x))
+    if(is.numeric(x) && all(whatval.x %in% c(0,1))){
+      whatis.x<-"Binary"
+    } else if(is.logical(x)){
+      whatis.x<-"Logical"
+    } else {whatis.x<-"Generic" }
+    #print(whatis.x)
+  }
+  if(exist.y){
+    whatval.y<-unique(na.omit(y))
+    if(is.numeric(y) && all(whatval.y %in% c(0,1))){
+      whatis.y<-"Binary"
+    } else if(is.logical(y)){
+      whatis.y<-"Logical"
+    } else {whatis.y<-"Generic" }
+    #print(whatis.y)
+  }
   
   # check x consistency
-  if(is.null(success.x) && exist.x && 
-     (is.character(x) |
-      (is.numeric(x) & !all(unique(na.omit(x)) %in% c(0,1))))){
+  if(is.null(success.x) && exist.x && whatis.x=="Generic"){
     Err.list.input<-c(Err.list.input,paste0("When no 'success.x' is specified, ",
                                             "'x' should be logical or a binary (0/1) vector!"))
   }
   if(is.null(success.y) && is.null(success.x) && exist.y && 
-     (is.character(y) |
-      (is.numeric(y) & !all(unique(na.omit(y)) %in% c(0,1))))){
+     whatis.y=="Generic"){
     Err.list.input<-c(Err.list.input,paste0("When no 'success.y' or 'success.x' is specified, ",
                                             "'y' should be logical or a binary (0/1) vector!"))
   }
@@ -3211,7 +3227,7 @@ CI.diffprop<-function(x, y, success.x = NULL, success.y = NULL,
   # Check specifications para
   Err.list.para<-chkpar.success(value=success.x,x=x,err.list=Err.list.para)
   if(is.null(success.y) && !is.null(success.x) && exist.y && 
-     (!is.numeric(y) | !all(unique(y) %in% c(0,1)))){
+     whatis.y=="Generic"){
     Warn.list<-c(Warn.list,"Only 'success.x' is specified; 'success.y' set equal to 'success.x'")
     Err.list.para<-chkpar.success(value=success.x,x=y,err.list=Err.list.para)
   }
@@ -3246,7 +3262,7 @@ CI.diffprop<-function(x, y, success.x = NULL, success.y = NULL,
     use.x<-x; use.y<-y
     names.xy<-c("x"=name.x,"y"=name.y,"name.by"="NONE")
     if(is.null(success.y) & !is.null(success.x) && 
-       (!is.numeric(y) | !all(unique(y) %in% c(0,1)))){success.y<-success.x}
+       whatis.y=="Generic"){success.y<-success.x}
   }
   if(exist.by){
     use.by<-factor(by)
@@ -3254,6 +3270,7 @@ CI.diffprop<-function(x, y, success.x = NULL, success.y = NULL,
     use.y<-x[use.by==levels(use.by)[2]]
     names.xy<-c("x"=name.x,"name.by"=name.by,"lev1"=levels(use.by)[1],
                 "y"=name.x,"lev2"=levels(use.by)[2])
+    whatis.y<-whatis.x
     if(!is.null(success.x)){success.y<-success.x}
   }
   if(length(Warn.list)>1){ # not needed, leave in case added warnings
@@ -3266,6 +3283,7 @@ CI.diffprop<-function(x, y, success.x = NULL, success.y = NULL,
   }
   # Ready for intervals
   output<-ci.diff.prop(x=use.x,y=use.y,names.xy,success.x,success.y,
+                       whatis.x,whatis.y,
                        conf.level = conf.level,
                        digits=digits,force.digits=force.digits,
                        use.scientific=use.scientific,
@@ -4161,16 +4179,34 @@ TEST.diffprop<-function(x, y, success.x = NULL, success.y = NULL,
   y<-check.yby$y; by<-check.yby$by
   Err.list.input<-check.yby$err.list
   
+  # MOD 2026
+  if(exist.x){
+    whatval.x<-unique(na.omit(x))
+    if(is.numeric(x) && all(whatval.x %in% c(0,1))){
+      whatis.x<-"Binary"
+    } else if(is.logical(x)){
+      whatis.x<-"Logical"
+    } else {whatis.x<-"Generic" }
+    #print(whatis.x)
+  }
+  if(exist.y){
+    whatval.y<-unique(na.omit(y))
+    if(is.numeric(y) && all(whatval.y %in% c(0,1))){
+      whatis.y<-"Binary"
+    } else if(is.logical(y)){
+      whatis.y<-"Logical"
+    } else {whatis.y<-"Generic" }
+    #print(whatis.y)
+  }
+  
   # check x consistency
   if(is.null(success.x) && exist.x && 
-     (is.character(x) |
-      (is.numeric(x) & !all(unique(na.omit(x)) %in% c(0,1))))){
+     whatis.x=="Generic"){
     Err.list.input<-c(Err.list.input,paste0("When no 'success.x' is specified, ",
                                             "'x' should be logical or a binary (0/1) vector!"))
   }
   if(is.null(success.y) && is.null(success.x) && exist.y && 
-     (is.character(y) |
-      (is.numeric(y) & !all(unique(na.omit(y)) %in% c(0,1))))){
+     whatis.y=="Generic"){
     Err.list.input<-c(Err.list.input,paste0("When no 'success.y' or 'success.x' is specified, ",
                                             "'y' should be logical or a binary (0/1) vector!"))
   }
@@ -4185,8 +4221,9 @@ TEST.diffprop<-function(x, y, success.x = NULL, success.y = NULL,
     Err.list.para<-c(Err.list.para,"'pdiff0' should be a number between -1 and 1")
   }
   Err.list.para<-chkpar.success(value=success.x,x=x,err.list=Err.list.para)
+  
   if(is.null(success.y) && !is.null(success.x) && exist.y && 
-     (!is.numeric(y) | !all(unique(y) %in% c(0,1)))){
+     whatis.y=="Generic"){
     Warn.list<-c(Warn.list,"Only 'success.x' is specified; 'success.y' set equal to 'success.x'")
     Err.list.para<-chkpar.success(value=success.x,x=y,err.list=Err.list.para)
   }
@@ -4228,7 +4265,7 @@ TEST.diffprop<-function(x, y, success.x = NULL, success.y = NULL,
     use.x<-x; use.y<-y
     names.xy<-c("x"=name.x,"y"=name.y,"name.by"="NONE")
     if(is.null(success.y) & !is.null(success.x) && 
-       (!is.numeric(y) | !all(unique(y) %in% c(0,1)))){success.y<-success.x}
+       whatis.y=="Generic"){success.y<-success.x}
   }
   if(exist.by){
     use.by<-factor(by)
@@ -4237,6 +4274,7 @@ TEST.diffprop<-function(x, y, success.x = NULL, success.y = NULL,
     names.xy<-c("x"=name.x,"name.by"=name.by,"lev1"=levels(use.by)[1],
                 "y"=name.x,"lev2"=levels(use.by)[2])
     if(!is.null(success.x)){success.y<-success.x}
+    whatis.y<-whatis.x
   }
   
   if(length(Warn.list)>1){ # not needed, leave in case added warnings
@@ -4250,6 +4288,7 @@ TEST.diffprop<-function(x, y, success.x = NULL, success.y = NULL,
   
   # Ready for test
   output<-hyp.diff.prop(x=use.x,y=use.y,names.xy,
+                        whatis.x,whatis.y,
                         pdiff0=pdiff0,success.x,success.y,
                         alternative=alternative,
                         digits=digits,

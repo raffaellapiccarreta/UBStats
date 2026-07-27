@@ -36,7 +36,7 @@ equivalised household to avoid scale artefacts.
 }
 \references{
 Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 9788823824096.
 }
 \keyword{datasets}

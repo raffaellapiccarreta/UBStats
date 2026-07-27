@@ -5,31 +5,33 @@
 \alias{Grocery_NE}
 \title{Data Grocery_NE: Grocery Chain Customer Survey (North-East Italy)}
 \format{
-A data frame with \emph{n} = 3114 observations and 28 variables:
+A data frame with \emph{n} = 3114 observations and 26 variables:
 \describe{
 \item{Id}{(int) customer identification}
-\item{Sex}{(chr) customer's sex at birth, (F or M)}
+\item{Sex}{(chr) customer's sex at birth (\code{F} or \code{M})}
 \item{Age}{(num) customer's age (in years)}
 \item{Tenure}{(factor) Customer tenure in years (coded in classes:
-[0,1), [1,3), [3,6), [6,10), [10,15), [15,25), [25,35))}
-\item{Status}{(chr) customers' status (Active, Silent)}
-\item{FavShop}{(chr) store customers visit the most (NE.01, NE.02,
-..., NE.07)}
+\verb{[0,1)}, \verb{[1,3)}, \verb{[3,6)}, \verb{[6,10)}, \verb{[10,15)}, \verb{[15,25)}, \verb{[25,35)})}
+\item{Status}{(chr) customers' status (\code{Active}, \code{Silent})}
+\item{FavShop}{(chr) store customers visit the most (\code{NE.01}, \code{NE.02},
+..., \code{NE.07})}
 \item{FavShop_Region}{(chr) macro region where the favourite shop is
-located (here, only North-East)}
+located (here, only \code{North-East})}
 \item{TotShops}{(num) number of stores visited by the customer}
-\item{WeekDay}{(chr) preferred shopping day (1:Mon, 2:Tue, ..., 7:Sun)}
-\item{TimeSlot}{(chr) preferred shopping time slot (08-12, 12-14,
-14-17, 17-23)}
+\item{WeekDay}{(chr) preferred shopping day (\code{1:Mon}, \code{2:Tue}, ..., \code{7:Sun})}
+\item{TimeSlot}{(chr) preferred shopping time slot (\code{08-12}, \code{12-14},
+\code{14-17}, \code{17-23})}
 \item{Satisf}{(chr) Customer's overall declared satisfaction with the
-retailer (VLow, QLow, Low, Med, QHigh, High, VHigh)}
+retailer (\code{VLow}, \code{Low}, \code{QLow} -- that is, moderately low; \code{Med},
+\code{QHigh} -- that is, moderately high; \code{High}, \code{VHigh})}
 \item{Complaint}{(factor) major weakness of the typically visited
-store (Quality&Variety, Prices, Resupply, Staff, Crowded, Checkout)}
+store (\code{Quality&Variety}, \code{Prices}, \code{Resupply}, \code{Staff}, \code{Crowded},
+\code{Checkout})}
 \item{NMonths}{(num) number of months in which the customers visited
 a store at least once}
-\item{MonthExp}{(chr) amount spent per month, in classes ([0,50),
-[50,100), [100,150), [150,200), [200,300), [300,400), [400,600),
-[600,800))}
+\item{MonthExp}{(chr) amount spent per month, in classes (\verb{[0,50)},
+\verb{[50,100)}, \verb{[100,150)}, \verb{[150,200)}, \verb{[200,300)}, \verb{[300,400)},
+\verb{[400,600)}, \verb{[600,800]})}
 \item{Transact_M}{(num) transactions per month}
 \item{TBP}{(num) time between purchases}
 \item{TotExp}{(num) amount spent in the last 12 months}
@@ -66,7 +68,7 @@ perceived weakness of the most frequently visited store.
 }
 \references{
 Piccarreta, R., Tonini, D., & Trentini, F. (2026). \emph{From Data to
-Decisions: An Applied Introduction to Statistics}. BUP. ISBN
+Decisions. An Introduction to Applied Statistics}. BUP. ISBN
 9788823824096.
 }
 \keyword{datasets}
