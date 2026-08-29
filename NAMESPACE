@@ -20,16 +20,22 @@ import(grDevices)
 import(graphics)
 import(stats)
 import(utils)
-importFrom(grDevices,colorRampPalette)
-importFrom(grDevices,gray)
-importFrom(grDevices,gray.colors)
-importFrom(grDevices,hcl.colors)
-importFrom(grDevices,rgb)
-importFrom(stats,cooks.distance)
-importFrom(stats,dnorm)
-importFrom(stats,hatvalues)
-importFrom(stats,qt)
-importFrom(stats,rstandard)
-importFrom(stats,rstudent)
-importFrom(utils,globalVariables)
-importFrom(utils,write.table)
+importFrom(grDevices,
+  colorRampPalette,
+  gray,
+  gray.colors,
+  hcl.colors,
+  rgb
+)
+importFrom(stats,
+  cooks.distance,
+  dnorm,
+  hatvalues,
+  qt,
+  rstandard,
+  rstudent
+)
+importFrom(utils,
+  globalVariables,
+  write.table
+)
